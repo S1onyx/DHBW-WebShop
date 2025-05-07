@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
           productList.innerHTML = ''; // leeren
           products.forEach(product => {
             const li = document.createElement('li');
-            li.textContent = `${product.name} – ${product.price} €`;
+            li.textContent = `${product.name} – ${product.price} € (Lager: ${product.stock})`;
             productList.appendChild(li);
           });
         }
@@ -22,4 +22,4 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => {
         productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
       });
-  });
+});
