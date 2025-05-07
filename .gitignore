@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+.env
+
+# Docker
+*.log
+docker/db_data/
+docker/*.pid
+docker/*.sock
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/

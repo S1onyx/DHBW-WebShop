@@ -1,0 +1,13 @@
+{
+    "name": "dhbw-webshop-backend",
+    "version": "1.0.0",
+    "description": "Backend für den DHBW-Webshop",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js"
+    },
+    "dependencies": {
+      "dotenv": "^16.4.5",
+      "pg": "^8.11.5"
+    }
+  }
