@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
           productList.innerHTML = ''; // leeren
           products.forEach(product => {
             const li = document.createElement('li');
-            li.textContent = `${product.name} – ${product.price} € (Lager: ${product.stock})`;
+            li.textContent = `${product.name} – ${product.price} € (Auf Lager: ${product.stock})`;
             productList.appendChild(li);
           });
         }

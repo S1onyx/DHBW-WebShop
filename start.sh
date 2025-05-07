@@ -15,5 +15,13 @@ else
   docker compose down --remove-orphans
 fi
 
-echo "🚀 Baue und starte Docker-Container..."
-docker compose up --build
+# Alte Images entfernen
+echo "🧹 Entferne alte Images..."
+docker rmi webshop_backend webshop_frontend 2>/dev/null || true
+
+# Compose mit no-cache
+echo "📦 Baue Container mit --no-cache..."
+docker compose build --no-cache
+
+echo "▶️ Starte Container..."
+docker compose up
