@@ -68,14 +68,14 @@ Run frontend with `vite` and backend with `nodemon` (hot reload), while keeping 
 
 ```bash
 ./start.sh --dev             # macOS/Linux
-start.bat --dev              # Windows
 ```
+
+If you want to start the project in dev mode on a Windows machine, please use Git Bash or a similar shell to run `./start.sh --dev`. The `.bat` file does not support the `--dev` flag (dev mode).
 
 You can combine both:
 
 ```bash
 ./start.sh --dev --resetDB
-start.bat --dev --resetDB
 ```
 
 ---
@@ -110,7 +110,7 @@ start.bat --dev --resetDB
   Add DB queries in `backend/models/`, e.g., `orderModel.js`.
 
 - **Change schema:**  
-  Modify `backend/db/init.sql` – restart with `--resetDB`
+  Modify `backend/db/init.sql` – restart with `--resetDB`.
 
 - **Add frontend logic:**  
   Edit JS in `frontend/js/main.js` or add new modules. No build steps needed.
@@ -136,10 +136,10 @@ start.bat --dev --resetDB
 ./start.sh --resetDB | start.bat --resetDB
 
 # Start dev mode
-./start.sh --dev | start.bat --dev
+./start.sh --dev
 
 # Reset + Dev
-./start.sh --dev --resetDB | start.bat --dev --resetDB
+./start.sh --dev --resetDB
 
 # Stop services
 docker compose down
