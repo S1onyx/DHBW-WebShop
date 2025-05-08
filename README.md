@@ -13,7 +13,7 @@ cd DHBW-WebShop
 ./start.sh
 ```
 
-- Access frontend at: [http://localhost](http://localhost)  
+- Access frontend at: [http://localhost:1337](http://localhost:1337)  
 - API via proxy: [http://localhost/api/products](http://localhost/api/products)  
 - API (direct backend): [http://localhost:3000/api/products](http://localhost:3000/api/products)
 

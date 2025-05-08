@@ -48,7 +48,7 @@ services:
     image: nginx:latest
     container_name: webshop_nginx
     ports:
-      - "80:80"
+      - "1337:80"
     volumes:
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend:/usr/share/nginx/html:ro
