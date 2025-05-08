@@ -1,13 +1,16 @@
 {
-    "name": "dhbw-webshop-backend",
+    "name": "webshop-backend",
     "version": "1.0.0",
-    "description": "Backend für den DHBW-Webshop",
     "main": "app.js",
     "scripts": {
-      "start": "node app.js"
+      "dev": "nodemon app.js"
     },
     "dependencies": {
-      "dotenv": "^16.4.5",
-      "pg": "^8.11.5"
+      "dotenv": "^16.0.3",
+      "pg": "^8.10.0"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.1",
+      "concurrently": "^8.2.0"
     }
   }
