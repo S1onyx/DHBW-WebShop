@@ -39,42 +39,29 @@ This will:
 - Build all services
 - Run backend (Node.js), database (PostgreSQL), frontend (HTML/JS), and nginx
 
-### Manual start (no Docker)
-
-> Useful for debugging or step-by-step control.
-
-#### 1. Start PostgreSQL manually  
-You need a local PostgreSQL running with a `webshop` database and this schema:
-
-```sql
-CREATE TABLE IF NOT EXISTS products (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  price NUMERIC(10, 2) NOT NULL
-);
-```
-
-Seed data can be found in [`backend/db/init.sql`](backend/db/init.sql)
-
-#### 2. Configure environment
-
-Create a `.env` file in `/backend`:
-
-```
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/webshop
-PORT=3000
-```
-
-#### 3. Start backend
+You can also pass the following option:
 
 ```bash
-cd backend
-npm install
-node app.js
+./start.sh --resetDB
 ```
 
-#### 4. Open `frontend/index.html` in browser  
-(Or serve with any static server, e.g. `npx serve frontend`)
+- This will **reset the database**, delete existing volumes and recreate everything from `init.sql`.
+- Ideal for development resets or schema changes.
+- ⚠️ **All data will be lost** when using this flag.
+
+### Reset and reinitialize the database
+
+> ⚠️ This deletes **all data** and recreates the database schema from `init.sql`.
+
+```bash
+./start.sh --resetDB
+```
+
+This will:
+- Stop all containers
+- Delete the PostgreSQL volume
+- Recreate the `webshop` database using [`init.sql`](backend/db/init.sql)
+- Start fresh with initial demo data
 
 ---
 
@@ -108,7 +95,7 @@ node app.js
   Add DB queries in `backend/models/`, e.g., `orderModel.js`.
 
 - **Change schema:**  
-  Modify `backend/db/init.sql` – remember to rebuild DB (`docker compose down -v && ./start.sh`)
+  Modify `backend/db/init.sql` – remember to restart with `./start.sh --resetDB`
 
 - **Add frontend logic:**  
   Add JS in `frontend/js/main.js` or new modules. No build steps needed.
@@ -127,17 +114,17 @@ node app.js
 ## 🧪 Useful Commands
 
 ```bash
-# Start containers
+# Start containers (preserve existing DB)
 ./start.sh
+
+# Reset database and seed data
+./start.sh --resetDB
 
 # Stop all services
 docker compose down
 
 # View logs
 docker compose logs -f
-
-# Reset database (destructive!)
-docker compose down -v && ./start.sh
 ```
 
 ---
