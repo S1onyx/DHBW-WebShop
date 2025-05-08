@@ -7,14 +7,24 @@ Built for educational purposes at DHBW Stuttgart.
 
 ## ⚡ TL;DR – Quickstart
 
+### macOS/Linux
+
 ```bash
 git clone https://github.com/your-username/DHBW-WebShop.git
 cd DHBW-WebShop
 ./start.sh
 ```
 
-- Access frontend at: [http://localhost](http://localhost)  
-- API via proxy: [http://localhost/api/products](http://localhost/api/products)  
+### Windows (CMD)
+
+```cmd
+git clone https://github.com/your-username/DHBW-WebShop.git
+cd DHBW-WebShop
+start.bat
+```
+
+- Access frontend at: [http://localhost:1337](http://localhost:1337)
+- API via proxy: [http://localhost:1337/api/products](http://localhost:1337/api/products)
 - API (direct backend): [http://localhost:3000/api/products](http://localhost:3000/api/products)
 
 ---
@@ -23,7 +33,8 @@ cd DHBW-WebShop
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- Unix shell with Bash (Linux/macOS or WSL on Windows)
+- Bash shell (macOS/Linux) or CMD/PowerShell (Windows)
+- (for dev mode) Node.js and npm
 
 ---
 
@@ -32,36 +43,40 @@ cd DHBW-WebShop
 ### Start using Docker (recommended)
 
 ```bash
-./start.sh
+./start.sh           # macOS/Linux
+start.bat            # Windows
 ```
 
 This will:
 - Build all services
 - Run backend (Node.js), database (PostgreSQL), frontend (HTML/JS), and nginx
 
-You can also pass the following option:
+### Available Options
+
+#### `--resetDB`
+Reset and reinitialize the database with demo data.
 
 ```bash
-./start.sh --resetDB
+./start.sh --resetDB         # macOS/Linux
+start.bat --resetDB          # Windows
 ```
-
-- This will **reset the database**, delete existing volumes and recreate everything from `init.sql`.
-- Ideal for development resets or schema changes.
-- ⚠️ **All data will be lost** when using this flag.
-
-### Reset and reinitialize the database
 
 > ⚠️ This deletes **all data** and recreates the database schema from `init.sql`.
 
+#### `--dev`
+Run frontend with `vite` and backend with `nodemon` (hot reload), while keeping the DB in Docker.
+
 ```bash
-./start.sh --resetDB
+./start.sh --dev             # macOS/Linux
+start.bat --dev              # Windows
 ```
 
-This will:
-- Stop all containers
-- Delete the PostgreSQL volume
-- Recreate the `webshop` database using [`init.sql`](backend/db/init.sql)
-- Start fresh with initial demo data
+You can combine both:
+
+```bash
+./start.sh --dev --resetDB
+start.bat --dev --resetDB
+```
 
 ---
 
@@ -74,7 +89,7 @@ This will:
 | `backend/db/init.sql`       | DB schema and seed products          |
 | `docker/`                   | Dockerfiles and nginx config         |
 | `docker-compose.yml`        | Full container orchestration         |
-| `start.sh`                  | Bash script to build and run project |
+| `start.sh` / `start.bat`    | Local startup scripts for all OS     |
 
 ---
 
@@ -95,35 +110,41 @@ This will:
   Add DB queries in `backend/models/`, e.g., `orderModel.js`.
 
 - **Change schema:**  
-  Modify `backend/db/init.sql` – remember to restart with `./start.sh --resetDB`
+  Modify `backend/db/init.sql` – restart with `--resetDB`
 
 - **Add frontend logic:**  
-  Add JS in `frontend/js/main.js` or new modules. No build steps needed.
+  Edit JS in `frontend/js/main.js` or add new modules. No build steps needed.
 
 ---
 
 ## 💡 Noteworthy Design Choices
 
-- **No frontend frameworks** – only plain HTML/CSS/JS for full control and simplicity.
-- **Single repo** – All components (frontend, backend, DB, Docker) live together.
-- **Docker-first** – Fully orchestrated with Docker Compose.
-- **Proxy setup** – Nginx proxies `/api/` to the backend.
+- **No frontend frameworks** – only plain HTML/CSS/JS
+- **Single repo** – All components live together
+- **Docker-first** – Fully orchestrated via Docker Compose
+- **Proxy setup** – Nginx proxies `/api/` to backend
 
 ---
 
 ## 🧪 Useful Commands
 
 ```bash
-# Start containers (preserve existing DB)
-./start.sh
+# Start normally
+./start.sh | start.bat
 
-# Reset database and seed data
-./start.sh --resetDB
+# Reset DB
+./start.sh --resetDB | start.bat --resetDB
 
-# Stop all services
+# Start dev mode
+./start.sh --dev | start.bat --dev
+
+# Reset + Dev
+./start.sh --dev --resetDB | start.bat --dev --resetDB
+
+# Stop services
 docker compose down
 
-# View logs
+# Logs
 docker compose logs -f
 ```
 
