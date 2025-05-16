@@ -2,6 +2,7 @@ const db = require('../../db/database');
 
 async function getAllProductsModel(filters) {
   let query = `SELECT
+  p.id,
   p.name AS product_name,
   c.name AS category_name,
   p.price,

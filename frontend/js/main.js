@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const productList = document.getElementById('product-list');
     productList.innerHTML = '<li>Produkte werden geladen...</li>';
@@ -13,8 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           productList.innerHTML = ''; // leeren
           products.forEach(product => {
-            const li = document.createElement('li');
-            li.textContent = `${product.name} – ${product.price} € (Auf Lager: ${product.stock})`;
+              const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.textContent = `${product.product_name} – ${product.price} € (Auf Lager: ${product.stock})`;
+            a.href = `product.html?id=${product.id}`;
+            li.appendChild(a);
             productList.appendChild(li);
           });
         }
@@ -22,4 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => {
         productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
       });
+});
+
+function loadPartial(id, file) {
+    fetch(file)
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById(id).innerHTML = data;
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadPartial("header", "header.html");
+    loadPartial("footer", "footer.html");
 });
