@@ -1,0 +1,20 @@
+meta {
+  name: getAllProducts with params
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/api/products?minPrice=10&maxPrice=152&name=t&inStock=true&sort=price&order=asc
+  body: none
+  auth: inherit
+}
+
+params:query {
+  minPrice: 10
+  maxPrice: 152
+  name: t
+  inStock: true
+  sort: price
+  order: asc
+}
