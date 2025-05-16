@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
           products.forEach(product => {
               const li = document.createElement('li');
             const a = document.createElement('a');
-            a.textContent = `${product.product_name} – ${product.price} € (Auf Lager: ${product.stock})`;
+            a.textContent = `${product.product_name} – ${product.price} € `;
             a.href = `product.html?id=${product.id}`;
             li.appendChild(a);
             productList.appendChild(li);
