@@ -10,7 +10,7 @@ Built for educational purposes at DHBW Stuttgart.
 ### macOS/Linux
 
 ```bash
-git clone https://github.com/your-username/DHBW-WebShop.git
+git clone https://github.com/S1onyx/DHBW-WebShop.git
 cd DHBW-WebShop
 ./start.sh
 ```
@@ -90,14 +90,6 @@ You can combine both:
 | `docker/`                   | Dockerfiles and nginx config         |
 | `docker-compose.yml`        | Full container orchestration         |
 | `start.sh` / `start.bat`    | Local startup scripts for all OS     |
-
----
-
-## 📦 API Endpoints
-
-| Method | Route              | Description                        |
-|--------|--------------------|------------------------------------|
-| GET    | `/api/products`    | Returns all products in JSON       |
 
 ---
 
