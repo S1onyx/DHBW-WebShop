@@ -1,8 +1,8 @@
-name: Label Native Sub-Issues
+name: Label Sub-Issues from GitHub Project v2
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # Täglich um Mitternacht UTC
   workflow_dispatch:
 
 permissions:
@@ -12,77 +12,119 @@ jobs:
   label-subissues:
     runs-on: ubuntu-latest
     steps:
-      - name: Label issues that are tracked by others
+      - name: Label all sub-issues from Project v2 with their parent
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.LABEL_TOKEN }}
           script: |
-            const { owner, repo } = context.repo;
+            const { repo, owner } = context.repo;
 
-            const issues = await github.paginate(github.rest.issues.listForRepo, {
-              owner,
-              repo,
-              state: "open",
-              per_page: 100,
+            // === SETTINGS ===
+            const projectOwner = "S1onyx"; // dein GitHub-Benutzername
+            const projectNumber = 2; // aus der URL: /projects/2
+
+            // === Step 1: Get Project ID ===
+            const getProjectIdQuery = `
+              query($login: String!, $number: Int!) {
+                user(login: $login) {
+                  projectV2(number: $number) {
+                    id
+                  }
+                }
+              }
+            `;
+            const projectData = await github.graphql(getProjectIdQuery, {
+              login: projectOwner,
+              number: projectNumber,
             });
+            const projectId = projectData.user.projectV2.id;
 
-            for (const issue of issues) {
-              if (issue.pull_request) continue;
+            // === Step 2: Get all items in the project ===
+            const items = [];
+            let endCursor = null;
+            let hasNextPage = true;
 
-              const query = `
-                query($owner:String!, $repo:String!, $issue:Int!) {
-                  repository(owner:$owner, name:$repo) {
-                    issue(number:$issue) {
-                      trackedInIssues(first: 1) {
+            while (hasNextPage) {
+              const itemsQuery = `
+                query($id: ID!, $after: String) {
+                  node(id: $id) {
+                    ... on ProjectV2 {
+                      items(first: 100, after: $after) {
+                        pageInfo {
+                          hasNextPage
+                          endCursor
+                        }
                         nodes {
-                          number
-                          title
+                          id
+                          content {
+                            ... on Issue {
+                              number
+                              title
+                              repository {
+                                name
+                                owner { login }
+                              }
+                            }
+                          }
+                          trackedByItems(first: 1) {
+                            nodes {
+                              content {
+                                ... on Issue {
+                                  number
+                                  title
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     }
                   }
-                }`;
+                }
+              `;
+              const res = await github.graphql(itemsQuery, {
+                id: projectId,
+                after: endCursor,
+              });
 
-              let result;
-              try {
-                result = await github.graphql(query, {
-                  owner,
-                  repo,
-                  issue: issue.number,
-                });
-              } catch (err) {
-                console.warn(`⚠️ Failed on issue #${issue.number}: ${err.message}`);
-                continue;
-              }
+              const page = res.node.items;
+              items.push(...page.nodes);
+              hasNextPage = page.pageInfo.hasNextPage;
+              endCursor = page.pageInfo.endCursor;
+            }
 
-              const tracked = result.repository.issue.trackedInIssues.nodes;
-              if (tracked.length === 0) {
-                console.log(`ℹ️ Issue #${issue.number} is not tracked by any parent`);
-                continue;
-              }
+            // === Step 3: Label each sub-issue ===
+            for (const item of items) {
+              const issue = item.content;
+              const parentNode = item.trackedByItems?.nodes?.[0]?.content;
 
-              const parent = tracked[0];
-              let labelName = `Parent: ${parent.title}`;
+              if (!issue || !parentNode) continue; // Skip if not an issue or not a sub-issue
+
+              const issueOwner = issue.repository.owner.login;
+              const issueRepo = issue.repository.name;
+
+              let labelName = `Parent: ${parentNode.title}`;
               if (labelName.length > 50) {
-                labelName = `Parent #${parent.number}`;
+                labelName = `Parent #${parentNode.number}`;
               }
 
-              console.log(`🏷️ Will label issue #${issue.number} with '${labelName}'`);
+              console.log(`🏷️ Will label issue #${issue.number} in ${issueRepo} with '${labelName}'`);
 
               try {
-                await github.rest.issues.getLabel({ owner, repo, name: labelName });
+                await github.rest.issues.getLabel({ owner: issueOwner, repo: issueRepo, name: labelName });
               } catch {
+                console.log(`➕ Creating label '${labelName}'`);
                 await github.rest.issues.createLabel({
-                  owner,
-                  repo,
+                  owner: issueOwner,
+                  repo: issueRepo,
                   name: labelName,
                   color: 'cfd3d7',
                 });
               }
 
               await github.rest.issues.addLabels({
-                owner,
-                repo,
+                owner: issueOwner,
+                repo: issueRepo,
                 issue_number: issue.number,
                 labels: [labelName],
               });
