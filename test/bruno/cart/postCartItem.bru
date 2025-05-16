@@ -1,0 +1,15 @@
+meta {
+  name: postCartItem
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/cart?userId=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  userId: 1
+}
