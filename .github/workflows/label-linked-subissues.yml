@@ -1,4 +1,4 @@
-name: Label Linked Sub-Issues
+name: Label Native Sub-Issues
 
 on:
   schedule:
@@ -12,7 +12,7 @@ jobs:
   label-subissues:
     runs-on: ubuntu-latest
     steps:
-      - name: Label sub-issues with parent title or number
+      - name: Label issues that are tracked by others
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.LABEL_TOKEN }}
@@ -26,25 +26,17 @@ jobs:
               per_page: 100,
             });
 
-            console.log(`🔍 Found ${issues.length} open issues`);
-
-            for (const parent of issues) {
-              if (parent.pull_request) continue;
+            for (const issue of issues) {
+              if (issue.pull_request) continue;
 
               const query = `
                 query($owner:String!, $repo:String!, $issue:Int!) {
                   repository(owner:$owner, name:$repo) {
                     issue(number:$issue) {
-                      title
-                      timelineItems(itemTypes: [CONNECTED_EVENT], first: 100) {
+                      trackedInIssues(first: 1) {
                         nodes {
-                          ... on ConnectedEvent {
-                            subject {
-                              ... on Issue {
-                                number
-                              }
-                            }
-                          }
+                          number
+                          title
                         }
                       }
                     }
@@ -56,33 +48,30 @@ jobs:
                 result = await github.graphql(query, {
                   owner,
                   repo,
-                  issue: parent.number,
+                  issue: issue.number,
                 });
               } catch (err) {
-                console.warn(`⚠️ Skipping issue #${parent.number}: ${err.message}`);
+                console.warn(`⚠️ Failed on issue #${issue.number}: ${err.message}`);
                 continue;
               }
 
-              const connected = result.repository.issue.timelineItems.nodes;
-              const subIssues = connected.map(e => e.subject).filter(Boolean);
-
-              if (subIssues.length === 0) {
-                console.log(`ℹ️ No sub-issues linked to parent #${parent.number}`);
+              const tracked = result.repository.issue.trackedInIssues.nodes;
+              if (tracked.length === 0) {
+                console.log(`ℹ️ Issue #${issue.number} is not tracked by any parent`);
                 continue;
               }
 
-              const parentTitle = result.repository.issue.title;
-              let labelName = `Parent: ${parentTitle}`;
+              const parent = tracked[0];
+              let labelName = `Parent: ${parent.title}`;
               if (labelName.length > 50) {
                 labelName = `Parent #${parent.number}`;
               }
 
-              console.log(`🏷️ Using label '${labelName}' for ${subIssues.length} sub-issues`);
+              console.log(`🏷️ Will label issue #${issue.number} with '${labelName}'`);
 
               try {
                 await github.rest.issues.getLabel({ owner, repo, name: labelName });
               } catch {
-                console.log(`➕ Creating label '${labelName}'`);
                 await github.rest.issues.createLabel({
                   owner,
                   repo,
@@ -91,14 +80,12 @@ jobs:
                 });
               }
 
-              for (const sub of subIssues) {
-                console.log(`🔗 Labeling sub-issue #${sub.number} with '${labelName}'`);
-                await github.rest.issues.addLabels({
-                  owner,
-                  repo,
-                  issue_number: sub.number,
-                  labels: [labelName],
-                });
-                console.log(`✅ Labeled #${sub.number}`);
-              }
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: issue.number,
+                labels: [labelName],
+              });
+
+              console.log(`✅ Labeled issue #${issue.number} with '${labelName}'`);
             }
