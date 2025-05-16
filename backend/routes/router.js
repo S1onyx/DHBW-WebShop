@@ -3,6 +3,7 @@ const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
 const deleteProduct = require('../apis/products/deleteProduct');
 
+const postUser = require('../apis/users/postUser');
 const getUserById = require('../apis/users/getUserById');
 
 module.exports = (req, res) => {
@@ -24,6 +25,9 @@ module.exports = (req, res) => {
     } else if (url.pathname.match(/^\/api\/users\/(\d+)$/) && req.method === 'GET') {
         const id = url.pathname.split('/').pop();
         getUserById(req, res, id);
+
+    } else if (url.pathname === '/api/users' && req.method === 'POST') {
+        postUser(req, res);
 
     } else {
         res.writeHead(404, {'Content-Type': 'application/json'});
