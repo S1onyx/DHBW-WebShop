@@ -27,3 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
         productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
       });
 });
+
+function loadPartial(id, file) {
+    fetch(file)
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById(id).innerHTML = data;
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadPartial("header", "header.html");
+    loadPartial("footer", "footer.html");
+});
