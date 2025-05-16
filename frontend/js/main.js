@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const productList = document.getElementById('product-list');
     productList.innerHTML = '<li>Produkte werden geladen...</li>';
@@ -14,7 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
           productList.innerHTML = ''; // leeren
           products.forEach(product => {
             const li = document.createElement('li');
-            li.textContent = `${product.name} – ${product.price} € (Auf Lager: ${product.stock})`;
+            const a = document.createElement('a');
+            a.textContent = `${product.name} – ${product.price} € (Auf Lager: ${product.stock})`;
+            a.href = `produkt.html?id=${product.id}`;
+            li.appendChild(a);
             productList.appendChild(li);
           });
         }

@@ -29,3 +29,17 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+.product-list li a {
+  display: inline-block;
+  text-decoration: none;
+  color: #222; /* dunkles Grau statt Blau */
+  font-size: 1.1rem;
+  padding: 1vh 1.5vw;
+  border-radius: 0.3rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.product-list li a:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* leichter Hover-Effekt */
+}
