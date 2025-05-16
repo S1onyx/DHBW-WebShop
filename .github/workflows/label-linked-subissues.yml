@@ -2,8 +2,8 @@ name: Label Linked Sub-Issues
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Täglich um Mitternacht UTC
-  workflow_dispatch:      # Manuell auslösbar im Actions-Tab
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
   issues: write
@@ -12,7 +12,7 @@ jobs:
   label-subissues:
     runs-on: ubuntu-latest
     steps:
-      - name: Label linked sub-issues with parent issue number
+      - name: Label sub-issues with parent title or number
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.LABEL_TOKEN }}
@@ -28,15 +28,14 @@ jobs:
 
             console.log(`🔍 Found ${issues.length} open issues`);
 
-            for (const issue of issues) {
-              if (issue.pull_request) continue;
-
-              console.log(`🔎 Checking issue #${issue.number}: ${issue.title}`);
+            for (const parent of issues) {
+              if (parent.pull_request) continue;
 
               const query = `
                 query($owner:String!, $repo:String!, $issue:Int!) {
                   repository(owner:$owner, name:$repo) {
                     issue(number:$issue) {
+                      title
                       timelineItems(itemTypes: [CONNECTED_EVENT], first: 100) {
                         nodes {
                           ... on ConnectedEvent {
@@ -57,25 +56,28 @@ jobs:
                 result = await github.graphql(query, {
                   owner,
                   repo,
-                  issue: issue.number,
+                  issue: parent.number,
                 });
               } catch (err) {
-                console.warn(`⚠️ Skipping issue #${issue.number}: ${err.message}`);
+                console.warn(`⚠️ Skipping issue #${parent.number}: ${err.message}`);
                 continue;
               }
 
-              const connections = result.repository.issue.timelineItems.nodes;
-              const parent = connections.find(event =>
-                event.subject && event.subject.number !== issue.number
-              );
+              const connected = result.repository.issue.timelineItems.nodes;
+              const subIssues = connected.map(e => e.subject).filter(Boolean);
 
-              if (!parent) {
-                console.log(`❌ No parent found for issue #${issue.number}`);
+              if (subIssues.length === 0) {
+                console.log(`ℹ️ No sub-issues linked to parent #${parent.number}`);
                 continue;
               }
 
-              const labelName = `Parent #${parent.subject.number}`;
-              console.log(`🏷️ Will add label '${labelName}' to issue #${issue.number}`);
+              const parentTitle = result.repository.issue.title;
+              let labelName = `Parent: ${parentTitle}`;
+              if (labelName.length > 50) {
+                labelName = `Parent #${parent.number}`;
+              }
+
+              console.log(`🏷️ Using label '${labelName}' for ${subIssues.length} sub-issues`);
 
               try {
                 await github.rest.issues.getLabel({ owner, repo, name: labelName });
@@ -89,12 +91,14 @@ jobs:
                 });
               }
 
-              await github.rest.issues.addLabels({
-                owner,
-                repo,
-                issue_number: issue.number,
-                labels: [labelName],
-              });
-
-              console.log(`✅ Label '${labelName}' added to issue #${issue.number}`);
+              for (const sub of subIssues) {
+                console.log(`🔗 Labeling sub-issue #${sub.number} with '${labelName}'`);
+                await github.rest.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: sub.number,
+                  labels: [labelName],
+                });
+                console.log(`✅ Labeled #${sub.number}`);
+              }
             }
