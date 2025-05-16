@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             const a = document.createElement('a');
             a.textContent = `${product.name} – ${product.price} € (Auf Lager: ${product.stock})`;
-            a.href = `produkt.html?id=${product.id}`;
+            a.href = `product.html?id=${product.id}`;
             li.appendChild(a);
             productList.appendChild(li);
           });
