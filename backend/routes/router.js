@@ -17,6 +17,9 @@ module.exports = (req, res) => {
     } else if (url.pathname.match(/^\/api\/products\/(\d+)$/) && req.method === 'DELETE') {
         const id = url.pathname.split('/').pop();
         deleteProduct(req, res, new URLSearchParams(`id=${id}`));
+
+
+
         // User APIs
     } else if (url.pathname.match(/^\/api\/users\/(\d+)$/) && req.method === 'GET') {
         const id = url.pathname.split('/').pop();
