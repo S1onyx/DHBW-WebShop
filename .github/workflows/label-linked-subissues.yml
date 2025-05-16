@@ -26,8 +26,12 @@ jobs:
               per_page: 100,
             });
 
+            console.log(`🔍 Found ${issues.length} open issues`);
+
             for (const issue of issues) {
-              if (issue.pull_request) continue; // Skip PRs
+              if (issue.pull_request) continue;
+
+              console.log(`🔎 Checking issue #${issue.number}: ${issue.title}`);
 
               const query = `
                 query($owner:String!, $repo:String!, $issue:Int!) {
@@ -61,18 +65,22 @@ jobs:
               }
 
               const connections = result.repository.issue.timelineItems.nodes;
-
               const parent = connections.find(event =>
                 event.subject && event.subject.number !== issue.number
               );
 
-              if (!parent) continue;
+              if (!parent) {
+                console.log(`❌ No parent found for issue #${issue.number}`);
+                continue;
+              }
 
               const labelName = `Parent #${parent.subject.number}`;
+              console.log(`🏷️ Will add label '${labelName}' to issue #${issue.number}`);
 
               try {
                 await github.rest.issues.getLabel({ owner, repo, name: labelName });
               } catch {
+                console.log(`➕ Creating label '${labelName}'`);
                 await github.rest.issues.createLabel({
                   owner,
                   repo,
@@ -87,4 +95,6 @@ jobs:
                 issue_number: issue.number,
                 labels: [labelName],
               });
+
+              console.log(`✅ Label '${labelName}' added to issue #${issue.number}`);
             }
