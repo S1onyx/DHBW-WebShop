@@ -2,12 +2,12 @@ const db = require('../../db/database');
 
 async function getProductByIdModel(id) {
   const productQuery = await db.query(
-    `SELECT p.name, u.first_name || ' ' || u.last_name AS seller_name, p.description, p.stock
-    FROM products p
-    JOIN users u
-    ON u.id = p.seller_id
-    WHERE p.id = $1`,
-    [id]
+      `SELECT p.name, u.username AS seller_name, p.description, p.stock, p.price
+       FROM products p
+        JOIN users u
+        ON u.id = p.seller_id
+       WHERE p.id = $1`,
+      [id]
   );
   if (productQuery.rows.length === 0) return null;
 
@@ -17,7 +17,7 @@ async function getProductByIdModel(id) {
   );
 
   const reviews = await db.query(
-    `SELECT r.rating, r.comment, u.first_name || ' ' || u.last_name AS name
+    `SELECT r.rating, r.comment, u.username AS name
      FROM reviews r
      JOIN users u
      ON u.id = r.customer_id
