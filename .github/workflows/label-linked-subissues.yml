@@ -2,7 +2,7 @@ name: Label Sub-Issues from GitHub Project v2
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Täglich um Mitternacht UTC
+    - cron: '0 0 * * *'  # täglich um Mitternacht UTC
   workflow_dispatch:
 
 permissions:
@@ -12,7 +12,7 @@ jobs:
   label-subissues:
     runs-on: ubuntu-latest
     steps:
-      - name: Label all sub-issues from Project v2 with their parent
+      - name: Label all tracked sub-issues from Project v2 parents
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.LABEL_TOKEN }}
@@ -39,13 +39,13 @@ jobs:
             });
             const projectId = projectData.user.projectV2.id;
 
-            // === Step 2: Get all items in the project ===
-            const items = [];
+            // === Step 2: Fetch all items with trackedItems ===
+            const parentItems = [];
             let endCursor = null;
             let hasNextPage = true;
 
             while (hasNextPage) {
-              const itemsQuery = `
+              const query = `
                 query($id: ID!, $after: String) {
                   node(id: $id) {
                     ... on ProjectV2 {
@@ -55,7 +55,6 @@ jobs:
                           endCursor
                         }
                         nodes {
-                          id
                           content {
                             ... on Issue {
                               number
@@ -66,12 +65,16 @@ jobs:
                               }
                             }
                           }
-                          trackedByItems(first: 1) {
+                          trackedItems(first: 10) {
                             nodes {
                               content {
                                 ... on Issue {
                                   number
                                   title
+                                  repository {
+                                    name
+                                    owner { login }
+                                  }
                                 }
                               }
                             }
@@ -80,54 +83,63 @@ jobs:
                       }
                     }
                   }
-                }
-              `;
-              const res = await github.graphql(itemsQuery, {
+                }`;
+
+              const res = await github.graphql(query, {
                 id: projectId,
                 after: endCursor,
               });
 
-              const page = res.node.items;
-              items.push(...page.nodes);
-              hasNextPage = page.pageInfo.hasNextPage;
-              endCursor = page.pageInfo.endCursor;
+              const items = res.node.items.nodes;
+              for (const item of items) {
+                if (item.trackedItems?.nodes?.length) {
+                  parentItems.push(item);
+                }
+              }
+
+              hasNextPage = res.node.items.pageInfo.hasNextPage;
+              endCursor = res.node.items.pageInfo.endCursor;
             }
 
-            // === Step 3: Label each sub-issue ===
-            for (const item of items) {
-              const issue = item.content;
-              const parentNode = item.trackedByItems?.nodes?.[0]?.content;
+            // === Step 3: Label sub-issues ===
+            for (const parentItem of parentItems) {
+              const parent = parentItem.content;
+              const subIssues = parentItem.trackedItems.nodes;
 
-              if (!issue || !parentNode) continue; // Skip if not an issue or not a sub-issue
+              if (!parent || !subIssues.length) continue;
 
-              const issueOwner = issue.repository.owner.login;
-              const issueRepo = issue.repository.name;
-
-              let labelName = `Parent: ${parentNode.title}`;
+              let labelName = `Parent: ${parent.title}`;
               if (labelName.length > 50) {
-                labelName = `Parent #${parentNode.number}`;
+                labelName = `Parent #${parent.number}`;
               }
 
-              console.log(`🏷️ Will label issue #${issue.number} in ${issueRepo} with '${labelName}'`);
+              for (const sub of subIssues) {
+                const subIssue = sub.content;
+                if (!subIssue) continue;
 
-              try {
-                await github.rest.issues.getLabel({ owner: issueOwner, repo: issueRepo, name: labelName });
-              } catch {
-                console.log(`➕ Creating label '${labelName}'`);
-                await github.rest.issues.createLabel({
-                  owner: issueOwner,
-                  repo: issueRepo,
-                  name: labelName,
-                  color: 'cfd3d7',
+                const subOwner = subIssue.repository.owner.login;
+                const subRepo = subIssue.repository.name;
+
+                console.log(`🏷️ Labeling issue #${subIssue.number} with '${labelName}'`);
+
+                try {
+                  await github.rest.issues.getLabel({ owner: subOwner, repo: subRepo, name: labelName });
+                } catch {
+                  await github.rest.issues.createLabel({
+                    owner: subOwner,
+                    repo: subRepo,
+                    name: labelName,
+                    color: 'cfd3d7',
+                  });
+                }
+
+                await github.rest.issues.addLabels({
+                  owner: subOwner,
+                  repo: subRepo,
+                  issue_number: subIssue.number,
+                  labels: [labelName],
                 });
+
+                console.log(`✅ Labeled issue #${subIssue.number}`);
               }
-
-              await github.rest.issues.addLabels({
-                owner: issueOwner,
-                repo: issueRepo,
-                issue_number: issue.number,
-                labels: [labelName],
-              });
-
-              console.log(`✅ Labeled issue #${issue.number} with '${labelName}'`);
             }
