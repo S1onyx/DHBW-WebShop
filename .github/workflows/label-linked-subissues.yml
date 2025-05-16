@@ -15,7 +15,7 @@ jobs:
       - name: Label linked sub-issues with parent issue number
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.LABEL_TOKEN }}  # <- Verwendet den PAT des Owners
+          github-token: ${{ secrets.LABEL_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
 
@@ -27,6 +27,8 @@ jobs:
             });
 
             for (const issue of issues) {
+              if (issue.pull_request) continue; // Skip PRs
+
               const query = `
                 query($owner:String!, $repo:String!, $issue:Int!) {
                   repository(owner:$owner, name:$repo) {
@@ -46,11 +48,17 @@ jobs:
                   }
                 }`;
 
-              const result = await github.graphql(query, {
-                owner,
-                repo,
-                issue: issue.number,
-              });
+              let result;
+              try {
+                result = await github.graphql(query, {
+                  owner,
+                  repo,
+                  issue: issue.number,
+                });
+              } catch (err) {
+                console.warn(`⚠️ Skipping issue #${issue.number}: ${err.message}`);
+                continue;
+              }
 
               const connections = result.repository.issue.timelineItems.nodes;
 
