@@ -3,7 +3,9 @@ const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
 const deleteProduct = require('../apis/products/deleteProduct');
 
+const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
+const postUser = require('../apis/users/postUser');
 
 module.exports = (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -25,6 +27,10 @@ module.exports = (req, res) => {
         const id = url.pathname.split('/').pop();
         getUserById(req, res, id);
 
+    }else if (url.pathname === '/api/users' && req.method === 'GET') {
+        getAllUsers(req, res);
+    } else if (url.pathname === '/api/users' && req.method === 'POST') {
+        postUser(req, res);
     } else {
         res.writeHead(404, {'Content-Type': 'application/json'});
         res.end(JSON.stringify({message: 'Route not found'}));
