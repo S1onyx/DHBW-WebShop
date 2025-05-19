@@ -53,11 +53,11 @@ CREATE TABLE IF NOT EXISTS roles (
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
-INSERT INTO roles (name)
+INSERT INTO roles (id, name)
 VALUES
-  ('Admin'),
-  ('Seller'),
-  ('Customer')
+  (1, 'Admin'),
+  (2, 'Seller'),
+  (3, 'Customer')
 ON CONFLICT (name) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS users (
