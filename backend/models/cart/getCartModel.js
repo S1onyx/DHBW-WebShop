@@ -10,8 +10,6 @@ async function getCartModel(cartId) {
     [cartId]
   );
 
-  if (cartItemsQuery.rows.length === 0) return null;
-
   // Abfrage, um die Cart-Details abzurufen
   const cartDetailsQuery = await db.query(
     `SELECT c.id, u.first_name || ' ' || u.last_name AS customer_name
@@ -21,8 +19,10 @@ async function getCartModel(cartId) {
     [cartId]
   );
 
+  //Prüfe, ob cart existiert
   if (cartDetailsQuery.rows.length === 0) return null;
 
+  //Gibt die cart und cart item details aus
   return {
     cartDetails: cartDetailsQuery.rows[0],
     items: cartItemsQuery.rows,

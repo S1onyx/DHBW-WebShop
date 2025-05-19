@@ -24,15 +24,15 @@ module.exports = (req, res) => {
     getUserById(req, res, id);
 
   // Cart APIs
-  } else if (url.pathname.match(/^\/api\/cart\/(\d+)$/) && req.method === 'GET') {
+  } else if (url.pathname.match(/^\/api\/carts\/(\d+)$/) && req.method === 'GET') {
     const cartId = url.pathname.split('/').pop();
     getCart(req, res, cartId);
-  } else if (url.pathname.match(/^\/api\/cart\/items\/(\d+)$/) && req.method === 'POST') {
+  } else if (url.pathname.match(/^\/api\/carts\/items\/(\d+)$/) && req.method === 'POST') {
     const cartId = url.pathname.split('/').pop();
     const productId = url.searchParams.get('productId');
     const quantity = url.searchParams.get('quantity');
     postCartItem(req, res, cartId, productId, quantity);
-  } else if (url.pathname.match(/^\/api\/cart\/(\d+)$/) && req.method === 'POST') {
+  } else if (url.pathname.match(/^\/api\/carts\/post\/(\d+)$/) && req.method === 'POST') {
     const userId = url.pathname.split('/').pop();
     postCart(req, res, userId);
 
