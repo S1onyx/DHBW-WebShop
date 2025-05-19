@@ -1,6 +1,7 @@
 const db = require('../../db/database');
 
 async function getCartModel(cartId) {
+    
   // Abfrage, um die Cart-Items abzurufen
   const cartItemsQuery = await db.query(
     `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity

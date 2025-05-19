@@ -2,6 +2,16 @@ const db = require('../../db/database');
 
 async function postCartModel(userId) {
   try {
+
+    const userExistsQuery = await db.query(
+      `SELECT id FROM users WHERE id = $1`,
+      [userId]
+    );
+
+    if (userExistsQuery.rows.length === 0) {
+      return null; // Benutzer existiert nicht
+    }
+
     // Überprüfen, ob bereits ein Warenkorb für den Benutzer existiert
     const existingCartQuery = await db.query(
       `SELECT id FROM carts WHERE customer_id = $1`,
