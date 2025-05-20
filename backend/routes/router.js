@@ -2,6 +2,8 @@
 const withAuth = require('../middleware/withAuth');
 const requireRole = require('../middleware/requireRole');
 const requireOwnership = require('../middleware/requireOwnership');
+const requireValidatedUser = require('../middleware/requireValidatedUser');
+const { or, and } = require('../middleware/combine');
 
 const login = require('../apis/auth/login');
 const logout = require('../apis/auth/logout');
@@ -45,12 +47,19 @@ const routes = [
     method: 'PUT',
     path: /^\/api\/products\/(\d+)$/,
     handler: withAuth(
-      requireOwnership(async (req) => {
-        const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-        return result.rows[0]?.seller_id ?? null;
-      })(
-        (req, res) => putProduct(req, res, req.params[0])
-      )
+      or(
+        and(
+        requireRole(1),
+        requireValidatedUser
+        ),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => putProduct(req, res, req.params[0]))
     )
   },
 
@@ -58,12 +67,19 @@ const routes = [
     method: 'DELETE',
     path: /^\/api\/products\/(\d+)$/,
     handler: withAuth(
-      requireOwnership(async (req) => {
-        const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-        return result.rows[0]?.seller_id ?? null;
-      })(
-        (req, res) => deleteProduct(req, res, new URLSearchParams(`id=${req.params[0]}`))
+      or(
+        and(
+        requireRole(1),
+        requireValidatedUser
+        ),
+        and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.seller_id ?? null;
+        }),
+        requireValidatedUser
       )
+      )((req, res) => deleteProduct(req, res, new URLSearchParams(`id=${req.params[0]}`)))
     )
   },
 
@@ -71,9 +87,10 @@ const routes = [
     method: 'GET',
     path: /^\/api\/users\/(\d+)$/,
     handler: withAuth(
-      requireOwnership(async (req) => parseInt(req.params[0], 10))(
-        (req, res) => getUserById(req, res, req.params[0])
-      )
+      or(
+        requireRole(1),
+        requireOwnership((req) => parseInt(req.params[0], 10))
+      )((req, res) => getUserById(req, res, req.params[0]))
     )
   }
 ];
