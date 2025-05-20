@@ -1,6 +1,8 @@
 // backend/routes/router.js
 const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
+const putProduct = require('../apis/products/putProduct');
+const deleteProduct = require('../apis/products/deleteProduct');
 
 const getUserById = require('../apis/users/getUserById');
 
@@ -20,12 +22,16 @@ module.exports = (req, res) => {
   } else if (url.pathname.match(/^\/api\/products\/(\d+)$/) && req.method === 'GET') {
     const id = url.pathname.split('/').pop();
     getProductById(req, res, id);
-
+  } else if (url.pathname.match(/^\/api\/products\/(\d+)$/) && req.method === 'PUT') {
+    const id = url.pathname.split('/').pop();
+    putProduct(req, res, id);
+  } else if (url.pathname.match(/^\/api\/products\/(\d+)$/) && req.method === 'DELETE') {
+    const id = url.pathname.split('/').pop();
+    deleteProduct(req, res, new URLSearchParams(`id=${id}`));
   // User APIs
   } else if (url.pathname.match(/^\/api\/users\/(\d+)$/) && req.method === 'GET') {
     const id = url.pathname.split('/').pop();
     getUserById(req, res, id);
-
   // Cart APIs
   } else if (url.pathname.match(/^\/api\/carts\/(\d+)$/) && req.method === 'GET') {
     const cartId = url.pathname.split('/').pop();
@@ -50,8 +56,10 @@ module.exports = (req, res) => {
     const productId = url.searchParams.get('productId');
     const quantity = url.searchParams.get('quantity');
     putQuantity(req, res, cartId, productId, quantity);
+  // Route not found
   } else {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Route not found' }));
+    res.writeHead(404, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify({message: 'Route not found'}));
   }
 };
+
