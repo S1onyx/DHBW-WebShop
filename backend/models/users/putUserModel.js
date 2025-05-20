@@ -13,7 +13,7 @@ async function putUserModel(id, user) {
             city = $8,
             country = $9
         WHERE id = $10
-        RETURNING *;
+            RETURNING *;
     `;
 
     const values = [
@@ -32,3 +32,5 @@ async function putUserModel(id, user) {
     const result = await db.query(query, values);
     return result.rows[0];
 }
+
+module.exports = putUserModel;
