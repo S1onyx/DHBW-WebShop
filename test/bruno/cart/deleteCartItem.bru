@@ -1,0 +1,15 @@
+meta {
+  name: deleteCartItem
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/carts/items/76?productId=5
+  body: none
+  auth: inherit
+}
+
+params:query {
+  productId: 5
+}
