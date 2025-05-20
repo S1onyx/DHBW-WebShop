@@ -10,7 +10,7 @@ async function postUser(req, res) {
             'password_hash', 'street', 'house_number', 'postal_code',
             'city', 'country'
         ];
-        //role_id, status_id is not required for the user creation, it will be set to 3 by default
+        //role_id, status_id is not required for the user creation, it will be set to the corresponding id by default (see wiki)
         const missingFields = requiredFields.filter(f => !data[f]);
         if (missingFields.length > 0) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
