@@ -1,9 +1,21 @@
+// backend/apis/auth/resendVerification.js
 const db = require('../../db/database');
 const crypto = require('crypto');
 
 async function resendVerification(req, res) {
   let body = '';
-  req.on('data', chunk => (body += chunk));
+  let bodySize = 0;
+  const MAX_BODY_SIZE = 1e6;
+
+  req.on('data', chunk => {
+    bodySize += chunk.length;
+    if (bodySize > MAX_BODY_SIZE) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Payload too large', code: 413 }));
+    }
+    body += chunk;
+  });
+
   req.on('end', async () => {
     if (!body) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -25,7 +37,10 @@ async function resendVerification(req, res) {
     }
 
     try {
-      const userResult = await db.query(`SELECT id, status_id, verification_token FROM users WHERE email = $1`, [email]);
+      const userResult = await db.query(
+        `SELECT id, status_id, verification_token FROM users WHERE email = $1`,
+        [email]
+      );
 
       if (userResult.rowCount === 0) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -51,7 +66,10 @@ async function resendVerification(req, res) {
         data: { token: newToken }
       }));
     } catch (err) {
-      console.error('[RESEND VERIFICATION ERROR]', err);
+      console.error('[RESEND VERIFICATION ERROR]', {
+        email,
+        error: err
+      });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during resend', code: 500 }));
     }

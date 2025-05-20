@@ -1,10 +1,22 @@
+// backend/apis/auth/login.js
 const getUserByLogin = require('../../models/users/getUserByLogin');
 const bcrypt = require('bcrypt');
 const { signAccessToken } = require('../../utils/auth');
 
 async function login(req, res) {
   let body = '';
-  req.on('data', chunk => (body += chunk));
+  let bodySize = 0;
+  const MAX_BODY_SIZE = 1e6; // 1 MB
+
+  req.on('data', chunk => {
+    bodySize += chunk.length;
+    if (bodySize > MAX_BODY_SIZE) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Payload too large', code: 413 }));
+    }
+    body += chunk;
+  });
+
   req.on('end', async () => {
     if (!body) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -23,7 +35,11 @@ async function login(req, res) {
 
     if (!password || (!email && !username)) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Username or email and password are required', code: 400 }));
+      return res.end(JSON.stringify({
+        success: false,
+        error: 'Username or email and password are required',
+        code: 400
+      }));
     }
 
     try {
@@ -60,11 +76,15 @@ async function login(req, res) {
         data: {
           id: user.id,
           username: user.username,
-          role: user.role
+          role_id: user.role_id
         }
       }));
     } catch (err) {
-      console.error('[LOGIN ERROR]', err);
+      console.error('[LOGIN ERROR]', {
+        url: req.url,
+        ip: req.socket.remoteAddress,
+        error: err
+      });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during login', code: 500 }));
     }

@@ -1,14 +1,12 @@
+// backend/middleware/requireRole.js
 const db = require('../db/database');
 
 function requireRole(...allowedRoles) {
   return function (handler) {
     return async (req, res) => {
       if (!req.user) {
-        if (res.end.name === 'bound end') {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          return res.end(JSON.stringify({ error: 'Authentication required' }));
-        }
-        return;
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: false, error: 'Authentication required', code: 401 }));
       }
 
       try {
@@ -18,28 +16,22 @@ function requireRole(...allowedRoles) {
         );
 
         if (result.rowCount === 0) {
-          if (res.end.name === 'bound end') {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ error: 'User not found' }));
-          }
-          return;
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ success: false, error: 'User not found', code: 404 }));
         }
 
         const roleId = result.rows[0].role_id;
 
         if (!allowedRoles.includes(roleId)) {
-          if (res.end.name === 'bound end') {
-            res.writeHead(403, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ error: 'Insufficient permissions' }));
-          }
-          return;
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify({ success: false, error: 'Insufficient permissions', code: 403 }));
         }
 
         return handler(req, res);
       } catch (err) {
-        console.error('[requireRole ERROR]', err);
+        console.error('[REQUIRE ROLE ERROR]', { userId: req.user?.userId, error: err });
         res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Server error during role check' }));
+        res.end(JSON.stringify({ success: false, error: 'Server error during role check', code: 500 }));
       }
     };
   };

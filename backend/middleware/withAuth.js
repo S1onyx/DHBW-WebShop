@@ -1,3 +1,4 @@
+// backend/middleware/withAuth.js
 const { verifyAccessToken } = require('../utils/auth');
 
 function withAuth(handler) {
@@ -8,13 +9,13 @@ function withAuth(handler) {
 
     if (!token) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ error: 'Authentication required' }));
+      return res.end(JSON.stringify({ success: false, error: 'Authentication required', code: 401 }));
     }
 
     const payload = verifyAccessToken(token);
     if (!payload) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ error: 'Invalid or expired token' }));
+      return res.end(JSON.stringify({ success: false, error: 'Invalid or expired token', code: 401 }));
     }
 
     req.user = {

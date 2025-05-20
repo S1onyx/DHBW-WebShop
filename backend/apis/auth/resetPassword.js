@@ -1,3 +1,4 @@
+// backend/apis/auth/resetPassword.js
 const db = require('../../db/database');
 const bcrypt = require('bcrypt');
 
@@ -11,7 +12,18 @@ async function resetPassword(req, res) {
   }
 
   let body = '';
-  req.on('data', chunk => (body += chunk));
+  let bodySize = 0;
+  const MAX_BODY_SIZE = 1e6;
+
+  req.on('data', chunk => {
+    bodySize += chunk.length;
+    if (bodySize > MAX_BODY_SIZE) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Payload too large', code: 413 }));
+    }
+    body += chunk;
+  });
+
   req.on('end', async () => {
     if (!body) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -61,7 +73,10 @@ async function resetPassword(req, res) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, message: 'Password reset successful' }));
     } catch (err) {
-      console.error('[RESET ERROR]', err);
+      console.error('[RESET ERROR]', {
+        token,
+        error: err
+      });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during password reset', code: 500 }));
     }

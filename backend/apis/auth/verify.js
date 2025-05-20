@@ -1,3 +1,4 @@
+// backend/apis/auth/verify.js
 const db = require('../../db/database');
 
 async function verify(req, res) {
@@ -26,7 +27,10 @@ async function verify(req, res) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: true, message: 'Account verified successfully' }));
   } catch (err) {
-    console.error('[VERIFY ERROR]', err);
+    console.error('[VERIFY ERROR]', {
+      token,
+      error: err
+    });
     res.writeHead(500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ success: false, error: 'Server error during verification', code: 500 }));
   }

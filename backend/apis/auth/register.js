@@ -1,3 +1,4 @@
+// backend/apis/auth/register.js
 const db = require('../../db/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -15,7 +16,18 @@ function isSecurePassword(password) {
 
 async function register(req, res) {
   let body = '';
-  req.on('data', chunk => (body += chunk));
+  let bodySize = 0;
+  const MAX_BODY_SIZE = 1e6;
+
+  req.on('data', chunk => {
+    bodySize += chunk.length;
+    if (bodySize > MAX_BODY_SIZE) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Payload too large', code: 413 }));
+    }
+    body += chunk;
+  });
+
   req.on('end', async () => {
     if (!body) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -56,10 +68,10 @@ async function register(req, res) {
       }));
     }
 
-    const hash = await bcrypt.hash(password, 10);
-    const token = crypto.randomBytes(32).toString('hex');
-
     try {
+      const hash = await bcrypt.hash(password, 10);
+      const token = crypto.randomBytes(32).toString('hex');
+
       const result = await db.query(`
         INSERT INTO users (
           first_name, last_name, username, email, password_hash, role_id, status_id,
@@ -82,7 +94,10 @@ async function register(req, res) {
         data: { verificationToken: token }
       }));
     } catch (err) {
-      console.error('[REGISTER ERROR]', err);
+      console.error('[REGISTER ERROR]', {
+        input: { username, email },
+        error: err
+      });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Registration failed', code: 500 }));
     }

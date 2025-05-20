@@ -49,8 +49,8 @@ const routes = [
     handler: withAuth(
       or(
         and(
-        requireRole(1),
-        requireValidatedUser
+          requireRole(1),
+          requireValidatedUser
         ),
         and(
           requireOwnership(async (req) => {
@@ -69,16 +69,16 @@ const routes = [
     handler: withAuth(
       or(
         and(
-        requireRole(1),
-        requireValidatedUser
+          requireRole(1),
+          requireValidatedUser
         ),
         and(
-        requireOwnership(async (req) => {
-          const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
-        }),
-        requireValidatedUser
-      )
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
       )((req, res) => deleteProduct(req, res, new URLSearchParams(`id=${req.params[0]}`)))
     )
   },
@@ -93,8 +93,8 @@ const routes = [
           requireValidatedUser
         ),
         and(
-        requireOwnership((req) => parseInt(req.params[0], 10)),
-        requireValidatedUser
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
         )
       )((req, res) => getUserById(req, res, req.params[0]))
     )
@@ -111,9 +111,19 @@ module.exports = async function router(req, res) {
     const match = url.pathname.match(route.path);
     if (!match) continue;
     req.params = match.slice(1);
-    return route.handler(req, res, req.params, req.query);
+    try {
+      return await route.handler(req, res, req.params, req.query);
+    } catch (err) {
+      console.error('[ROUTER ERROR]', {
+        method: req.method,
+        url: req.url,
+        error: err
+      });
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, error: 'Internal server error', code: 500 }));
+    }
   }
 
   res.writeHead(404, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify({ error: 'Route nicht gefunden' }));
+  res.end(JSON.stringify({ success: false, error: 'Route nicht gefunden', code: 404 }));
 };
