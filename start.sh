@@ -19,6 +19,16 @@ for arg in "$@"; do
   esac
 done
 
+# === Cleanup bei Ctrl+C ===
+cleanup() {
+  echo ""
+  echo "⏹️  Stoppe und lösche Container..."
+  docker compose down --remove-orphans
+  exit 0
+}
+trap cleanup SIGINT SIGTERM
+
+# === DEV-MODUS ===
 if $DEV_MODE; then
   echo "Starte im DEV-Modus (lokal mit Vite und Nodemon, DB in Docker)"
 
@@ -36,20 +46,20 @@ if $DEV_MODE; then
   (cd backend && npm install)
   (cd frontend && npm install)
 
-  npx concurrently \
+  npx concurrently --kill-others-on-fail --names "backend,frontend" \
     "cd backend && npx nodemon app.js" \
     "cd frontend && npx vite"
 
-  exit 0
+  cleanup
 fi
 
-# Standard-Flow (kein DEV-Modus)
+# === STANDARD-MODUS ===
 if $RESET_DB; then
   echo "WARNUNG: Die Datenbank wird vollständig zurückgesetzt!"
   echo "Stoppe und lösche Container & Volumes..."
   docker compose down -v --remove-orphans
 else
-  echo "Starte Webshop ohne Zurücksetzen der Datenbank..."
+  echo "Stoppe alte Container (ohne Volumes zu löschen)..."
   docker compose down --remove-orphans
 fi
 
@@ -59,5 +69,12 @@ docker rmi webshop_backend webshop_frontend 2>/dev/null || true
 echo "Baue Container mit --no-cache..."
 docker compose build --no-cache
 
-echo "Starte Container..."
-docker compose up
+echo "🚀 Starte Webshop (Container im Vordergrund)..."
+docker compose up &
+COMPOSE_PID=$!
+
+# Warte auf Beenden oder Ctrl+C
+wait $COMPOSE_PID
+
+# Fallback, falls `wait` sauber endet
+cleanup
