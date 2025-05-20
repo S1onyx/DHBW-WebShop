@@ -12,6 +12,10 @@ async function postCartItemModel(cartId, productId, quantity) {
       throw new Error('Cart not found');
     }
 
+    if (quantity < 0) {
+      throw new Error('Quantity must be positive');
+    }
+
     // Überprüfen, ob das Produkt existiert
     const productExistsQuery = await db.query(
       `SELECT id FROM products WHERE id = $1`,

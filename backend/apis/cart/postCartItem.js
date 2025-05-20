@@ -7,7 +7,7 @@ async function postCartItem(req, res, cartId, productId, quantity) {
     res.writeHead(201, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Item added to cart successfully', itemId: result.itemId, newQuantity: result.newQuantity }));
   } catch (err) {
-    if (err.message === 'Cart not found' || err.message === 'Product not found') {
+    if (err.message === 'Cart not found' || err.message === 'Product not found' || err.message === 'Quantity must be positive') {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: err.message }));
     } else {
