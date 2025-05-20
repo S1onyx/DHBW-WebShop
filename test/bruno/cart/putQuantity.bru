@@ -1,0 +1,16 @@
+meta {
+  name: putQuantity
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/carts/items/97?productId=1&quantity=200
+  body: none
+  auth: inherit
+}
+
+params:query {
+  productId: 1
+  quantity: 200
+}

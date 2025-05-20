@@ -9,6 +9,7 @@ const postCartItem = require('../apis/cart/postCartItem');
 const getCart = require('../apis/cart/getCart');
 const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
+const putQuantity = require('../apis/cart/putQuantity');
 
 module.exports = (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -34,7 +35,7 @@ module.exports = (req, res) => {
     const productId = url.searchParams.get('productId');
     const quantity = url.searchParams.get('quantity');
     postCartItem(req, res, cartId, productId, quantity);
-  } else if (url.pathname.match(/^\/api\/carts\/post\/(\d+)$/) && req.method === 'POST') {
+  } else if (url.pathname.match(/^\/api\/carts\/(\d+)$/) && req.method === 'POST') {
     const userId = url.pathname.split('/').pop();
     postCart(req, res, userId);
   } else if (url.pathname.match(/^\/api\/carts\/items\/(\d+)$/) && req.method === 'DELETE') {
@@ -44,6 +45,11 @@ module.exports = (req, res) => {
   } else if (url.pathname.match(/^\/api\/carts\/(\d+)$/) && req.method === 'DELETE'){
     const cartId = url.pathname.split('/').pop();
     deleteCart(req, res, cartId);
+  } else if (url.pathname.match(/^\/api\/carts\/items\/(\d+)$/) && req.method === 'PUT') {
+    const cartId = url.pathname.split('/').pop();
+    const productId = url.searchParams.get('productId');
+    const quantity = url.searchParams.get('quantity');
+    putQuantity(req, res, cartId, productId, quantity);
   } else {
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Route not found' }));
