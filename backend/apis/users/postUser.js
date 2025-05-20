@@ -7,10 +7,10 @@ async function postUser(req, res) {
 
         const requiredFields = [
             'first_name', 'last_name', 'username', 'email',
-            'password_hash', 'role_id', 'status_id',
-            'street', 'house_number', 'postal_code', 'city', 'country'
+            'password_hash', 'street', 'house_number', 'postal_code',
+            'city', 'country'
         ];
-
+        //role_id, status_id is not required for the user creation, it will be set to 3 by default
         const missingFields = requiredFields.filter(f => !data[f]);
         if (missingFields.length > 0) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -25,6 +25,8 @@ async function postUser(req, res) {
         res.end(JSON.stringify({ createdId: newUser.id }));
 
     } catch (err) {
+        console.error(err);
+
         if (err.code === '23505') {
             if (err.constraint === 'users_username_key') {
                 res.writeHead(409, { 'Content-Type': 'application/json' });

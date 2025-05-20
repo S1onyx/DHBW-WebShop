@@ -6,6 +6,22 @@ meta {
 
 post {
   url: http://localhost:3000/api/users
-  body: none
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "first_name": "Max",
+    "last_name": "Mustermann",
+    "username": "maxi122",
+    "email": "max@example.com",
+    "password_hash": "hashed_pw_123",
+    "street": "Hauptstraße",
+    "house_number": "12A",
+    "postal_code": "12345",
+    "city": "Berlin",
+    "country": "Germany"
+  }
+  
 }

@@ -4,10 +4,10 @@ async function postUserModel(user) {
     const result = await db.query(
         `INSERT INTO users (
             first_name, last_name, username, email,
-            password_hash, role_id, status_id,         
+            password_hash,
             street, house_number, postal_code, city, country
         )
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
              RETURNING id`,
         [
             user.first_name,
@@ -15,8 +15,6 @@ async function postUserModel(user) {
             user.username,
             user.email,
             user.password_hash,
-            user.role_id,
-            user.status_id,
             user.street,
             user.house_number,
             user.postal_code,
@@ -27,3 +25,5 @@ async function postUserModel(user) {
 
     return result.rows[0];
 }
+
+module.exports = postUserModel;

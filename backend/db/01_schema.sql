@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    role_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    role_id INT NOT NULL DEFAULT 3 REFERENCES roles(id) ON DELETE CASCADE,
     status_id INT NOT NULL REFERENCES user_status(id) DEFAULT 2,
     street VARCHAR(100) NOT NULL,
     house_number VARCHAR(10) NOT NULL,
