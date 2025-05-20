@@ -88,8 +88,14 @@ const routes = [
     path: /^\/api\/users\/(\d+)$/,
     handler: withAuth(
       or(
-        requireRole(1),
-        requireOwnership((req) => parseInt(req.params[0], 10))
+        and(
+          requireRole(1),
+          requireValidatedUser
+        ),
+        and(
+        requireOwnership((req) => parseInt(req.params[0], 10)),
+        requireValidatedUser
+        )
       )((req, res) => getUserById(req, res, req.params[0]))
     )
   }
