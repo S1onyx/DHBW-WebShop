@@ -27,6 +27,18 @@ VALUES
   ('Customer')
 ON CONFLICT (name) DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS user_status (
+    id SERIAL PRIMARY KEY,
+    status VARCHAR(50) NOT NULL UNIQUE CHECK (
+        status IN ('validated', 'notValidated')
+    )
+);
+
+INSERT INTO user_status (status) VALUES
+    ('validated'),
+    ('notValidated')
+ON CONFLICT (status) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
@@ -35,6 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     role_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    status_id INT NOT NULL REFERENCES user_status(id) DEFAULT 2,
     street VARCHAR(100) NOT NULL,
     house_number VARCHAR(10) NOT NULL,
     postal_code VARCHAR(10) NOT NULL,

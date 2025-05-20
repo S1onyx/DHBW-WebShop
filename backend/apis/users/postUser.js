@@ -7,8 +7,8 @@ async function postUser(req, res) {
 
         const requiredFields = [
             'first_name', 'last_name', 'username', 'email',
-            'password_hash', 'role_id', 'street', 'house_number',
-            'postal_code', 'city', 'country'
+            'password_hash', 'role_id', 'status_id',
+            'street', 'house_number', 'postal_code', 'city', 'country'
         ];
 
         const missingFields = requiredFields.filter(f => !data[f]);
