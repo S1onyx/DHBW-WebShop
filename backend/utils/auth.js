@@ -10,7 +10,6 @@ const JWT_ACCESS_EXPIRATION = parseInt(process.env.JWT_ACCESS_EXPIRATION) || 60;
 function signAccessToken(user) {
   const payload = {
     userId: user.id,
-    roleId: user.role_id, // falls benötigt
   };
 
   return jwt.sign(payload, JWT_SECRET, {
