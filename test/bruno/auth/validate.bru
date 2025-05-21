@@ -1,0 +1,15 @@
+meta {
+  name: validate
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/api/auth/verify?token=513f6f2c84343c08e3c2ef3531e608422ffc5f003cf76d60ee4262e95cab67e2
+  body: none
+  auth: inherit
+}
+
+params:query {
+  token: 513f6f2c84343c08e3c2ef3531e608422ffc5f003cf76d60ee4262e95cab67e2
+}

@@ -1,26 +1,41 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mein Webshop</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <title>Webshop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link rel="stylesheet" href="./css/header-footer.css" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon">
 </head>
 <body>
 
-  <div id="header"></div>
+<header>
+  <img class="logo" src="./images/svg/logo-no-background.svg" height="200" width="200" alt="">
+  <ul class="nav">
+    <li class="navlink"><a href="/">Home</a></li>
+    <li class="navlink"><a href="#">About</a></li>
+    <li class="navlink"><a href="#">Contact</a></li>
+    <li class="navlink"><a href="/login" class="myButton" data-link>Login</a></li>
+  </ul>
+  <div class="burger">
+    <i class="fas fa-bars"></i>
+  </div>
+</header>
+<div class="search-box-outer">
+  <div class="search-box">
+    <input type="text" class="input-search" placeholder="Type to Search...">
+    <button class="btn-search"><i class="fas fa-search"></i></button>
+  </div>
+</div>
 
-  <main>
-    <section>
-      <h2>Unsere Produkte</h2>
-      <ul id="product-list" class="product-list">
-        <li>Produkte werden geladen...</li>
-      </ul>
-    </section>
-  </main>
+<div id="app"></div>
 
-  <div id="footer"></div>
+<footer>
+  <p>&copy; 2025 Unser Webshop</p>
+</footer>
 
-  <script src="js/main.js"></script>
+<script type="module" src="./js/main.js"></script>
+<script type="module" src="./js/header-footer.js"></script>
 </body>
 </html>
