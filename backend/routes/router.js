@@ -18,7 +18,11 @@ const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 
+const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
+const putUser = require('../apis/users/putUser');
+const putUserAdmin = require('../apis/users/putUserAdmin');
+const deleteUser = require('../apis/users/deleteUser');
 
 const db = require('../db/database');
 
@@ -48,10 +52,7 @@ const routes = [
     path: /^\/api\/products\/(\d+)$/,
     handler: withAuth(
       or(
-        and(
-          requireRole(1),
-          requireValidatedUser
-        ),
+        and(requireRole(1), requireValidatedUser),
         and(
           requireOwnership(async (req) => {
             const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
@@ -68,10 +69,7 @@ const routes = [
     path: /^\/api\/products\/(\d+)$/,
     handler: withAuth(
       or(
-        and(
-          requireRole(1),
-          requireValidatedUser
-        ),
+        and(requireRole(1), requireValidatedUser),
         and(
           requireOwnership(async (req) => {
             const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
@@ -88,15 +86,60 @@ const routes = [
     path: /^\/api\/users\/(\d+)$/,
     handler: withAuth(
       or(
-        and(
-          requireRole(1),
-          requireValidatedUser
-        ),
+        and(requireRole(1), requireValidatedUser),
         and(
           requireOwnership((req) => parseInt(req.params[0], 10)),
           requireValidatedUser
         )
       )((req, res) => getUserById(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'PUT',
+    path: /^\/api\/users\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
+        )
+      )((req, res) => putUser(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'PUT',
+    path: /^\/api\/admin\/users\/(\d+)$/,
+    handler: withAuth(
+      and(requireRole(1), requireValidatedUser)(
+        (req, res) => putUserAdmin(req, res, req.params[0])
+      )
+    )
+  },
+
+  {
+    method: 'DELETE',
+    path: /^\/api\/users\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
+        )
+      )((req, res) => deleteUser(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'GET',
+    path: /^\/api\/users$/,
+    handler: withAuth(
+      and(requireRole(1), requireValidatedUser)(
+        getAllUsers
+      )
     )
   }
 ];

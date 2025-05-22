@@ -1,0 +1,23 @@
+meta {
+  name: putUser
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/users/151
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "first_name": "Max",
+    "last_name": "Mustermann",
+    "street": "Beispielstraße",
+    "house_number": "5A",
+    "postal_code": "70173",
+    "city": "Stuttgart",
+    "country": "Deutschland"
+  }
+}

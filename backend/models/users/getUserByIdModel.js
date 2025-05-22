@@ -2,16 +2,16 @@ const db = require('../../db/database');
 
 async function getUserByIdModel(id) {
   const result = await db.query(
-    `SELECT 
-        u.first_name, 
-        u.last_name, 
-        u.username, 
-        u.email, 
-        u.street, 
-        u.house_number, 
-        u.postal_code, 
-        u.city, 
-        u.country, 
+    `SELECT
+        u.first_name,
+        u.last_name,
+        u.username,
+        u.email,
+        u.street,
+        u.house_number,
+        u.postal_code,
+        u.city,
+        u.country,
         r.name AS role,
         s.name AS status
      FROM users u
