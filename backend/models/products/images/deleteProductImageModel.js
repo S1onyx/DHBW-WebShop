@@ -37,7 +37,7 @@ async function deleteProductImageModel(imageId) {
       }
     }
 
-    const filePath = path.join(__dirname, '../../', url);
+    const filePath = path.join(__dirname, '../../../', url);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }

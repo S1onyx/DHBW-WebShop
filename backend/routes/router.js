@@ -18,9 +18,9 @@ const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 
-const postProductImage = require('../apis/products/postProductImage');
-const putProductImage = require('../apis/products/putProductImage');
-const deleteProductImage = require('../apis/products/deleteProductImage');
+const postProductImage = require('../apis/products/images/postProductImage');
+const putProductImage = require('../apis/products/images/putProductImage');
+const deleteProductImage = require('../apis/products/images/deleteProductImage');
 
 const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
