@@ -1,4 +1,4 @@
-const db = require('../../db/database');
+const db = require('../../../db/database');
 
 async function postProductImageModel(productId, file, altText, isPrimary) {
   const client = await db.pool.connect();

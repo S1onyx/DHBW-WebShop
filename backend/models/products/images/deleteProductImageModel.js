@@ -1,5 +1,5 @@
 // backend/models/products/deleteProductImageModel.js
-const db = require('../../db/database');
+const db = require('../../../db/database');
 const fs = require('fs');
 const path = require('path');
 

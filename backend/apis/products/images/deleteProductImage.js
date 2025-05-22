@@ -1,4 +1,4 @@
-const deleteProductImageModel = require('../../models/products/deleteProductImageModel');
+const deleteProductImageModel = require('../../../models/products/images/deleteProductImageModel');
 
 async function deleteProductImage(req, res, imageId) {
   try {
