@@ -6,7 +6,7 @@ INSERT INTO products (seller_id, name, description, category_id, price, stock, c
 (27, 'PixelNFT #5', 'Suffer star once anything choose general. Personal follow situation over would.', 9, 252.19, 1, CURRENT_TIMESTAMP),
 (97, 'PixelNFT #6', 'Section could nature interest wear. Morning as police often. Place myself his itself find add sing.', 14, 443.43, 3, CURRENT_TIMESTAMP),
 (1, 'PixelNFT #7', 'Guess we no in pass sound. Tonight gun word citizen create. Physical market room eat through ever.', 8, 681.92, 1, CURRENT_TIMESTAMP),
-(86, 'PixelNFT #8', 'Action economy several hit simple personal home.
+(86, 'PixelNFT #8', 'Action economy several hit simple personal home.html.
 Let stop camera report foreign agency list miss.', 14, 509.58, 5, CURRENT_TIMESTAMP),
 (40, 'PixelNFT #9', 'Likely fire subject west agent hotel by. Image central challenge term memory.', 7, 837.99, 1, CURRENT_TIMESTAMP),
 (23, 'PixelNFT #10', 'Particularly speech mission remember tree care sign. Myself star gas spend.', 3, 561.48, 1, CURRENT_TIMESTAMP),
@@ -75,7 +75,7 @@ Let stop camera report foreign agency list miss.', 14, 509.58, 5, CURRENT_TIMEST
 (22, 'PixelNFT #73', 'Simply wait similar blood really child lead.', 1, 341.54, 6, CURRENT_TIMESTAMP),
 (27, 'PixelNFT #74', 'Knowledge her ten structure foot question.', 1, 526.06, 5, CURRENT_TIMESTAMP),
 (97, 'PixelNFT #75', 'Five modern there resource box during.', 13, 157.59, 7, CURRENT_TIMESTAMP),
-(86, 'PixelNFT #76', 'Form nor affect some various watch choice cause. Cost home hard general nor administration open.', 5, 718.7, 8, CURRENT_TIMESTAMP),
+(86, 'PixelNFT #76', 'Form nor affect some various watch choice cause. Cost home.html hard general nor administration open.', 5, 718.7, 8, CURRENT_TIMESTAMP),
 (3, 'PixelNFT #77', 'Guess what edge change structure. Outside voice measure under. Old nice per pattern group life.', 13, 86.47, 1, CURRENT_TIMESTAMP),
 (3, 'PixelNFT #78', 'Test direction call adult toward small finish. Meet despite nothing agreement receive even.', 4, 132.23, 5, CURRENT_TIMESTAMP),
 (1, 'PixelNFT #79', 'Everything war he including. Require night personal sure whether visit.', 13, 844.27, 6, CURRENT_TIMESTAMP),
@@ -203,7 +203,7 @@ Doctor would natural laugh all. Onto would behind may.', 8, 933.37, 1, CURRENT_T
 (45, 'PixelNFT #195', 'Audience should oil.', 10, 455.69, 5, CURRENT_TIMESTAMP),
 (75, 'PixelNFT #196', 'List during draw.', 4, 338.52, 1, CURRENT_TIMESTAMP),
 (2, 'PixelNFT #197', 'Nearly born herself how interest oil. First himself idea behind.', 1, 164.53, 1, CURRENT_TIMESTAMP),
-(24, 'PixelNFT #198', 'Him window very daughter. Save home sure child player.
+(24, 'PixelNFT #198', 'Him window very daughter. Save home.html sure child player.
 Dark audience far life.', 11, 9.12, 2, CURRENT_TIMESTAMP),
 (45, 'PixelNFT #199', 'Quickly involve year already partner. Finally wear each five idea authority position.', 11, 223.72, 10, CURRENT_TIMESTAMP),
 (44, 'PixelNFT #200', 'Or activity agent matter mother seem. Woman and society traditional suggest event organization.', 9, 921.55, 1, CURRENT_TIMESTAMP);
