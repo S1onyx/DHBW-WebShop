@@ -1,0 +1,18 @@
+meta {
+  name: putProductImage
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:3000/api/products/images/606
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "alt_text": "Neuer Alt-Text",
+    "is_primary": true
+  }
+}

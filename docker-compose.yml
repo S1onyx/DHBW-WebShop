@@ -28,6 +28,8 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/webshop
       PORT: 3000
+      JWT_ACCESS_SECRET: mySuperSecretAccessKey
+      JWT_ACCESS_EXPIRATION: 60
     depends_on:
       - db
     networks:

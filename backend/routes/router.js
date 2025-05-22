@@ -18,6 +18,10 @@ const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 
+const postProductImage = require('../apis/products/postProductImage');
+const putProductImage = require('../apis/products/putProductImage');
+const deleteProductImage = require('../apis/products/deleteProductImage');
+
 const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
@@ -141,7 +145,57 @@ const routes = [
         getAllUsers
       )
     )
-  }
+  },
+  {
+  method: 'POST',
+  path: /^\/api\/products\/(\d+)\/images$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.seller_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )((req, res) => postProductImage(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/products\/images\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+          return result.rows[0]?.seller_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )((req, res) => putProductImage(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/products\/images\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+          return result.rows[0]?.seller_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )((req, res) => deleteProductImage(req, res, req.params[0]))
+  )
+}
 ];
 
 module.exports = async function router(req, res) {
