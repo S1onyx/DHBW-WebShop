@@ -1,7 +1,7 @@
-// backend/models/users/putUserModel.js
+// backend/models/users/putUserAdminModel.js
 const db = require('../../db/database');
 
-async function putUserModel(id, updates) {
+async function putUserAdminModel(id, updates) {
   const fields = Object.keys(updates);
   const values = Object.values(updates);
 
@@ -18,4 +18,4 @@ async function putUserModel(id, updates) {
   return result.rowCount > 0;
 }
 
-module.exports = putUserModel;
+module.exports = putUserAdminModel;

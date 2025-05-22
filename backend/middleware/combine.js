@@ -1,3 +1,4 @@
+// backend/middleware/combine.js
 function interceptRes(res) {
   const noop = () => {};
   return {
@@ -26,7 +27,11 @@ function or(...middlewares) {
     }
 
     res.writeHead(403, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Access denied (or)' }));
+    res.end(JSON.stringify({
+      success: false,
+      error: 'Access denied (or)',
+      code: 403
+    }));
   };
 }
 

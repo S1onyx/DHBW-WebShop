@@ -21,6 +21,7 @@ const deleteProduct = require('../apis/products/deleteProduct');
 const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
+const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
 const db = require('../db/database');
@@ -105,6 +106,16 @@ const routes = [
           requireValidatedUser
         )
       )((req, res) => putUser(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'PUT',
+    path: /^\/api\/admin\/users\/(\d+)$/,
+    handler: withAuth(
+      and(requireRole(1), requireValidatedUser)(
+        (req, res) => putUserAdmin(req, res, req.params[0])
+      )
     )
   },
 

@@ -1,7 +1,8 @@
-// backend/apis/users/putUser.js
-const putUserModel = require('../../models/users/putUserModel');
+// backend/apis/users/putUserAdmin.js
+const putUserAdminModel = require('../../models/users/putUserAdminModel');
+const bcrypt = require('bcrypt');
 
-async function putUser(req, res, id) {
+async function putUserAdmin(req, res, id) {
   let body = '';
   let bodySize = 0;
   const MAX_BODY_SIZE = 1e6;
@@ -29,17 +30,23 @@ async function putUser(req, res, id) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid JSON format', code: 400 }));
     }
 
-    const allowedFields = ['first_name', 'last_name', 'street', 'house_number', 'postal_code', 'city', 'country'];
+    if (data.password) {
+      try {
+        data.password_hash = await bcrypt.hash(data.password, 10);
+        delete data.password;
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: false, error: 'Password hashing failed', code: 500 }));
+      }
+    }
+
+    const forbiddenFields = ['verification_token', 'reset_token', 'reset_expires', 'created_at'];
     const updates = {};
     const ignoredFields = [];
 
     for (const [key, value] of Object.entries(data)) {
-      if (allowedFields.includes(key)) {
-        if (typeof value !== 'string' || value.trim() === '') {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          return res.end(JSON.stringify({ success: false, error: `Invalid value for '${key}'`, code: 400 }));
-        }
-        updates[key] = value.trim();
+      if (!forbiddenFields.includes(key)) {
+        updates[key] = value;
       } else {
         ignoredFields.push(key);
       }
@@ -47,11 +54,11 @@ async function putUser(req, res, id) {
 
     if (Object.keys(updates).length === 0) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'No valid fields provided for update', code: 400, ignoredFields }));
+      return res.end(JSON.stringify({ success: false, error: 'No valid fields provided', code: 400, ignoredFields }));
     }
 
     try {
-      const success = await putUserModel(id, updates);
+      const success = await putUserAdminModel(id, updates);
       if (!success) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ success: false, error: 'User not found', code: 404 }));
@@ -60,11 +67,11 @@ async function putUser(req, res, id) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify({ success: true, message: 'User updated', updatedFields: Object.keys(updates), ignoredFields }));
     } catch (err) {
-      console.error('[PUT USER ERROR]', { id, error: err });
+      console.error('[PUT USER ADMIN ERROR]', { id, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify({ success: false, error: 'Server error', code: 500 }));
     }
   });
 }
 
-module.exports = putUser;
+module.exports = putUserAdmin;
