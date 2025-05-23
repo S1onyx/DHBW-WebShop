@@ -28,6 +28,11 @@ const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
+const getReviews = require('../apis/reviews/getReviews');
+const postReview = require('../apis/reviews/postReview');
+const putReview = require('../apis/reviews/putReview');
+const deleteReview = require('../apis/reviews/deleteReview');
+
 const db = require('../db/database');
 
 const routes = [
@@ -146,54 +151,110 @@ const routes = [
       )
     )
   },
-  {
-  method: 'POST',
-  path: /^\/api\/products\/(\d+)\/images$/,
-  handler: withAuth(
-    or(
-      and(requireRole(1), requireValidatedUser),
-      and(
-        requireOwnership(async (req) => {
-          const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
-        }),
-        requireValidatedUser
-      )
-    )((req, res) => postProductImage(req, res, req.params[0]))
-  )
-},
 
-{
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/images$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => postProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'PUT',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => putProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'DELETE',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => deleteProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'GET',
+    path: /^\/api\/products\/(\d+)\/reviews$/,
+    handler: (req, res) => getReviews(req, res, req.params[0])
+  },
+
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/reviews$/,
+    handler: withAuth(
+      requireValidatedUser((req, res) => postReview(req, res, req.params[0]))
+    )
+  },
+
+  {
   method: 'PUT',
-  path: /^\/api\/products\/images\/(\d+)$/,
+  path: /^\/api\/reviews\/(\d+)$/,
   handler: withAuth(
     or(
       and(requireRole(1), requireValidatedUser),
       and(
         requireOwnership(async (req) => {
-          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
+          const result = await db.query('SELECT customer_id FROM reviews WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.customer_id ?? null;
         }),
         requireValidatedUser
       )
-    )((req, res) => putProductImage(req, res, req.params[0]))
+    )((req, res) => putReview(req, res, req.params[0]))
   )
 },
 
 {
   method: 'DELETE',
-  path: /^\/api\/products\/images\/(\d+)$/,
+  path: /^\/api\/reviews\/(\d+)$/,
   handler: withAuth(
     or(
       and(requireRole(1), requireValidatedUser),
       and(
         requireOwnership(async (req) => {
-          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+          const result = await db.query('SELECT customer_id FROM reviews WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.customer_id ?? null;
+        }),
+        requireValidatedUser
+      ),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT p.seller_id FROM reviews r JOIN products p ON p.id = r.product_id WHERE r.id = $1', [req.params[0]]);
           return result.rows[0]?.seller_id ?? null;
         }),
         requireValidatedUser
       )
-    )((req, res) => deleteProductImage(req, res, req.params[0]))
+    )((req, res) => deleteReview(req, res, req.params[0]))
   )
 }
 ];
