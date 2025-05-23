@@ -17,6 +17,7 @@ const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
+const postProduct = require('../apis/products/postProduct')
 
 const postProductImage = require('../apis/products/postProductImage');
 const putProductImage = require('../apis/products/putProductImage');
@@ -82,6 +83,17 @@ const routes = [
           requireValidatedUser
         )
       )((req, res) => deleteProduct(req, res, new URLSearchParams(`id=${req.params[0]}`)))
+    )
+  },
+
+  {
+    method: 'POST',
+    path: /^\/api\/products$/,
+    handler: withAuth(
+      and(
+        requireRole(1, 2),
+        requireValidatedUser
+       )(require('../apis/products/postProduct'))
     )
   },
 
