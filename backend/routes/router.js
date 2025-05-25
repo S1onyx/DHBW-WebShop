@@ -3,6 +3,7 @@ const withAuth = require('../middleware/withAuth');
 const requireRole = require('../middleware/requireRole');
 const requireOwnership = require('../middleware/requireOwnership');
 const requireValidatedUser = require('../middleware/requireValidatedUser');
+const requireInvolvedSeller = require('../middleware/requireInvolvedSeller');
 const { or, and } = require('../middleware/combine');
 
 const login = require('../apis/auth/login');
@@ -27,6 +28,10 @@ const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
+
+const getOrders = require('../apis/orders/getOrders');
+const postOrder = require('../apis/orders/postOrder');
+const putOrder = require('../apis/orders/putOrder');
 
 const db = require('../db/database');
 
@@ -194,6 +199,37 @@ const routes = [
         requireValidatedUser
       )
     )((req, res) => deleteProductImage(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'GET',
+  path: /^\/api\/orders$/,
+  handler: withAuth(
+    and(requireValidatedUser)(
+      (req, res) => getOrders(req, res)
+    )
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/orders$/,
+  handler: withAuth(
+    and(requireValidatedUser, requireRole(3))(
+      postOrder
+    )
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/orders\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(requireRole(2), requireInvolvedSeller(), requireValidatedUser)
+    )((req, res) => putOrder(req, res, req.params[0]))
   )
 }
 ];
