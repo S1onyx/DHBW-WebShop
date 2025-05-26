@@ -59,8 +59,26 @@ services:
     networks:
       - webshop-net
 
+  mailpit:
+    image: axllent/mailpit
+    container_name: webshop_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - webshop-net
+
 volumes:
   db_data:
+  mailpit_data:
 
 networks:
   webshop-net:

@@ -30,6 +30,7 @@ trap cleanup SIGINT SIGTERM
 
 # === DEV-MODUS ===
 if $DEV_MODE; then
+  export NODE_ENV=development
   echo "Starte im DEV-Modus (lokal mit Vite und Nodemon, DB in Docker)"
 
   if $RESET_DB; then
@@ -39,8 +40,8 @@ if $DEV_MODE; then
     docker compose down --remove-orphans
   fi
 
-  echo "[DEV] Starte Datenbank über Docker..."
-  docker compose up -d db
+  echo "[DEV] Starte Infrastruktur über Docker..."
+  docker compose up -d db mailpit
 
   echo "[DEV] Starte lokale Entwicklung..."
   (cd backend && npm install)
