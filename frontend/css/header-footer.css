@@ -2,30 +2,28 @@ header {
     height: 3.5rem;
     display: flex;
     align-items: center;
-    justify-content: space-around;
     background: #232323;
     color: #ccc;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
 }
 
 .logo {
     letter-spacing: 3px;
 }
 
-.nav {
-    display: flex;
-    justify-content: space-around;
-    width: 30%;
-}
-
-.navlink {
-    list-style: none;
-    margin: 0;
-}
-
-.navlink a {
-    color: #ccc;
+header a {
+    color: #ffffff;
     text-decoration: none;
-    font-size: 1.2em;
+    font-size: 2em;
 }
 
 .burger {
@@ -33,25 +31,6 @@ header {
     display: none;
 }
 
-.myButton {
-    box-shadow: 0px 0px 4px 1px #cf866c;
-    background-color:#d0451b;
-    border-radius: 1.5rem;
-    border:1px solid #942911;
-    cursor:pointer;
-    color:#ffffff;
-    font-size:1.2em;
-    padding:1vh 1.5vw;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #854629;
-}
-.myButton:hover {
-    background-color:#bc3315;
-}
-.myButton:active {
-    position:relative;
-    top:1px;
-}
 
 @media screen and (max-width: 678px) {
     .burger {
@@ -79,62 +58,74 @@ header {
     }
 }
 
-.search-box-outer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.search-box {
+.search-input-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
-    background: #232323;
-    border-radius: 2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    padding: 0.3rem .4rem;
-    transition: box-shadow 0.2s;
-}
-
-.search-box:focus-within {
-    box-shadow: 0 4px 24px rgba(255,0,56,0.15);
+    width: 30rem;
 }
 
 .input-search {
-    width: 12rem;
-    height: 2.2rem;
+    width: 100%;
+    height: 2.7rem;
     border: none;
     outline: none;
-    background: transparent;
     color: #fff;
     font-size: 1.1em;
-    padding: 0 0.5rem;
-    border-radius: 2rem;
-    transition: width 0.4s cubic-bezier(0, 0.110, 0.35, 2), background 0.2s;
+    padding: 0 2.5rem 0 0.5rem; /* rechts Platz für das Icon */
+    background: #efefef;
+    border-radius: 0.5rem;
 }
 
-.input-search:focus {
-    width: 18rem;
-    background: #2d2d2d;
+.search-icon {
+    position: absolute;
+    right: 1rem;
+    color: #403d3d;
+    font-size: 1.5em;
+    pointer-events: none;
 }
 
-.btn-search {
-    background: #ff0038;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 2.2rem;
-    height: 2.2rem;
+/* FILTERS */
+
+.filters-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s;
+    width: 100%;
+    background-color: #CEF4FF;
+    height: 3rem
 }
 
-.btn-search:hover {
-    background: #e60032;
+.filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+}
+
+.filters .filters-selector {
+    border: none;
+    outline: none;
+    color: #000000;
+    background-color: transparent;
+    font-size: 1.2em;
+    height: 3rem;
+    padding: 0.5rem 0.5rem;
+    text-align: center;
+}
+
+.filters .filters-selector.active {
+    color: #ffffff;
+    background-color: #001D4A;
+}
+
+.filters .filters-select {
+    color: #ffffff;
+    background-color: #0077B6;
+    text-decoration: none;
+    font-size: 1.4rem;
+    border: none;
 }
 
 @media screen and (max-width: 678px) {
@@ -144,8 +135,50 @@ header {
     .input-search:focus {
         width: 90vw;
     }
-    .search-box {
-        width: 95vw;
-        padding: 0.3rem 0.5rem;
-    }
+}
+
+
+
+/* DROPDOWN */
+.custom-select {
+    position: relative;
+    font-family: sans-serif;
+    user-select: none;
+}
+
+.selected {
+    background-color: #232323;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #343434;
+    border-radius: 5px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    z-index: 100;
+}
+
+.option {
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ccc;
+}
+
+.option:hover {
+    background-color: #555;
 }

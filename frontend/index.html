@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Webshop</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="./css/header-footer.css" />
   <link rel="stylesheet" href="./css/styles.css" />
   <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon">
@@ -11,22 +11,90 @@
 <body>
 
 <header>
-  <img class="logo" src="./images/svg/logo-no-background.svg" height="200" width="200" alt="">
-  <ul class="nav">
-    <li class="navlink"><a href="/">Home</a></li>
-    <li class="navlink"><a href="#">About</a></li>
-    <li class="navlink"><a href="#">Contact</a></li>
-    <li class="navlink"><a href="/login" class="myButton" data-link>Login</a></li>
-  </ul>
-  <div class="burger">
-    <i class="fas fa-bars"></i>
-  </div>
+  <nav class="navbar">
+    <a href="/"> <img class="logo" src="./images/svg/logo-no-background.svg" height="200" width="200" alt=""> </a>
+
+    <div class="search-input-wrapper">
+      <input type="text" class="input-search" placeholder="Was suchen Sie?" id="search-input">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    </div>
+
+    <div class="custom-select" id="selector">
+      <div class="selected">
+        <img class="flag" src="https://flagcdn.com/de.svg" alt="DE" width="45">
+      </div>
+      <div class="options">
+        <div class="option" data-value="DE">
+          <img class="flag" src="https://flagcdn.com/de.svg" alt="DE" width="45">
+        </div>
+        <div class="option" data-value="EN">
+          <img class="flag" src="https://flagcdn.com/gb.svg" alt="EN" width="45">
+        </div>
+        <div class="option" data-value="FR">
+          <img class="flag" src="https://flagcdn.com/fr.svg" alt="FR" width="45">
+        </div>
+      </div>
+    </div>
+
+    <a href="./html/login.html" class="user-link">
+      <i class="fas fa-user"></i>
+    </a>
+
+    <a href="./html/cart.html" class="cart-link">
+      <i class="fa-solid fa-cart-shopping"></i>
+    </a>
+
+    <a href="./html/wishlist.html" class="wishlist-link">
+      <i class="fas fa-heart"></i>
+    </a>
+
+    <a href="./html/wishlist.html" class="wishlist-link">
+      <i class="fas fa-clock-rotate-left"></i>
+    </a>
+
+  </nav>
 </header>
-<div class="search-box-outer">
-  <div class="search-box">
-    <input type="text" class="input-search" placeholder="Type to Search...">
-    <button class="btn-search"><i class="fas fa-search"></i></button>
+<div class="filters-wrapper">
+  <div class="filters">
+
+    <select name="Gaming" id="Gmaing" class="filters-selector active">
+      <option value="Gaming" class="filters-select">Gaming</option>
+      <option value="Retro Games" class="filters-select">Retro Games</option>
+      <option value="RPG Icons" class="filters-select">RPG Icons</option>
+      <option value="Game Characters" class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Nature" id="Nature" class="filters-selector">
+      <option value="Nature" class="filters-select">Nature</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Fantasy" id="Fantasy" class="filters-selector">
+      <option value="Fantasy"  class="filters-select">Fantasy</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Urban" id="Urban" class="filters-selector">
+      <option value="Urban"  class="filters-select">Urban</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Animals" id="Animals" class="filters-selector">
+      <option value="Animals">Animals</option>
+      <option value="Retro Games">Retro Games</option>
+      <option value="RPG Icons">RPG Icons</option>
+      <option value="Game Characters">Game Characters</option>
+    </select>
+
   </div>
+</div>
+
 </div>
 
 <div id="app"></div>
