@@ -126,38 +126,28 @@ const routes = [
   },
   {
     method: 'POST',
-    path: /^\/api\/carts\/items\/(\d+)$/,
-    handler: withAuth(requireValidatedUser((req, res) => {
-      const cartId = req.params[0];
-      const productId = req.query.get('productId');
-      const quantity = req.query.get('quantity');
-      return postCartItem(req, res, cartId, productId, quantity);
-    }))
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)
+      ((req, res) => postCartItem(req, res))
+    )
   },
   {
     method: 'DELETE',
-    path: /^\/api\/carts\/items\/(\d+)$/,
-    handler: withAuth(requireValidatedUser((req, res) => {
-      const cartId = req.params[0];
-      const productId = req.query.get('productId');
-      return deleteCartItem(req, res, cartId, productId);
-    }))
-  },
-  {
-    method: 'DELETE',
-    path: /^\/api\/carts\/(\d+)$/,
-    handler: withAuth(requireValidatedUser((req, res) => deleteCart(req, res, req.params[0])))
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)
+      ((req, res) => deleteCartItem(req, res))
+    )
   },
   {
     method: 'PUT',
-    path: /^\/api\/carts\/items\/(\d+)$/,
-    handler: withAuth(requireValidatedUser((req, res) => {
-      const cartId = req.params[0];
-      const productId = req.query.get('productId');
-      const quantity = req.query.get('quantity');
-      return putQuantity(req, res, cartId, productId, quantity);
-    }))
-  }
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)
+      ((req, res) => putQuantity(req, res))
+    )
+  },
 ];
 
 module.exports = async function router(req, res) {

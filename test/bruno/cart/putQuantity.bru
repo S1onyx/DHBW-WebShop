@@ -5,12 +5,14 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/carts/items/97?productId=1&quantity=200
-  body: none
+  url: http://localhost:3000/api/carts/items
+  body: json
   auth: inherit
 }
 
-params:query {
-  productId: 1
-  quantity: 200
+body:json {
+  { 
+    "itemId": 124, 
+    "quantity": 10
+  }
 }

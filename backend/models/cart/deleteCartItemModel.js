@@ -1,38 +1,26 @@
 const db = require('../../db/database');
 
-async function deleteCartItemModel(cartId, productId) {
-  try {
-    // Prüfen, ob der Warenkorb existiert
-    const cartExistsQuery = await db.query(
-      `SELECT id FROM carts WHERE id = $1`,
-      [cartId]
-    );
+async function deleteCartItemModel(itemId, userId) {
+  // Prüfen, ob das Item zum Warenkorb des Users gehört
+  const itemQuery = await db.query(
+    `SELECT ci.id
+     FROM cart_items ci
+     JOIN carts c ON ci.cart_id = c.id
+     WHERE ci.id = $1 AND c.customer_id = $2`,
+    [itemId, userId]
+  );
 
-    if (cartExistsQuery.rows.length === 0) {
-      throw new Error('Cart not found');
-    }
-
-    // Prüfen, ob das Item im Warenkorb existiert
-    const itemQuery = await db.query(
-      `SELECT id FROM cart_items WHERE cart_id = $1 AND product_id = $2`,
-      [cartId, productId]
-    );
-
-    if (itemQuery.rows.length === 0) {
-      throw new Error('Cart item not found');
-    }
-
-    // Löschen des Items
-    await db.query(
-      `DELETE FROM cart_items WHERE cart_id = $1 AND product_id = $2`,
-      [cartId, productId]
-    );
-
-    return { deleted: true };
-  } catch (err) {
-    console.error('Error deleting cart item:', err);
-    throw err;
+  if (itemQuery.rows.length === 0) {
+    throw new Error('Cart item not found');
   }
+
+  // Item löschen
+  await db.query(
+    `DELETE FROM cart_items WHERE id = $1`,
+    [itemId]
+  );
+
+  return { deletedItemId: itemId };
 }
 
 module.exports = deleteCartItemModel;
