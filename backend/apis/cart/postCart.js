@@ -1,8 +1,8 @@
 const postCartModel = require('../../models/cart/postCartModel');
 
-async function postCart(req, res, userId) {
+async function postCart(req, res) {
   try {
-    const result = await postCartModel(userId);
+    const result = await postCartModel(req.user.userId);
 
     if (!result) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -17,6 +17,7 @@ async function postCart(req, res, userId) {
     res.writeHead(201, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Cart created successfully', cartId: result.cartId }));
   } catch (err) {
+    console.error('PostCart Error:', err);
     res.writeHead(500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Server error' }));
   }

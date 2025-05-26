@@ -102,21 +102,27 @@ const routes = [
   // Cart Routes
   {
     method: 'GET',
-    path: /^\/api\/carts\/(\d+)$/,
+    path: /^\/api\/carts$/,
     handler: withAuth(
-      and(
-          requireOwnership(async (req) => {
-            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-            return result.rows[0]?.seller_id ?? null;
-          }),
-          requireValidatedUser // edit sql!!!!!!!!!
-        )
-      ((req, res) => getCart(req, res, req.params[0])))
+        and(requireRole(3), requireValidatedUser)
+        ((req, res) => getCart(req, res))
+    )
   },
   {
     method: 'POST',
-    path: /^\/api\/carts\/(\d+)$/,
-    handler: withAuth(requireValidatedUser((req, res) => postCart(req, res, req.params[0])))
+    path: /^\/api\/carts$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)
+      ((req, res) => postCart(req, res))
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/carts$/,
+    handler: withAuth(
+        and(requireRole(3), requireValidatedUser)
+        ((req, res) => deleteCart(req, res))
+    )
   },
   {
     method: 'POST',

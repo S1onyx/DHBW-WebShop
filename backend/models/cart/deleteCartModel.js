@@ -1,29 +1,24 @@
-// models/cart/deleteCartModel.js
 const db = require('../../db/database');
 
-async function deleteCartModel(cartId) {
+async function deleteCartModel(userId) {
   try {
-    // Prüfen, ob der Warenkorb existiert
-    const cartExistsQuery = await db.query(
-      `SELECT id FROM carts WHERE id = $1`,
-      [cartId]
+    // Hole die cartId zu diesem Benutzer
+    const cartQuery = await db.query(
+      `SELECT id FROM carts WHERE customer_id = $1`,
+      [userId]
     );
 
-    if (cartExistsQuery.rows.length === 0) {
+    if (cartQuery.rows.length === 0) {
       throw new Error('Cart not found');
     }
 
-    // Zuerst alle zugehörigen cart_items löschen (wegen FK constraints)
-    await db.query(
-      `DELETE FROM cart_items WHERE cart_id = $1`,
-      [cartId]
-    );
+    const cartId = cartQuery.rows[0].id;
 
-    // Dann den Warenkorb selbst löschen
-    await db.query(
-      `DELETE FROM carts WHERE id = $1`,
-      [cartId]
-    );
+    // Cart-Items löschen (FK constraints!)
+    await db.query(`DELETE FROM cart_items WHERE cart_id = $1`, [cartId]);
+
+    // Cart löschen
+    await db.query(`DELETE FROM carts WHERE id = $1`, [cartId]);
 
     return { deleted: true };
   } catch (err) {

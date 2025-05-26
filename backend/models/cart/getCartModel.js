@@ -1,17 +1,17 @@
 const db = require('../../db/database');
 
-async function getCartModel(cartId) {
-    
-  // Abfrage, um die Cart-Items abzurufen
-  const cartItemsQuery = await db.query(
-    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
-     FROM cart_items ci
-     JOIN products p ON ci.product_id = p.id
-     WHERE ci.cart_id = $1`,
-    [cartId]
+async function getCartModel(userId) {
+  // Hole cartId des Users
+  const cartIdResult = await db.query(
+    `SELECT id FROM carts WHERE customer_id = $1`,
+    [userId]
   );
 
-  // Abfrage, um die Cart-Details abzurufen
+  if (cartIdResult.rows.length === 0) return null;
+
+  const cartId = cartIdResult.rows[0].id;
+
+  // Hole cartDetails
   const cartDetailsQuery = await db.query(
     `SELECT c.id, u.first_name || ' ' || u.last_name AS customer_name
      FROM carts c
@@ -20,10 +20,17 @@ async function getCartModel(cartId) {
     [cartId]
   );
 
-  //Prüfe, ob cart existiert
+  // Hole cartItems
+  const cartItemsQuery = await db.query(
+    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
+     FROM cart_items ci
+     JOIN products p ON ci.product_id = p.id
+     WHERE ci.cart_id = $1`,
+    [cartId]
+  );
+
   if (cartDetailsQuery.rows.length === 0) return null;
 
-  //Gibt die cart und cart item details aus
   return {
     cartDetails: cartDetailsQuery.rows[0],
     items: cartItemsQuery.rows,

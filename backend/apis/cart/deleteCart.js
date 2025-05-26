@@ -1,9 +1,10 @@
-// controllers/cart/deleteCart.js
 const deleteCartModel = require('../../models/cart/deleteCartModel');
 
-async function deleteCart(req, res, cartId) {
+async function deleteCart(req, res) {
   try {
-    const result = await deleteCartModel(cartId);
+    const userId = req.user.userId;
+
+    const result = await deleteCartModel(userId);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Cart deleted successfully' }));
