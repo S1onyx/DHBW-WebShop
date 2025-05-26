@@ -31,14 +31,24 @@ async function putProduct(req, res, id) {
 
     const allowedFields = ['name', 'description', 'price', 'stock'];
     const updates = {};
+    const ignoredFields = [];
 
-    for (const key of allowedFields) {
-      if (data[key] !== undefined) updates[key] = data[key];
+    for (const [key, value] of Object.entries(data)) {
+      if (allowedFields.includes(key)) {
+        updates[key] = value;
+      } else {
+        ignoredFields.push(key);
+      }
     }
 
     if (Object.keys(updates).length === 0) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'No valid fields provided for update', code: 400 }));
+      return res.end(JSON.stringify({
+        success: false,
+        error: 'No valid fields provided for update',
+        ignoredFields,
+        code: 400
+      }));
     }
 
     if (updates.price !== undefined && updates.price < 0) {
@@ -60,7 +70,14 @@ async function putProduct(req, res, id) {
       }
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: true, message: 'Product updated successfully' }));
+      res.end(JSON.stringify({
+        success: true,
+        message: ignoredFields.length > 0
+          ? 'Product partially updated. Some fields were ignored.'
+          : 'Product updated successfully.',
+        updatedFields: Object.keys(updates),
+        ignoredFields
+      }));
     } catch (err) {
       console.error('[PUT PRODUCT ERROR]', { id, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });

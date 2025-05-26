@@ -1,4 +1,3 @@
-// backend/routes/router.js
 const withAuth = require('../middleware/withAuth');
 const requireRole = require('../middleware/requireRole');
 const requireOwnership = require('../middleware/requireOwnership');
@@ -21,9 +20,16 @@ const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
+const postProductImage = require('../apis/products/postProductImage');
+const putProductImage = require('../apis/products/putProductImage');
+const deleteProductImage = require('../apis/products/deleteProductImage');
 
 // User APIs
+const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
+const putUser = require('../apis/users/putUser');
+const putUserAdmin = require('../apis/users/putUserAdmin');
+const deleteUser = require('../apis/users/deleteUser');
 
 // Cart APIs
 const postCart = require('../apis/cart/postCart');
@@ -87,15 +93,112 @@ const routes = [
     )
   },
 
-  // User Route
+  // Product Image Routes
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/images$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => postProductImage(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => putProductImage(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => deleteProductImage(req, res, req.params[0]))
+    )
+  },
+
+  // User Routes
   {
     method: 'GET',
     path: /^\/api\/users\/(\d+)$/,
     handler: withAuth(
       or(
         and(requireRole(1), requireValidatedUser),
-        and(requireOwnership((req) => parseInt(req.params[0], 10)), requireValidatedUser)
+        and(
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
+        )
       )((req, res) => getUserById(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/users\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
+        )
+      )((req, res) => putUser(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/admin\/users\/(\d+)$/,
+    handler: withAuth(
+      and(requireRole(1), requireValidatedUser)(
+        (req, res) => putUserAdmin(req, res, req.params[0])
+      )
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/users\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership((req) => parseInt(req.params[0], 10)),
+          requireValidatedUser
+        )
+      )((req, res) => deleteUser(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/users$/,
+    handler: withAuth(
+      and(requireRole(1), requireValidatedUser)(
+        getAllUsers
+      )
     )
   },
 
@@ -104,48 +207,54 @@ const routes = [
     method: 'GET',
     path: /^\/api\/carts$/,
     handler: withAuth(
-        and(requireRole(3), requireValidatedUser)
-        ((req, res) => getCart(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => getCart(req, res)
+      )
     )
   },
   {
     method: 'POST',
     path: /^\/api\/carts$/,
     handler: withAuth(
-      and(requireRole(3), requireValidatedUser)
-      ((req, res) => postCart(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => postCart(req, res)
+      )
     )
   },
   {
     method: 'DELETE',
     path: /^\/api\/carts$/,
     handler: withAuth(
-        and(requireRole(3), requireValidatedUser)
-        ((req, res) => deleteCart(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => deleteCart(req, res)
+      )
     )
   },
   {
     method: 'POST',
     path: /^\/api\/carts\/items$/,
     handler: withAuth(
-      and(requireRole(3), requireValidatedUser)
-      ((req, res) => postCartItem(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => postCartItem(req, res)
+      )
     )
   },
   {
     method: 'DELETE',
     path: /^\/api\/carts\/items$/,
     handler: withAuth(
-      and(requireRole(3), requireValidatedUser)
-      ((req, res) => deleteCartItem(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => deleteCartItem(req, res)
+      )
     )
   },
   {
     method: 'PUT',
     path: /^\/api\/carts\/items$/,
     handler: withAuth(
-      and(requireRole(3), requireValidatedUser)
-      ((req, res) => putQuantity(req, res))
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => putQuantity(req, res)
+      )
     )
   },
 ];
