@@ -1,6 +1,6 @@
-// backend/apis/auth/requestReset.js
 const db = require('../../db/database');
 const crypto = require('crypto');
+const sendMail = require('../../utils/mailer');
 
 async function requestReset(req, res) {
   let body = '';
@@ -61,19 +61,28 @@ async function requestReset(req, res) {
       );
 
       const link = `http://localhost:1337/reset.html?token=${token}`;
-      console.log(`[DEBUG] Reset-Link für ${email}: ${link}`);
+
+      await sendMail({
+        to: email,
+        subject: 'Passwort zurücksetzen',
+        html: `
+          <div style="font-family:sans-serif;text-align:center">
+            <h2>Passwort vergessen?</h2>
+            <p>Klicke auf den Button, um ein neues Passwort zu setzen:</p>
+            <a href="${link}" style="display:inline-block;margin-top:16px;padding:12px 24px;background-color:#f44336;color:white;text-decoration:none;border-radius:8px;font-size:16px">Passwort zurücksetzen</a>
+            <p style="margin-top:24px;font-size:12px;color:#666">Falls der Button nicht funktioniert, nutze diesen Link:<br>${link}</p>
+          </div>
+        `
+      });
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         success: true,
-        message: 'Reset link sent (simuliert)',
+        message: 'Reset link sent.',
         data: { token }
       }));
     } catch (err) {
-      console.error('[RESET REQUEST ERROR]', {
-        email,
-        error: err
-      });
+      console.error('[RESET REQUEST ERROR]', { email, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during reset request', code: 500 }));
     }

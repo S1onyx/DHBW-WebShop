@@ -1,6 +1,6 @@
-// backend/apis/auth/resendVerification.js
 const db = require('../../db/database');
 const crypto = require('crypto');
+const sendMail = require('../../utils/mailer');
 
 async function resendVerification(req, res) {
   let body = '';
@@ -38,7 +38,7 @@ async function resendVerification(req, res) {
 
     try {
       const userResult = await db.query(
-        `SELECT id, status_id, verification_token FROM users WHERE email = $1`,
+        `SELECT id, status_id FROM users WHERE email = $1`,
         [email]
       );
 
@@ -57,7 +57,19 @@ async function resendVerification(req, res) {
       await db.query(`UPDATE users SET verification_token = $1 WHERE id = $2`, [newToken, user.id]);
 
       const link = `http://localhost:1337/verify.html?token=${newToken}`;
-      console.log(`[DEBUG] Verifikationslink erneut gesendet: ${link}`);
+
+      await sendMail({
+        to: email,
+        subject: 'Bestätige erneut deine E-Mail-Adresse',
+        html: `
+          <div style="font-family:sans-serif;text-align:center">
+            <h2>Nochmal bestätigen?</h2>
+            <p>Klicke auf den Button, um deinen Account zu verifizieren:</p>
+            <a href="${link}" style="display:inline-block;margin-top:16px;padding:12px 24px;background-color:#007bff;color:white;text-decoration:none;border-radius:8px;font-size:16px">Jetzt bestätigen</a>
+            <p style="margin-top:24px;font-size:12px;color:#666">Falls der Button nicht funktioniert, nutze diesen Link:<br>${link}</p>
+          </div>
+        `
+      });
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify({
@@ -66,10 +78,7 @@ async function resendVerification(req, res) {
         data: { token: newToken }
       }));
     } catch (err) {
-      console.error('[RESEND VERIFICATION ERROR]', {
-        email,
-        error: err
-      });
+      console.error('[RESEND VERIFICATION ERROR]', { email, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during resend', code: 500 }));
     }
