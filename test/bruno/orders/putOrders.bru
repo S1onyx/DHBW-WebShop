@@ -1,0 +1,17 @@
+meta {
+  name: putOrders
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:3000/api/orders/1
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "status_id": 2
+  }
+}
