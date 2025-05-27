@@ -2,6 +2,7 @@ const withAuth = require('../middleware/withAuth');
 const requireRole = require('../middleware/requireRole');
 const requireOwnership = require('../middleware/requireOwnership');
 const requireValidatedUser = require('../middleware/requireValidatedUser');
+const requireInvolvedSeller = require('../middleware/requireInvolvedSeller');
 const { or, and } = require('../middleware/combine');
 
 const db = require('../db/database');
@@ -22,6 +23,7 @@ const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 const postProduct = require('../apis/products/postProduct')
 
+// ProductImage APIs
 const postProductImage = require('../apis/products/images/postProductImage');
 const putProductImage = require('../apis/products/images/putProductImage');
 const deleteProductImage = require('../apis/products/images/deleteProductImage');
@@ -33,6 +35,12 @@ const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
+// Order APIs
+const getOrders = require('../apis/orders/getOrders');
+const postOrder = require('../apis/orders/postOrder');
+const putOrder = require('../apis/orders/putOrder');
+
+// Review APIs
 const getReviews = require('../apis/reviews/getReviews');
 const postReview = require('../apis/reviews/postReview');
 const putReview = require('../apis/reviews/putReview');
@@ -45,6 +53,7 @@ const getCart = require('../apis/cart/getCart');
 const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
 const putQuantity = require('../apis/cart/putQuantity');
+
 
 const routes = [
   // Auth Routes
@@ -325,6 +334,38 @@ const routes = [
     )((req, res) => deleteReview(req, res, req.params[0]))
   )
 },
+
+{
+  method: 'GET',
+  path: /^\/api\/orders$/,
+  handler: withAuth(
+    and(requireValidatedUser)(
+      (req, res) => getOrders(req, res)
+    )
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/orders$/,
+  handler: withAuth(
+    and(requireValidatedUser, requireRole(3))(
+      postOrder
+    )
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/orders\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(requireRole(2), requireInvolvedSeller(), requireValidatedUser)
+    )((req, res) => putOrder(req, res, req.params[0]))
+  )
+},
+  
   // Cart Routes
   {
     method: 'GET',
