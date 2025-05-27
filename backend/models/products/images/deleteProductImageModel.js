@@ -1,5 +1,5 @@
 // backend/models/products/deleteProductImageModel.js
-const db = require('../../db/database');
+const db = require('../../../db/database');
 const fs = require('fs');
 const path = require('path');
 
@@ -37,7 +37,7 @@ async function deleteProductImageModel(imageId) {
       }
     }
 
-    const filePath = path.join(__dirname, '../../', url);
+    const filePath = path.join(__dirname, '../../../', url);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }

@@ -1,4 +1,4 @@
-const putProductImageModel = require('../../models/products/putProductImageModel');
+const putProductImageModel = require('../../../models/products/images/putProductImageModel');
 
 async function putProductImage(req, res, imageId) {
   let body = '';

@@ -22,9 +22,9 @@ const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 const postProduct = require('../apis/products/postProduct')
 
-const postProductImage = require('../apis/products/postProductImage');
-const putProductImage = require('../apis/products/putProductImage');
-const deleteProductImage = require('../apis/products/deleteProductImage');
+const postProductImage = require('../apis/products/images/postProductImage');
+const putProductImage = require('../apis/products/images/putProductImage');
+const deleteProductImage = require('../apis/products/images/deleteProductImage');
 
 // User APIs
 const getAllUsers = require('../apis/users/getAllUsers');
@@ -32,6 +32,11 @@ const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
+
+const getReviews = require('../apis/reviews/getReviews');
+const postReview = require('../apis/reviews/postReview');
+const putReview = require('../apis/reviews/putReview');
+const deleteReview = require('../apis/reviews/deleteReview');
 
 // Cart APIs
 const postCart = require('../apis/cart/postCart');
@@ -215,6 +220,111 @@ const routes = [
     )
   },
 
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/images$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => postProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'PUT',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => putProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'DELETE',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => deleteProductImage(req, res, req.params[0]))
+    )
+  },
+
+  {
+    method: 'GET',
+    path: /^\/api\/products\/(\d+)\/reviews$/,
+    handler: (req, res) => getReviews(req, res, req.params[0])
+  },
+
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/reviews$/,
+    handler: withAuth(
+      requireValidatedUser((req, res) => postReview(req, res, req.params[0]))
+    )
+  },
+
+  {
+  method: 'PUT',
+  path: /^\/api\/reviews\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT customer_id FROM reviews WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.customer_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )((req, res) => putReview(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/reviews\/(\d+)$/,
+  handler: withAuth(
+    or(
+      and(requireRole(1), requireValidatedUser),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT customer_id FROM reviews WHERE id = $1', [req.params[0]]);
+          return result.rows[0]?.customer_id ?? null;
+        }),
+        requireValidatedUser
+      ),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query('SELECT p.seller_id FROM reviews r JOIN products p ON p.id = r.product_id WHERE r.id = $1', [req.params[0]]);
+          return result.rows[0]?.seller_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )((req, res) => deleteReview(req, res, req.params[0]))
+  )
+},
   // Cart Routes
   {
     method: 'GET',
@@ -269,7 +379,7 @@ const routes = [
         (req, res) => putQuantity(req, res)
       )
     )
-  },
+  }
 ];
 
 module.exports = async function router(req, res) {
