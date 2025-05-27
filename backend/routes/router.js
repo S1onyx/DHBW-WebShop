@@ -22,6 +22,7 @@ const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 const postProduct = require('../apis/products/postProduct')
+const deleteWishlistPermission = require('../apis/wishlists/permissions/deletePermission');
 
 // ProductImage APIs
 const postProductImage = require('../apis/products/images/postProductImage');
@@ -35,6 +36,12 @@ const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
+const getWishlistItems = require('../apis/wishlists/items/getWishlistItems');
+const postWishlistItem = require('../apis/wishlists/items/postWishlistItem');
+const putWishlistItem = require('../apis/wishlists/items/putWishlistItem');
+const deleteWishlistItem = require('../apis/wishlists/items/deleteWishlistItem');
+
+const db = require('../db/database');
 // Order APIs
 const getOrders = require('../apis/orders/getOrders');
 const postOrder = require('../apis/orders/postOrder');
@@ -54,12 +61,16 @@ const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
 const putQuantity = require('../apis/cart/putQuantity');
 
+// WishlistPermission APIs
+const getWishlistPermissions = require('../apis/wishlists/permissions/getPermissions');
+const postWishlistPermission = require('../apis/wishlists/permissions/postPermission');
+const putWishlistPermission = require('../apis/wishlists/permissions/putPermission');
+
 // Wishlist APIs
 const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
 const postWishlist = require('../apis/wishlists/wishlist/postWishlist');
 const putWishlist = require('../apis/wishlists/wishlist/putWishlist');
-
-
+const deleteWishlist = require('../apis/wishlists/wishlist/deleteWishlist');
 
 const routes = [
   // Auth Routes
@@ -427,6 +438,115 @@ const routes = [
       )
     )
   },
+
+{
+  method: 'GET',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => getWishlistPermissions(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => postWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => putWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => deleteWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'GET',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => getWishlistItems(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => postWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => putWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => deleteWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
+  )
+}
+
 // Wishlist Routes
   {
     method: 'GET',
@@ -446,28 +566,36 @@ const routes = [
         )
     )
   },
-{
-  method: 'PUT',
-  path: /^\/api\/wishlists\/wishlist\/(\d+)$/,
-  handler: withAuth(
-    or(
-      requireRole(1),
-      and(
-        requireOwnership(async (req) => {
-          const result = await db.query(
-            'SELECT customer_id FROM wishlists WHERE id = $1',
-            [req.params[0]]
-          );
-          return result.rows[0]?.customer_id ?? null;
-        }),
-        requireValidatedUser
+  {
+    method: 'PUT',
+    path: /^\/api\/wishlists\/wishlist\/(\d+)$/,
+    handler: withAuth(
+      or(
+        requireRole(1),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query(
+              'SELECT customer_id FROM wishlists WHERE id = $1',
+              [req.params[0]]
+            );
+            return result.rows[0]?.customer_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )(
+        (req, res) => putWishlist(req, res)
       )
-    )(
-      (req, res) => putWishlist(req, res)
     )
-  )
-}
-
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/wishlists\/wishlist$/,
+    handler: withAuth(
+        requireValidatedUser(
+            (req, res) => deleteWishlist(req, res)
+        )
+    )
+  }
 ];
 
 module.exports = async function router(req, res) {
