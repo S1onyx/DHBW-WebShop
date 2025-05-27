@@ -54,6 +54,9 @@ const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
 const putQuantity = require('../apis/cart/putQuantity');
 
+// WishlistPermission APIs
+const getWishlistPermissions = require('../apis/wishlists/permissions/getPermissions');
+
 
 const routes = [
   // Auth Routes
@@ -420,7 +423,24 @@ const routes = [
         (req, res) => putQuantity(req, res)
       )
     )
-  }
+  },
+
+{
+  method: 'GET',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => getWishlistPermissions(req, res, req.params[0]))
+  )
+}
 ];
 
 module.exports = async function router(req, res) {
