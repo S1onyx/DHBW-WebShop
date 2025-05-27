@@ -1,6 +1,6 @@
 // backend/apis/products/deleteProductImage.js
-const deleteProductImageModel = require('../../models/products/deleteProductImageModel');
-const db = require('../../db/database');
+const deleteProductImageModel = require('../../../models/products/images/deleteProductImageModel');
+const db = require('../../../db/database');
 
 async function deleteProductImage(req, res, imageId) {
   try {
