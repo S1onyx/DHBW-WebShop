@@ -1,0 +1,21 @@
+meta {
+  name: postProduct
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:3000/api/products
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  name: Pixelart turtle
+  description: Test
+  price: 12.99
+  stock: 12
+  category_id: 2
+  seller_id: 9
+  image: @file(/Users/simonriedinger/Downloads/Pixelart-Schildkroete.png)
+}

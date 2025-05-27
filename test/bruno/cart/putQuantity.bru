@@ -1,0 +1,18 @@
+meta {
+  name: putQuantity
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/carts/items
+  body: json
+  auth: inherit
+}
+
+body:json {
+  { 
+    "itemId": 124, 
+    "quantity": 10
+  }
+}

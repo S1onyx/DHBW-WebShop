@@ -1,0 +1,18 @@
+meta {
+  name: putReview
+  type: http
+  seq: 1
+}
+
+put {
+  url: http://localhost:3000/api/reviews/1
+  body: json
+  auth: cookie
+}
+
+body:json {
+  {
+    "rating": 4.5,
+    "comment": "Update: Sehr gutes Produkt!"
+  }
+}

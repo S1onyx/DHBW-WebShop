@@ -1,0 +1,18 @@
+meta {
+  name: putWishlistPermission
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:3000/api/wishlists/89/permissions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "user_id": 42,
+    "permission_id": 2
+  }
+}
