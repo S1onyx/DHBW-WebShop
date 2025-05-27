@@ -54,6 +54,10 @@ const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
 const putQuantity = require('../apis/cart/putQuantity');
 
+// Wishlist APIs
+const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
+
+
 
 const routes = [
   // Auth Routes
@@ -419,6 +423,16 @@ const routes = [
       and(requireRole(3), requireValidatedUser)(
         (req, res) => putQuantity(req, res)
       )
+    )
+  },
+// Wishlist Routes
+  {
+    method: 'GET',
+    path: /^\/api\/wishlists\/wishlist$/,
+    handler: withAuth(
+        requireValidatedUser(
+            (req, res) => getAllWishlistsForUser(req, res)
+        )
     )
   }
 ];
