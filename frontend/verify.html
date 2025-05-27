@@ -80,7 +80,7 @@
       }
 
       try {
-        const res = await fetch('/api/auth/verify?token=' + encodeURIComponent(token));
+        const res = await fetch('/api/auth/verify?token=' + encodeURIComponent(token), {method: 'POST'});
         const result = await res.json();
 
         if (res.ok && result.success) {
