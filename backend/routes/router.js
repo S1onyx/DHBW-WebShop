@@ -56,6 +56,7 @@ const putQuantity = require('../apis/cart/putQuantity');
 
 // Wishlist APIs
 const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
+const deleteWishlist = require('../apis/wishlists/wishlist/deleteWishlist');
 
 
 
@@ -432,6 +433,15 @@ const routes = [
     handler: withAuth(
         requireValidatedUser(
             (req, res) => getAllWishlistsForUser(req, res)
+        )
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/wishlists\/wishlist$/,
+    handler: withAuth(
+        requireValidatedUser(
+            (req, res) => deleteWishlist(req, res)
         )
     )
   }
