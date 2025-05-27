@@ -36,6 +36,12 @@ const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
+const getWishlistItems = require('../apis/wishlists/items/getWishlistItems');
+const postWishlistItem = require('../apis/wishlists/items/postWishlistItem');
+const putWishlistItem = require('../apis/wishlists/items/putWishlistItem');
+const deleteWishlistItem = require('../apis/wishlists/items/deleteWishlistItem');
+
+const db = require('../db/database');
 // Order APIs
 const getOrders = require('../apis/orders/getOrders');
 const postOrder = require('../apis/orders/postOrder');
@@ -496,6 +502,46 @@ const routes = [
       }),
       requireValidatedUser
     )((req, res) => deleteWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'GET',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => getWishlistItems(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => postWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => putWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/wishlists\/(\d+)\/items$/,
+  handler: withAuth(
+    requireValidatedUser(
+      (req, res) => deleteWishlistItem(req, res, parseInt(req.params[0], 10))
+    )
   )
 }
 
