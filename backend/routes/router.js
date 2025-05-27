@@ -41,7 +41,6 @@ const postWishlistItem = require('../apis/wishlists/items/postWishlistItem');
 const putWishlistItem = require('../apis/wishlists/items/putWishlistItem');
 const deleteWishlistItem = require('../apis/wishlists/items/deleteWishlistItem');
 
-const db = require('../db/database');
 // Order APIs
 const getOrders = require('../apis/orders/getOrders');
 const postOrder = require('../apis/orders/postOrder');
@@ -545,7 +544,7 @@ const routes = [
       (req, res) => deleteWishlistItem(req, res, parseInt(req.params[0], 10))
     )
   )
-}
+},
 
 // Wishlist Routes
   {
@@ -589,7 +588,7 @@ const routes = [
   },
   {
     method: 'DELETE',
-    path: /^\/api\/wishlists\/wishlist$/,
+    path: /^\/api\/wishlists\/wishlist\/(\d+)$/,
     handler: withAuth(
         requireValidatedUser(
             (req, res) => deleteWishlist(req, res)

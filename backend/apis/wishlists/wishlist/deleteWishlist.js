@@ -1,7 +1,8 @@
 const deleteWishlistModel = require('../../../models/wishlists/wishlist/deleteWishlistModel');
 
 async function deleteWishlist(req, res) {
-    const wishlist_id = req.query.get('wishlist_id');
+    const match = req.url.match(/^\/api\/wishlists\/wishlist\/(\d+)$/);
+    const wishlist_id = match ? match[1] : null;
     const user_id = req.user.userId;
 
     if (!wishlist_id) {
