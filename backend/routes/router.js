@@ -22,6 +22,7 @@ const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 const postProduct = require('../apis/products/postProduct')
+const deleteWishlistPermission = require('../apis/wishlists/permissions/deletePermission');
 
 // ProductImage APIs
 const postProductImage = require('../apis/products/images/postProductImage');
@@ -54,10 +55,13 @@ const deleteCartItem = require('../apis/cart/deleteCartItem');
 const deleteCart = require('../apis/cart/deleteCart');
 const putQuantity = require('../apis/cart/putQuantity');
 
+// WishlistPermission APIs
+const getWishlistPermissions = require('../apis/wishlists/permissions/getPermissions');
+const postWishlistPermission = require('../apis/wishlists/permissions/postPermission');
+const putWishlistPermission = require('../apis/wishlists/permissions/putPermission');
+
 // Wishlist APIs
 const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
-
-
 
 const routes = [
   // Auth Routes
@@ -425,6 +429,75 @@ const routes = [
       )
     )
   },
+
+{
+  method: 'GET',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => getWishlistPermissions(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'POST',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => postWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'PUT',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => putWishlistPermission(req, res, req.params[0]))
+  )
+},
+
+{
+  method: 'DELETE',
+  path: /^\/api\/wishlists\/(\d+)\/permissions$/,
+  handler: withAuth(
+    and(
+      requireOwnership(async (req) => {
+        const result = await db.query(
+          'SELECT customer_id FROM wishlists WHERE id = $1',
+          [req.params[0]]
+        );
+        return result.rows[0]?.customer_id ?? null;
+      }),
+      requireValidatedUser
+    )((req, res) => deleteWishlistPermission(req, res, req.params[0]))
+  )
+}
+
 // Wishlist Routes
   {
     method: 'GET',
