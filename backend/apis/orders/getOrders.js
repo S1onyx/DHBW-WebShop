@@ -1,4 +1,3 @@
-// backend/apis/orders/getOrders.js
 const getOrdersModel = require('../../models/orders/getOrdersModel');
 
 async function getOrders(req, res) {
@@ -21,8 +20,27 @@ async function getOrders(req, res) {
 
     const result = await getOrdersModel({ userId, roleId, productId, status });
 
+    if (result.rows.length === 0) {
+      if (result.filteredOut) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({
+          success: false,
+          error: 'Keine Bestellungen mit dem angegebenen Status gefunden',
+          code: 404,
+          data: []
+        }));
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({
+        success: true,
+        data: [],
+        message: 'Noch keine Bestellungen vorhanden'
+      }));
+    }
+
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, data: result }));
+    res.end(JSON.stringify({ success: true, data: result.rows }));
   } catch (err) {
     if (err.message === 'INVALID_STATUS') {
       res.writeHead(400, { 'Content-Type': 'application/json' });
