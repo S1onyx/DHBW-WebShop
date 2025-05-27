@@ -1,4 +1,5 @@
 const postReviewModel = require('../../models/reviews/postReviewModel');
+const db = require('../../db/database');
 
 async function postReview(req, res, productId) {
   let body = '';
@@ -42,6 +43,12 @@ async function postReview(req, res, productId) {
     }
 
     try {
+      const productExists = await db.query('SELECT 1 FROM products WHERE id = $1', [productId]);
+      if (productExists.rowCount === 0) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: false, error: 'Product not found', code: 404 }));
+      }
+
       const created = await postReviewModel(req.user.userId, productId, rating, comment);
       res.writeHead(201, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, message: 'Review created', data: created }));
@@ -50,6 +57,7 @@ async function postReview(req, res, productId) {
         res.writeHead(409, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ success: false, error: 'Review already exists', code: 409 }));
       }
+
       console.error('[POST REVIEW ERROR]', { userId: req.user?.userId, productId, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during review creation', code: 500 }));

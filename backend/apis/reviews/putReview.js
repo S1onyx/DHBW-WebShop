@@ -1,5 +1,5 @@
-// backend/apis/reviews/putReview.js
 const putReviewModel = require('../../models/reviews/putReviewModel');
+const db = require('../../db/database');
 
 async function putReview(req, res, reviewId) {
   let body = '';
@@ -32,7 +32,6 @@ async function putReview(req, res, reviewId) {
     const updates = {};
     const ignoredFields = [];
 
-    // Inline rating validierung
     if (data.rating !== undefined) {
       const num = Number(data.rating);
       const isValidRating = !isNaN(num) && num >= 0 && num <= 5 && num * 2 === Math.floor(num * 2);
@@ -69,7 +68,7 @@ async function putReview(req, res, reviewId) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify({
         success: false,
-        error: 'No valid fields provided. Only "rating" and "comment" are allowed.',
+        error: 'No valid fields provided. Only \"rating\" and \"comment\" are allowed.',
         ignoredFields,
         code: 400
       }));
