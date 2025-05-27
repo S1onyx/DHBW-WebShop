@@ -56,6 +56,8 @@ const putQuantity = require('../apis/cart/putQuantity');
 
 // Wishlist APIs
 const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
+const postWishlist = require('../apis/wishlists/wishlist/postWishlist');
+const putWishlist = require('../apis/wishlists/wishlist/putWishlist');
 
 
 
@@ -64,7 +66,7 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/login$/, handler: login },
   { method: 'POST', path: /^\/api\/auth\/logout$/, handler: logout },
   { method: 'POST', path: /^\/api\/auth\/register$/, handler: register },
-  { method: 'GET', path: /^\/api\/auth\/verify$/, handler: verify },
+  { method: 'POST', path: /^\/api\/auth\/verify$/, handler: verify },
   { method: 'POST', path: /^\/api\/auth\/request-reset$/, handler: requestReset },
   { method: 'POST', path: /^\/api\/auth\/reset$/, handler: resetPassword },
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
@@ -434,7 +436,38 @@ const routes = [
             (req, res) => getAllWishlistsForUser(req, res)
         )
     )
-  }
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/wishlists\/wishlist$/,
+    handler: withAuth(
+        requireValidatedUser(
+            (req, res) => postWishlist(req, res)
+        )
+    )
+  },
+{
+  method: 'PUT',
+  path: /^\/api\/wishlists\/wishlist\/(\d+)$/,
+  handler: withAuth(
+    or(
+      requireRole(1),
+      and(
+        requireOwnership(async (req) => {
+          const result = await db.query(
+            'SELECT customer_id FROM wishlists WHERE id = $1',
+            [req.params[0]]
+          );
+          return result.rows[0]?.customer_id ?? null;
+        }),
+        requireValidatedUser
+      )
+    )(
+      (req, res) => putWishlist(req, res)
+    )
+  )
+}
+
 ];
 
 module.exports = async function router(req, res) {
