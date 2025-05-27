@@ -8,9 +8,9 @@ async function getOrders(req, res) {
     const statusRaw = req.query.get('status');
 
     const status = statusRaw ? parseInt(statusRaw, 10) : null;
-    if (statusRaw && isNaN(status)) {
+    if (statusRaw && (isNaN(status) || status <= 0)) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Status must be a number', code: 400 }));
+      return res.end(JSON.stringify({ success: false, error: 'Invalid status ID', code: 400 }));
     }
 
     if (roleId === 1 && !productId) {
