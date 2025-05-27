@@ -1,10 +1,12 @@
-// backend/routes/router.js
 const withAuth = require('../middleware/withAuth');
 const requireRole = require('../middleware/requireRole');
 const requireOwnership = require('../middleware/requireOwnership');
 const requireValidatedUser = require('../middleware/requireValidatedUser');
 const { or, and } = require('../middleware/combine');
 
+const db = require('../db/database');
+
+// Auth APIs
 const login = require('../apis/auth/login');
 const logout = require('../apis/auth/logout');
 const register = require('../apis/auth/register');
@@ -13,6 +15,7 @@ const requestReset = require('../apis/auth/requestReset');
 const resetPassword = require('../apis/auth/resetPassword');
 const resendVerification = require('../apis/auth/resendVerification');
 
+// Product APIs
 const getAllProducts = require('../apis/products/getAllProducts');
 const getProductById = require('../apis/products/getProductById');
 const putProduct = require('../apis/products/putProduct');
@@ -23,15 +26,23 @@ const postProductImage = require('../apis/products/postProductImage');
 const putProductImage = require('../apis/products/putProductImage');
 const deleteProductImage = require('../apis/products/deleteProductImage');
 
+// User APIs
 const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
 const putUserAdmin = require('../apis/users/putUserAdmin');
 const deleteUser = require('../apis/users/deleteUser');
 
-const db = require('../db/database');
+// Cart APIs
+const postCart = require('../apis/cart/postCart');
+const postCartItem = require('../apis/cart/postCartItem');
+const getCart = require('../apis/cart/getCart');
+const deleteCartItem = require('../apis/cart/deleteCartItem');
+const deleteCart = require('../apis/cart/deleteCart');
+const putQuantity = require('../apis/cart/putQuantity');
 
 const routes = [
+  // Auth Routes
   { method: 'POST', path: /^\/api\/auth\/login$/, handler: login },
   { method: 'POST', path: /^\/api\/auth\/logout$/, handler: logout },
   { method: 'POST', path: /^\/api\/auth\/register$/, handler: register },
@@ -40,18 +51,17 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/reset$/, handler: resetPassword },
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
 
+  // Product Routes
   {
     method: 'GET',
     path: /^\/api\/products$/,
     handler: (req, res) => getAllProducts(req, res, req.query)
   },
-
   {
     method: 'GET',
     path: /^\/api\/products\/(\d+)$/,
     handler: (req, res, params) => getProductById(req, res, params[0])
   },
-
   {
     method: 'PUT',
     path: /^\/api\/products\/(\d+)$/,
@@ -68,7 +78,6 @@ const routes = [
       )((req, res) => putProduct(req, res, req.params[0]))
     )
   },
-
   {
     method: 'DELETE',
     path: /^\/api\/products\/(\d+)$/,
@@ -86,6 +95,57 @@ const routes = [
     )
   },
 
+  // Product Image Routes
+  {
+    method: 'POST',
+    path: /^\/api\/products\/(\d+)\/images$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => postProductImage(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => putProductImage(req, res, req.params[0]))
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/products\/images\/(\d+)$/,
+    handler: withAuth(
+      or(
+        and(requireRole(1), requireValidatedUser),
+        and(
+          requireOwnership(async (req) => {
+            const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
+            return result.rows[0]?.seller_id ?? null;
+          }),
+          requireValidatedUser
+        )
+      )((req, res) => deleteProductImage(req, res, req.params[0]))
+    )
+  },
+
+  // User Routes
   {
     method: 'POST',
     path: /^\/api\/products$/,
@@ -110,7 +170,6 @@ const routes = [
       )((req, res) => getUserById(req, res, req.params[0]))
     )
   },
-
   {
     method: 'PUT',
     path: /^\/api\/users\/(\d+)$/,
@@ -124,7 +183,6 @@ const routes = [
       )((req, res) => putUser(req, res, req.params[0]))
     )
   },
-
   {
     method: 'PUT',
     path: /^\/api\/admin\/users\/(\d+)$/,
@@ -134,7 +192,6 @@ const routes = [
       )
     )
   },
-
   {
     method: 'DELETE',
     path: /^\/api\/users\/(\d+)$/,
@@ -148,7 +205,6 @@ const routes = [
       )((req, res) => deleteUser(req, res, req.params[0]))
     )
   },
-
   {
     method: 'GET',
     path: /^\/api\/users$/,
@@ -158,56 +214,62 @@ const routes = [
       )
     )
   },
+
+  // Cart Routes
   {
-  method: 'POST',
-  path: /^\/api\/products\/(\d+)\/images$/,
-  handler: withAuth(
-    or(
-      and(requireRole(1), requireValidatedUser),
-      and(
-        requireOwnership(async (req) => {
-          const result = await db.query('SELECT seller_id FROM products WHERE id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
-        }),
-        requireValidatedUser
+    method: 'GET',
+    path: /^\/api\/carts$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => getCart(req, res)
       )
-    )((req, res) => postProductImage(req, res, req.params[0]))
-  )
-},
-
-{
-  method: 'PUT',
-  path: /^\/api\/products\/images\/(\d+)$/,
-  handler: withAuth(
-    or(
-      and(requireRole(1), requireValidatedUser),
-      and(
-        requireOwnership(async (req) => {
-          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
-        }),
-        requireValidatedUser
+    )
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/carts$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => postCart(req, res)
       )
-    )((req, res) => putProductImage(req, res, req.params[0]))
-  )
-},
-
-{
-  method: 'DELETE',
-  path: /^\/api\/products\/images\/(\d+)$/,
-  handler: withAuth(
-    or(
-      and(requireRole(1), requireValidatedUser),
-      and(
-        requireOwnership(async (req) => {
-          const result = await db.query('SELECT p.seller_id FROM product_images i JOIN products p ON i.product_id = p.id WHERE i.id = $1', [req.params[0]]);
-          return result.rows[0]?.seller_id ?? null;
-        }),
-        requireValidatedUser
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/carts$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => deleteCart(req, res)
       )
-    )((req, res) => deleteProductImage(req, res, req.params[0]))
-  )
-}
+    )
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => postCartItem(req, res)
+      )
+    )
+  },
+  {
+    method: 'DELETE',
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => deleteCartItem(req, res)
+      )
+    )
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/carts\/items$/,
+    handler: withAuth(
+      and(requireRole(3), requireValidatedUser)(
+        (req, res) => putQuantity(req, res)
+      )
+    )
+  },
 ];
 
 module.exports = async function router(req, res) {
