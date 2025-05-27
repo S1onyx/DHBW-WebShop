@@ -60,6 +60,8 @@ const getWishlistPermissions = require('../apis/wishlists/permissions/getPermiss
 const postWishlistPermission = require('../apis/wishlists/permissions/postPermission');
 const putWishlistPermission = require('../apis/wishlists/permissions/putPermission');
 
+// Wishlist APIs
+const getAllWishlistsForUser = require('../apis/wishlists/wishlist/getAllWishlistsForUser');
 
 const routes = [
   // Auth Routes
@@ -495,6 +497,17 @@ const routes = [
     )((req, res) => deleteWishlistPermission(req, res, req.params[0]))
   )
 }
+
+// Wishlist Routes
+  {
+    method: 'GET',
+    path: /^\/api\/wishlists\/wishlist$/,
+    handler: withAuth(
+        requireValidatedUser(
+            (req, res) => getAllWishlistsForUser(req, res)
+        )
+    )
+  }
 ];
 
 module.exports = async function router(req, res) {
