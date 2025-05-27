@@ -1,5 +1,5 @@
 // backend/models/products/putProductImageModel.js
-const db = require('../../db/database');
+const db = require('../../../db/database');
 
 async function putProductImageModel(imageId, { alt_text, is_primary }) {
   const client = await db.pool.connect();

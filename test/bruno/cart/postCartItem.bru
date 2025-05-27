@@ -1,0 +1,18 @@
+meta {
+  name: postCartItem
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/carts/items
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "productId": 1,
+    "quantity": 2
+  }
+}

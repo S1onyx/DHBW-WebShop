@@ -1,0 +1,18 @@
+meta {
+  name: postProductReview
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/products/1/reviews
+  body: json
+  auth: cookie
+}
+
+body:json {
+  {
+    "rating": 4.5,
+    "comment": "Really great product!"
+  }
+}
