@@ -1,48 +1,27 @@
-// backend/middleware/withAuth.js
-const { verifyAccessToken } = require('../utils/auth');
-const db = require('../db/database');
+const jwt = require('jsonwebtoken');
+const db = require('../../db');
 
-function withAuth(handler) {
-  return async (req, res) => {
-    const cookie = req.headers.cookie || '';
-    const match = cookie.match(/accessToken=([^;]+)/);
-    const token = match && match[1];
-
+module.exports = async function withAuth(req, res, next) {
+  try {
+    const token = req.cookies?.accessToken;
     if (!token) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Authentication required', code: 401 }));
+      return res.status(401).json({ success: false, error: 'Authentication required', code: 401 });
     }
 
-    const payload = verifyAccessToken(token);
-    if (!payload) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Invalid or expired token', code: 401 }));
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const result = await db.query('SELECT role_id, status_id FROM users WHERE id = $1', [payload.userId]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, error: 'User not found', code: 404 });
     }
 
-    try {
-      const result = await db.query('SELECT role_id FROM users WHERE id = $1', [payload.userId]);
-
-      if (result.rowCount === 0) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ success: false, error: 'User not found', code: 404 }));
-      }
-
-      req.user = {
-        userId: payload.userId,
-        roleId: result.rows[0].role_id,
-      };
-
-      return handler(req, res);
-    } catch (err) {
-      console.error('[WITH AUTH ERROR]', {
-        tokenPayload: payload,
-        error: err,
-      });
-
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Server error during authentication', code: 500 }));
-    }
-  };
-}
-
-module.exports = withAuth;
+    req.user = {
+      userId: payload.userId,
+      roleId: result.rows[0].role_id,
+      statusId: result.rows[0].status_id
+    };
+    next();
+  } catch (err) {
+    console.error('[WITH AUTH ERROR]', err);
+    return res.status(401).json({ success: false, error: 'Invalid or expired token', code: 401 });
+  }
+};
