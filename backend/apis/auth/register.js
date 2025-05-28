@@ -1,7 +1,7 @@
-// backend/apis/auth/register.js
 const db = require('../../db/database');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const sendMail = require('../../utils/mailer');
 
 function isSecurePassword(password) {
   return (
@@ -85,19 +85,28 @@ async function register(req, res) {
       ]);
 
       const verificationLink = `http://localhost:1337/verify.html?token=${token}`;
-      console.log(`[DEBUG] Verification-Link für ${email}: ${verificationLink}`);
+
+      await sendMail({
+        to: email,
+        subject: 'Bitte bestätige deine Registrierung',
+        html: `
+          <div style="font-family:sans-serif;text-align:center">
+            <h2>Willkommen im DHBW WebShop! 🎉</h2>
+            <p>Klicke auf den Button, um deine Registrierung abzuschließen:</p>
+            <a href="${verificationLink}" style="display:inline-block;margin-top:16px;padding:12px 24px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:8px;font-size:16px">Jetzt bestätigen</a>
+            <p style="margin-top:24px;font-size:12px;color:#666">Falls der Button nicht funktioniert, nutze diesen Link:<br>${verificationLink}</p>
+          </div>
+        `
+      });
 
       res.writeHead(201, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         success: true,
-        message: 'User registered. Please verify your email.',
+        message: 'User registered. Verification email sent.',
         data: { verificationToken: token }
       }));
     } catch (err) {
-      console.error('[REGISTER ERROR]', {
-        input: { username, email },
-        error: err
-      });
+      console.error('[REGISTER ERROR]', { input: { username, email }, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Registration failed', code: 500 }));
     }
