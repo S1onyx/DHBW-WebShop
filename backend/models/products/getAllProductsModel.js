@@ -1,62 +1,56 @@
-// backend/models/products/getAllProductsModel.js
 const db = require('../../db/database');
 
-async function getAllProductsModel(filters) {
-  let query = `
-    SELECT
-      p.id,
-      p.name AS product_name,
-      c.name AS category_name,
-      p.price,
+async function getAllProducts({ minPrice, maxPrice, stockOnly, name, sortBy, sortOrder, categoryId }) {
+  const params = [];
+  let whereClauses = [];
+
+  if (minPrice) {
+    whereClauses.push('p.price >= ?');
+    params.push(minPrice);
+  }
+  if (maxPrice) {
+    whereClauses.push('p.price <= ?');
+    params.push(maxPrice);
+  }
+  if (stockOnly) {
+    whereClauses.push('p.stock > 0');
+  }
+  if (name) {
+    whereClauses.push('p.name ILIKE ?');
+    params.push(`%${name}%`);
+  }
+  if (categoryId) {
+    whereClauses.push('p.category_id IN (SELECT id FROM get_all_subcategories(?))');
+    params.push(categoryId);
+  }
+
+  const where = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+  const validSorts = ['price', 'name'];
+  const sortColumn = validSorts.includes(sortBy) ? sortBy : 'p.id';
+  const direction = sortOrder === 'desc' ? 'DESC' : 'ASC';
+
+  const query = `
+    SELECT 
+      p.id, p.name, p.description, p.price, p.stock, p.category_id,
+      COALESCE(AVG(r.rating), 0) AS average_rating,
+      COUNT(r.id) AS review_count,
       (
-        SELECT url
-        FROM product_images
-        WHERE product_id = p.id
-        AND is_primary = TRUE
+        SELECT pi.image_url
+        FROM product_images pi
+        WHERE pi.product_id = p.id
+        ORDER BY pi.is_primary DESC, pi.id ASC
+        LIMIT 1
       ) AS image_url
     FROM products p
-    JOIN categories c ON p.category_id = c.id
-    WHERE 1=1
+    LEFT JOIN reviews r ON r.product_id = p.id
+    ${where}
+    GROUP BY p.id
+    ORDER BY ${sortColumn} ${direction};
   `;
-  const params = [];
 
-  if (filters.categoryIds && filters.categoryIds.length > 0) {
-    const placeholders = filters.categoryIds.map((_, i) => `$${params.length + i + 1}`);
-    query += ` AND p.category_id IN (${placeholders.join(',')})`;
-    params.push(...filters.categoryIds);
-  }
-
-  if (filters.minPrice) {
-    params.push(filters.minPrice);
-    query += ` AND p.price >= $${params.length}`;
-  }
-
-  if (filters.maxPrice) {
-    params.push(filters.maxPrice);
-    query += ` AND p.price <= $${params.length}`;
-  }
-
-  if (filters.inStock) {
-    query += ' AND p.stock > 0';
-  }
-
-  if (filters.name) {
-    params.push(`%${filters.name}%`);
-    query += ` AND (p.name ILIKE $${params.length} OR c.name ILIKE $${params.length})`;
-  }
-
-  const validSortFields = {
-    price: 'p.price',
-    name: 'p.name',
-  };
-
-  if (filters.sort && validSortFields[filters.sort]) {
-    const order = filters.order === 'desc' ? 'DESC' : 'ASC';
-    query += ` ORDER BY ${validSortFields[filters.sort]} ${order}`;
-  }
-
-  const result = await db.query(query, params);
-  return result.rows;
+  const [rows] = await db.query(query, params);
+  return rows;
 }
 
-module.exports = getAllProductsModel;
+module.exports = getAllProducts;

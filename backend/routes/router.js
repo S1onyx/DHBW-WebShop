@@ -30,6 +30,7 @@ const putProductImage = require('../apis/products/images/putProductImage');
 const deleteProductImage = require('../apis/products/images/deleteProductImage');
 
 // User APIs
+const getMe = require('../apis/users/getMe');
 const getAllUsers = require('../apis/users/getAllUsers');
 const getUserById = require('../apis/users/getUserById');
 const putUser = require('../apis/users/putUser');
@@ -186,6 +187,16 @@ const routes = [
        )(require('../apis/products/postProduct'))
     )
   },
+
+  {
+  method: 'GET',
+  path: /^\/api\/users\/me$/,
+  handler: withAuth(
+    requireValidatedUser(
+      getMe
+    )
+  )
+},
 
   {
     method: 'GET',
