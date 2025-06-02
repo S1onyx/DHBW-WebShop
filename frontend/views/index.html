@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Startseite</title>
+  <script>
+    async function loadUserInfo() {
+      try {
+        const res = await fetch('http://localhost:3000/api/users/me', {
+          credentials: 'include'
+        });
+        const json = await res.json();
+        if (json.success) {
+          const user = json.data;
+          document.getElementById('user-info').innerText =
+            `Hallo ${user.first_name} (${user.role})`;
+          document.getElementById('admin-link').style.display =
+            user.role === 'Admin' ? 'inline' : 'none';
+        } else {
+          document.getElementById('user-info').innerText = 'Nicht eingeloggt';
+          document.getElementById('admin-link').style.display = 'none';
+        }
+      } catch (e) {
+        document.getElementById('user-info').innerText = 'Nicht eingeloggt';
+        document.getElementById('admin-link').style.display = 'none';
+      }
+    }
+
+    window.onload = loadUserInfo;
+  </script>
+</head>
+<body>
+  <a id="admin-link" href="/admin">Zum Adminbereich</a>
+  <h1>Willkommen im Webshop</h1>
+  <p id="user-info">Lade Benutzerdaten...</p>
+  <a id="admin-link" href="/admin">Zum Adminbereich</a>
+</body>
+</html>

@@ -72,6 +72,8 @@ const postWishlist = require('../apis/wishlists/wishlist/postWishlist');
 const putWishlist = require('../apis/wishlists/wishlist/putWishlist');
 const deleteWishlist = require('../apis/wishlists/wishlist/deleteWishlist');
 
+const { handleCorsPreflight, setCorsHeaders } = require('../utils/cors');
+
 const routes = [
   // Auth Routes
   { method: 'POST', path: /^\/api\/auth\/login$/, handler: login },
@@ -612,6 +614,10 @@ module.exports = async function router(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   req.query = url.searchParams;
   req.params = [];
+
+  if (handleCorsPreflight(req, res)) return;
+
+  setCorsHeaders(res);
 
   for (const route of routes) {
     if (req.method !== route.method) continue;

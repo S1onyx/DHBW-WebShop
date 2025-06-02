@@ -1,3 +1,22 @@
-FROM nginx:latest
+# Entwicklungsabhängigkeiten installieren
+FROM node:20-alpine AS build
 
-COPY ../frontend /usr/share/nginx/html
+WORKDIR /app
+
+# Pakete und Code kopieren
+COPY ../frontend/package*.json ./
+RUN npm install
+
+COPY ../frontend ./
+
+# Produktions-Stage für den Express-Server
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+# Express-Server läuft auf Port 4000
+EXPOSE 4000
+
+CMD ["node", "app.js"]

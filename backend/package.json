@@ -8,6 +8,7 @@
     "dependencies": {
         "bcrypt": "^6.0.0",
         "dotenv": "^16.0.3",
+        "express": "^5.1.0",
         "jsonwebtoken": "^9.0.2",
         "multer": "^2.0.0",
         "nodemailer": "^7.0.3",
