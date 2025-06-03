@@ -4,14 +4,17 @@ const getCategoryWithChildren = require('../../models/categories/getCategoryWith
 
 async function getAllProducts(req, res, params) {
   try {
-    const filters = {
-      minPrice: params.get('minPrice'),
-      maxPrice: params.get('maxPrice'),
-      name: params.get('name'),
-      inStock: params.get('inStock') === 'true',
-      sort: params.get('sort'),
-      order: params.get('order'),
-    };
+const sort = params.get('sort');
+const order = params.get('order');
+
+const filters = {
+  minPrice: params.get('minPrice'),
+  maxPrice: params.get('maxPrice'),
+  name: params.get('name'),
+  stockOnly: params.get('inStock') === 'true',
+  sortBy: ['price', 'name', 'rating'].includes(sort) ? sort : null,
+  sortOrder: order === 'desc' ? 'desc' : 'asc'
+};
 
     const categoryId = params.get('category');
     let categoryInfo = null;
