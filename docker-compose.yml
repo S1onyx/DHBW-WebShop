@@ -40,7 +40,7 @@ services:
     container_name: webshop_frontend
     restart: always
     ports:
-      - "80:80"
+      - "1337:1337"
     depends_on:
       - backend
     environment:

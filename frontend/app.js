@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const router = require('./routes/router');
 
 const app = express();
-const PORT = 80;
+const PORT = 1337;
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
