@@ -1,7 +1,7 @@
 // backend/models/categories/getCategoryWithChildren.js
 const db = require('../../db/database');
 
-async function getCategoryWithChildren(categoryId) {
+async function getCategoryWithChildrenModel(categoryId) {
   const result = await db.query(
     'SELECT id, name FROM categories WHERE id = $1',
     [categoryId]
@@ -47,4 +47,4 @@ async function getCategoryWithChildren(categoryId) {
   };
 }
 
-module.exports = getCategoryWithChildren;
+module.exports = getCategoryWithChildrenModel;

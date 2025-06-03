@@ -1,4 +1,4 @@
-const getCategoryWithChildrenModel = require('../../models/categories/getCategoryWithChildren');
+const getCategoryWithChildrenModel = require('../../models/categories/getCategoryWithChildrenModel');
 
 async function getCategoryWithChildren(req, res, categoryId) {
   try {

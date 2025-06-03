@@ -16,7 +16,9 @@ const requestReset = require('../apis/auth/requestReset');
 const resetPassword = require('../apis/auth/resetPassword');
 const resendVerification = require('../apis/auth/resendVerification');
 
+// Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
+const getAllCategories = require('../apis/categories/getAllCategories')
 
 // Product APIs
 const getAllProducts = require('../apis/products/getAllProducts');
@@ -85,6 +87,12 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/request-reset$/, handler: requestReset },
   { method: 'POST', path: /^\/api\/auth\/reset$/, handler: resetPassword },
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
+
+{
+  method: 'GET',
+  path: /^\/api\/categories\/tree$/,
+  handler: getAllCategories
+},
 
 {
   method: 'GET',

@@ -1,6 +1,6 @@
 // backend/apis/products/getAllProducts.js
 const getAllProductsModel = require('../../models/products/getAllProductsModel');
-const getCategoryWithChildren = require('../../models/categories/getCategoryWithChildren');
+const getCategoryWithChildren = require('../../models/categories/getCategoryWithChildrenModel');
 
 async function getAllProducts(req, res, params) {
   try {
