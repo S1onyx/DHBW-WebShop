@@ -58,8 +58,7 @@ const direction = sortOrder === 'desc' ? 'DESC' : 'ASC';
     GROUP BY p.id
     ORDER BY ${sortColumn} ${direction};
   `;
-console.log('[GET ALL PRODUCTS] Final SQL Query:', query);
-console.log('[GET ALL PRODUCTS] Params:', params);
+
   const result = await db.query(query, params);
   return result.rows;
 }
