@@ -105,7 +105,7 @@ You can combine both:
   Modify `backend/db/init.sql` – restart with `--resetDB`.
 
 - **Add frontend logic:**  
-  Edit JS in `frontend/js/main.js` or add new modules. No build steps needed.
+  Edit JS in `frontend/js/home.js` or add new modules. No build steps needed.
 
 ---
 

@@ -1,0 +1,17 @@
+meta {
+  name: deleteWishlist
+  type: http
+  seq: 2
+}
+
+delete {
+  url: http://localhost:3000/api/wishlists/wishlist/122
+  body: none
+  auth: inherit
+}
+
+body:json {
+  {
+    "wishlist_id": 35
+  }
+}

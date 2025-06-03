@@ -1,10 +1,10 @@
 {
-    "name": "webshop-frontend",
-    "version": "1.0.0",
-    "scripts": {
-      "dev": "vite"
-    },
-    "devDependencies": {
-      "vite": "^5.0.0"
-    }
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2",
+    "path": "^0.12.7"
   }
+}

@@ -1,0 +1,17 @@
+meta {
+  name: deleteWishlistPermission
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/wishlists/89/permissions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "user_id": 5
+  }
+}

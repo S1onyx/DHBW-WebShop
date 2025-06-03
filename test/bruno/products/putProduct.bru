@@ -1,0 +1,20 @@
+meta {
+  name: putProduct
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3000/api/products/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Simon PixelNFT #6",
+    "price": 443.16,
+    "stock": 12, 
+    "description": "Section could nature interest wear. Morning as police often. Place myself his itself find add sing."
+  }
+}

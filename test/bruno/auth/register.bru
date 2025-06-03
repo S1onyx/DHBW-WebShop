@@ -1,0 +1,26 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "first_name": "Colin",
+    "last_name": "Vierheller",
+    "username": "colin",
+    "email": "colin@example.com",
+    "password": "DHbw123asdf!",
+    "street": "Hauptstr",
+    "house_number": "1",
+    "postal_code": "70173",
+    "city": "Stuttgart",
+    "country": "Deutschland"
+  }
+}

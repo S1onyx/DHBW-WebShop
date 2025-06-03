@@ -1,0 +1,31 @@
+meta {
+  name: putUserAdmin
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/api/admin/users/21
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "first_name": "Admin",
+    "last_name": "Editiert",
+    "username": "adminuser",
+    "email": "admin@example.com",
+    "password": "NeuesAdminPasswort123!",
+    "role_id": 1,
+    "status_id": 1,
+    "street": "Adminweg",
+    "house_number": "99",
+    "postal_code": "99999",
+    "city": "Adminstadt",
+    "country": "Adminland",
+    "created_at": "IGNORED",
+    "reset_token": "IGNORED",
+    "verification_token": "IGNORED"
+  }
+}

@@ -3,14 +3,19 @@
     "version": "1.0.0",
     "main": "app.js",
     "scripts": {
-      "dev": "nodemon app.js"
+        "dev": "nodemon app.js"
     },
     "dependencies": {
-      "dotenv": "^16.0.3",
-      "pg": "^8.10.0"
+        "bcrypt": "^6.0.0",
+        "dotenv": "^16.0.3",
+        "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "multer": "^2.0.0",
+        "nodemailer": "^7.0.3",
+        "pg": "^8.10.0"
     },
     "devDependencies": {
-      "nodemon": "^3.0.1",
-      "concurrently": "^8.2.0"
+        "concurrently": "^8.2.0",
+        "nodemon": "^3.0.1"
     }
-  }
+}
