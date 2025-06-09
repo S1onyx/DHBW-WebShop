@@ -1,39 +1,97 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="/css/style.css">
   <meta charset="UTF-8" />
-  <title>Startseite</title>
-  <script>
-    async function loadUserInfo() {
-      try {
-        const res = await fetch('http://localhost:3000/api/users/me', {
-          credentials: 'include'
-        });
-        const json = await res.json();
-        if (json.success) {
-          const user = json.data;
-          document.getElementById('user-info').innerText =
-            `Hallo ${user.first_name} (${user.role})`;
-          document.getElementById('admin-link').style.display =
-            user.role === 'Admin' ? 'inline' : 'none';
-        } else {
-          document.getElementById('user-info').innerText = 'Nicht eingeloggt';
-          document.getElementById('admin-link').style.display = 'none';
-        }
-      } catch (e) {
-        document.getElementById('user-info').innerText = 'Nicht eingeloggt';
-        document.getElementById('admin-link').style.display = 'none';
-      }
-    }
-
-    window.onload = loadUserInfo;
-  </script>
+  <title>Webshop</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="/css/header-footer.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon">
 </head>
 <body>
-  <a id="admin-link" href="/admin">Zum Adminbereich</a>
-  <h1>Willkommen im Webshop</h1>
-  <p id="user-info">Lade Benutzerdaten...</p>
-  <a id="admin-link" href="/admin">Zum Adminbereich</a>
+
+<header>
+  <nav class="navbar">
+    <a href="/"> <img class="logo" src="./images/svg/logo-no-background.svg" height="200" width="200" alt=""> </a>
+
+    <div class="search-input-wrapper">
+      <input type="text" class="input-search" placeholder="Was suchen Sie?" id="search-input">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+    </div>
+
+    <a href="./html/login.html" class="user-link">
+      <i class="fas fa-user"></i>
+    </a>
+
+    <a href="./html/cart.html" class="cart-link">
+      <i class="fa-solid fa-cart-shopping"></i>
+    </a>
+
+    <a href="./html/wishlist.html" class="wishlist-link">
+      <i class="fas fa-heart"></i>
+    </a>
+
+    <a href="./html/wishlist.html" class="wishlist-link">
+      <i class="fas fa-clock-rotate-left"></i>
+    </a>
+
+  </nav>
+</header>
+<div class="filters-wrapper">
+  <div class="filters">
+
+    <select name="Gaming" id="Gmaing" class="filters-selector active">
+      <option value="Gaming" class="filters-select">Gaming</option>
+      <option value="Retro Games" class="filters-select">Retro Games</option>
+      <option value="RPG Icons" class="filters-select">RPG Icons</option>
+      <option value="Game Characters" class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Nature" id="Nature" class="filters-selector">
+      <option value="Nature" class="filters-select">Nature</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Fantasy" id="Fantasy" class="filters-selector">
+      <option value="Fantasy"  class="filters-select">Fantasy</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Urban" id="Urban" class="filters-selector">
+      <option value="Urban"  class="filters-select">Urban</option>
+      <option value="Retro Games"  class="filters-select">Retro Games</option>
+      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
+      <option value="Game Characters"  class="filters-select">Game Characters</option>
+    </select>
+
+    <select name="Animals" id="Animals" class="filters-selector">
+      <option value="Animals">Animals</option>
+      <option value="Retro Games">Retro Games</option>
+      <option value="RPG Icons">RPG Icons</option>
+      <option value="Game Characters">Game Characters</option>
+    </select>
+
+  </div>
+</div>
+
+<main>
+  <section>
+    <h2>Unsere Produkte</h2>
+    <ul id="product-list" class="product-list">
+      <li>Produkte werden geladen...</li>
+    </ul>
+  </section>
+</main>
+
+<div id="app"></div>
+
+<footer>
+  <p>&copy; 2025 Unser Webshop</p>
+</footer>
+<script src="/js/index.js"></script>
 </body>
 </html>
