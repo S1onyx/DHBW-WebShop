@@ -56,6 +56,6 @@
             });
         }
     } catch (error) {
-        title.textContent = `Fehler: ${error.message}`;
+        title.textContent = `Fehler : ${error.message}`;
     }
 })();
