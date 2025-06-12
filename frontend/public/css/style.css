@@ -8,7 +8,7 @@ body {
 }
 
 header, footer {
-  background-color: #151bf1;
+  background-color: #001D4A;
   color: white;
   text-align: center;
   padding: 1rem;
@@ -43,4 +43,61 @@ ul#product-list li {
 
 .product-list li a:hover {
   background-color: rgba(0, 0, 0, 0.05); /* leichter Hover-Effekt */
+}
+
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.active-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  background: #DFEBF0;
+  border-radius: 1.5rem;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.pages-list {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+  color: #001D4A;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.pages-list #fa-solid {
+  border: 3px solid #001D4A;
+  border-radius: 5rem;
+  color: #001D4A;
+    padding: 0.5rem;
+  margin: 0.5rem;
+  text-decoration: none;
+}
+
+#page-number {
+  border: 3px solid #001D4A;
+  border-radius: 5rem;
+  padding: 0.3rem 1rem;
 }

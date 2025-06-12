@@ -19,63 +19,39 @@
       <i class="fa-solid fa-magnifying-glass search-icon"></i>
     </div>
 
-    <a href="./html/login.html" class="user-link">
-      <i class="fas fa-user"></i>
-    </a>
+    <div class="nav-menu">
+      <a href="./html/login.html" class="user-link">
+        <i class="fas fa-user"></i>
+      </a>
 
-    <a href="./html/cart.html" class="cart-link">
-      <i class="fa-solid fa-cart-shopping"></i>
-    </a>
+      <a href="./html/cart.html" class="cart-link">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </a>
 
-    <a href="./html/wishlist.html" class="wishlist-link">
-      <i class="fas fa-heart"></i>
-    </a>
+      <a href="./html/wishlist.html" class="wishlist-link">
+        <i class="fas fa-heart"></i>
+      </a>
 
-    <a href="./html/wishlist.html" class="wishlist-link">
-      <i class="fas fa-clock-rotate-left"></i>
+      <a href="./html/wishlist.html" class="wishlist-link">
+        <i class="fas fa-clock-rotate-left"></i>
+      </a>
+    </div>
+
+  <div class="login">
+    <a href="/login" class="login-link">
+      Login
     </a>
+  </div>
 
   </nav>
 </header>
 <div class="filters-wrapper">
   <div class="filters">
-
-    <select name="Gaming" id="Gmaing" class="filters-selector active">
-      <option value="Gaming" class="filters-select">Gaming</option>
-      <option value="Retro Games" class="filters-select">Retro Games</option>
-      <option value="RPG Icons" class="filters-select">RPG Icons</option>
-      <option value="Game Characters" class="filters-select">Game Characters</option>
-    </select>
-
-    <select name="Nature" id="Nature" class="filters-selector">
-      <option value="Nature" class="filters-select">Nature</option>
-      <option value="Retro Games"  class="filters-select">Retro Games</option>
-      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
-      <option value="Game Characters"  class="filters-select">Game Characters</option>
-    </select>
-
-    <select name="Fantasy" id="Fantasy" class="filters-selector">
-      <option value="Fantasy"  class="filters-select">Fantasy</option>
-      <option value="Retro Games"  class="filters-select">Retro Games</option>
-      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
-      <option value="Game Characters"  class="filters-select">Game Characters</option>
-    </select>
-
-    <select name="Urban" id="Urban" class="filters-selector">
-      <option value="Urban"  class="filters-select">Urban</option>
-      <option value="Retro Games"  class="filters-select">Retro Games</option>
-      <option value="RPG Icons"  class="filters-select">RPG Icons</option>
-      <option value="Game Characters"  class="filters-select">Game Characters</option>
-    </select>
-
-    <select name="Animals" id="Animals" class="filters-selector">
-      <option value="Animals">Animals</option>
-      <option value="Retro Games">Retro Games</option>
-      <option value="RPG Icons">RPG Icons</option>
-      <option value="Game Characters">Game Characters</option>
-    </select>
-
   </div>
+</div>
+
+<div class="active-filters">
+
 </div>
 
 <main>
@@ -84,6 +60,14 @@
     <ul id="product-list" class="product-list">
       <li>Produkte werden geladen...</li>
     </ul>
+    <div id="pagination"></div>
+    <div class="pages-list">
+      <i class="fa-solid fa-arrow-left" id="prev-page" style="margin: 0.5rem"></i>
+      <span id="page-number" style="margin: 0.5rem"></span>
+      von
+      <span id="max-pages" style="margin: 0.5rem"></span>
+      <i class="fa-solid fa-arrow-right" id="next-page"></i>
+    </div>
   </section>
 </main>
 

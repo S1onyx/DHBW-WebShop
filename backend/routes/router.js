@@ -90,8 +90,8 @@ const routes = [
 
 {
   method: 'GET',
-  path: /^\/api\/categories\/tree$/,
-  handler: getAllCategories
+  path: /^\/api\/categories$/,
+  handler: (req, res) => getAllCategories(req, res)
 },
 
 {
