@@ -101,3 +101,9 @@ ul#product-list li {
   border-radius: 5rem;
   padding: 0.3rem 1rem;
 }
+
+.nav-menu {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}

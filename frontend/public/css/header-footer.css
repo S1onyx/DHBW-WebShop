@@ -3,7 +3,7 @@ header {
     height: 3.5rem;
     display: flex;
     align-items: center;
-    background: #232323;
+    background: #001D4A;
     color: #ccc;
 }
 
@@ -86,7 +86,7 @@ header a {
     pointer-events: none;
 }
 
-.login-link {
+.loginLink {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,6 +95,20 @@ header a {
     background: #0077B6;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-radius: 4rem;
+}
+
+footer {
+    padding: 1.7rem 10rem 1.7rem 10rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2em;
 }
 
 /* FILTERS */
@@ -127,11 +141,6 @@ header a {
     text-align: center;
 }
 
-.filters .filters-selector.active {
-    color: #ffffff;
-    background-color: #001D4A;
-}
-
 .filters .filters-select {
     color: #ffffff;
     background-color: #0077B6;
@@ -156,17 +165,6 @@ header a {
     position: relative;
     font-family: sans-serif;
     user-select: none;
-}
-
-.selected {
-    background-color: #232323;
-    color: #fff;
-    padding: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .options {

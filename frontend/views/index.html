@@ -3,56 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <title>Webshop</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
   <link rel="stylesheet" href="/css/header-footer.css" />
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon">
 </head>
 <body>
 
-<header>
-  <nav class="navbar">
-    <a href="/"> <img class="logo" src="./images/svg/logo-no-background.svg" height="200" width="200" alt=""> </a>
+<div id="header"></div>
 
-    <div class="search-input-wrapper">
-      <input type="text" class="input-search" placeholder="Was suchen Sie?" id="search-input">
-      <i class="fa-solid fa-magnifying-glass search-icon"></i>
-    </div>
-
-    <div class="nav-menu">
-      <a href="./html/login.html" class="user-link">
-        <i class="fas fa-user"></i>
-      </a>
-
-      <a href="./html/cart.html" class="cart-link">
-        <i class="fa-solid fa-cart-shopping"></i>
-      </a>
-
-      <a href="./html/wishlist.html" class="wishlist-link">
-        <i class="fas fa-heart"></i>
-      </a>
-
-      <a href="./html/wishlist.html" class="wishlist-link">
-        <i class="fas fa-clock-rotate-left"></i>
-      </a>
-    </div>
-
-  <div class="login">
-    <a href="/login" class="login-link">
-      Login
-    </a>
-  </div>
-
-  </nav>
-</header>
 <div class="filters-wrapper">
-  <div class="filters">
-  </div>
+  <div class="filters"></div>
 </div>
 
-<div class="active-filters">
-
-</div>
+<div class="active-filters"></div>
 
 <main>
   <section>
@@ -73,9 +37,26 @@
 
 <div id="app"></div>
 
-<footer>
-  <p>&copy; 2025 Unser Webshop</p>
-</footer>
+<div id="footer"></div>
+
 <script src="/js/index.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
 </body>
 </html>

@@ -1,23 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const loginDiv = document.querySelector('.login');
-    const navMenu = document.querySelector('.nav-menu');
-    if (!loginDiv || !navMenu) return;
 
-    try {
-        const res = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
-        const json = await res.json();
-        if (json.success) {
-            loginDiv.style.display = 'none';
-            navMenu.style.display = 'block';
-        } else {
-            loginDiv.style.display = 'block';
-            navMenu.style.display = 'none';
-        }
-    } catch (e) {
-        loginDiv.style.display = 'block';
-        navMenu.style.display = 'none';
-    }
-});
 
 let activeCategoryIds = [];
 let currentPage = 1;
@@ -49,6 +30,7 @@ async function loadProducts(categoryIds = [], page = 1) {
 
         if (!Array.isArray(paginatedProducts) || paginatedProducts.length === 0) {
             productList.innerHTML = '<li>Keine Produkte verfügbar.</li>';
+            renderPagination(products.length, page);
             return;
         }
 
@@ -110,7 +92,8 @@ function renderActiveFilterTags(categories) {
         closeBtn.onclick = () => {
             activeCategoryIds = activeCategoryIds.filter(cid => cid !== id);
             renderActiveFilterTags(getActiveCategoryNames());
-            loadProducts(activeCategoryIds);
+            currentPage = 1; // Seite zurücksetzen
+            loadProducts(activeCategoryIds, currentPage);
             // Setze das zugehörige Select zurück
             document.querySelectorAll('.filters-selector').forEach(sel => {
                 if ([...sel.options].some(opt => Number(opt.value) === id)) {
@@ -180,7 +163,8 @@ async function loadAndRenderCategoryFilters() {
                     activeCategoryIds.push(id);
                 }
                 renderActiveFilterTags(getActiveCategoryNames());
-                loadProducts(activeCategoryIds);
+                currentPage = 1; // Seite zurücksetzen
+                loadProducts(activeCategoryIds, currentPage);
             }
             // Auswahl bleibt gesetzt, bis X gedrückt wird
         });

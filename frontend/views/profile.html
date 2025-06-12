@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <title>Profil</title>
+
+
+
+    <style>
+        .profile-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 2rem;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .profile-header h2 {
+            margin: 0;
+            color: #007BFF;
+        }
+        .profile-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .profile-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        .profile-list li:last-child {
+            border-bottom: none;
+        }
+        .profile-label {
+            color: #555;
+            font-weight: bold;
+        }
+        .profile-value {
+            color: #222;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+        }
+        .error-message {
+            color: #c00;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .back-button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+<div id="header"></div>
+
+<button onclick="history.back()" class="back-button">← Zurück</button>
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>Profil</h2>
+        <p id="profile-username"></p>
+    </div>
+    <ul class="profile-list" id="profile-list">
+        <!-- Profildaten werden hier eingefügt -->
+    </ul>
+    <div class="error-message" id="error-message" style="display:none;"></div>
+    <button id="logout-btn" style="margin-top:2rem;width:100%;">Logout</button>
+</div>
+
+<div id="footer"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        async function loadFragment(id, url, scriptUrl) {
+            const res = await fetch(url);
+            if (res.ok) {
+                document.getElementById(id).innerHTML = await res.text();
+                if (scriptUrl) {
+                    const script = document.createElement('script');
+                    script.src = scriptUrl;
+                    script.defer = true;
+                    document.body.appendChild(script);
+                }
+            }
+        }
+        loadFragment('header', '/header-footer/header.html', '/js/header.js');
+        loadFragment('footer', '/header-footer/footer.html');
+    });
+
+    async function loadProfile() {
+        try {
+            const res = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
+            if (!res.ok) throw new Error('Nicht eingeloggt oder Fehler beim Laden');
+            const user = await res.json();
+
+            // Optional: Passe die Feldnamen an, falls die API sie anders liefert
+            const fields = [
+                { label: 'Vorname', value: user.data.first_name },
+                { label: 'Nachname', value: user.data.last_name },
+                { label: 'Benutzername', value: user.data.username },
+                { label: 'E-Mail', value: user.data.email },
+                { label: 'Straße', value: user.data.street },
+                { label: 'Hausnummer', value: user.data.house_number },
+                { label: 'PLZ', value: user.data.postal_code },
+                { label: 'Stadt', value: user.data.city },
+                { label: 'Land', value: user.data.country }
+            ];
+
+            document.getElementById('profile-username').textContent =
+                `${user.data.username} (${user.data.first_name} ${user.data.last_name})`;
+
+            const list = document.getElementById('profile-list');
+            list.innerHTML = '';
+            fields.forEach(f => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span class="profile-label">${f.label}:</span> <span class="profile-value">${f.value ?? '-'}</span>`;
+                list.appendChild(li);
+            });
+        } catch (e) {
+            document.getElementById('error-message').textContent = 'Fehler beim Laden des Profils. Bitte einloggen.';
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('profile-list').style.display = 'none';
+            document.getElementById('profile-username').style.display = 'none';
+        }
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+            const res = await fetch('http://localhost:3000/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (res.ok) {
+                window.location.href = '/';
+            } else {
+                alert('Logout fehlgeschlagen');
+            }
+        } catch (e) {
+            alert('Fehler beim Logout');
+        }
+    });
+
+    loadProfile();
+</script>
+</body>
+</html>

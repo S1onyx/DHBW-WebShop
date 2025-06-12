@@ -26,6 +26,34 @@ router.get('/product/:id', async (req, res) => {
   renderPage('product.html', res);
 });
 
+router.get('/profile', requireAuth, async (req, res) => {
+    const user = await getUserFromCookie(req);
+    if (!user) return res.redirect('/login');
+
+    renderPage('profile.html', res);
+});
+
+router.get('/wishlist', requireAuth, async (req, res) => {
+  const user = await getUserFromCookie(req);
+  if (!user) return res.redirect('/login');
+
+  renderPage('wishlist.html', res);
+});
+
+router.get('/cart', requireAuth, async (req, res) => {
+  const user = await getUserFromCookie(req);
+  if (!user) return res.redirect('/login');
+
+  renderPage('cart.html', res);
+});
+
+router.get('/history', requireAuth, async (req, res) => {
+  const user = await getUserFromCookie(req);
+  if (!user) return res.redirect('/login');
+
+  renderPage('history.html', res);
+});
+
 router.get(
   '/admin',
   requireAuth,
