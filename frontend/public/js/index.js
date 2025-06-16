@@ -1,29 +1,34 @@
-
+window.currentSearchOptions = {};
 
 let activeCategoryIds = [];
 let currentPage = 1;
 const productsPerPage = 16;
 let allFilteredProducts = [];
 
-async function loadProducts(categoryIds = [], page = 1) {
+async function loadProducts(categoryIds = [], page = 1, options = {}) {
     const productList = document.getElementById('product-list');
     if (!productList) return;
     productList.innerHTML = '<li>Produkte werden geladen...</li>';
 
+    // Query-Parameter aufbauen
+    const params = new URLSearchParams();
+    if (categoryIds.length > 0) params.append('category', categoryIds.join(','));
+    if (options.name) params.append('name', options.name);
+    if (options.minPrice) params.append('minPrice', options.minPrice);
+    if (options.maxPrice) params.append('maxPrice', options.maxPrice);
+    if (options.inStock !== undefined) params.append('inStock', options.inStock);
+    if (options.sort) params.append('sort', options.sort);
+    if (options.order) params.append('order', options.order);
+
     try {
-        const response = await fetch('http://localhost:3000/api/products');
+        const response = await fetch(`http://localhost:3000/api/products?${params.toString()}`);
         if (!response.ok) throw new Error('Fehler beim Abrufen der Produkte');
         const result = await response.json();
         let products = result.data;
 
-        // Nach Kategorie filtern
-        if (categoryIds.length > 0) {
-            products = products.filter(p => categoryIds.includes(p.category_id));
-        }
+        allFilteredProducts = products;
 
-        allFilteredProducts = products; // Speichere alle gefilterten Produkte
-
-        // Paginierung
+        // Paginierung im Frontend
         const start = (page - 1) * productsPerPage;
         const end = start + productsPerPage;
         const paginatedProducts = products.slice(start, end);
@@ -44,24 +49,31 @@ async function loadProducts(categoryIds = [], page = 1) {
             productList.appendChild(li);
         });
 
-        // Optional: Pagination-Buttons anzeigen
         renderPagination(products.length, page);
     } catch (error) {
         productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
     }
 }
 
+const searchInput = document.getElementById('search-input');
+
+function triggerSearch() {
+    const name = searchInput.value.trim();
+    window.currentSearchOptions = { name };
+    currentPage = 1;
+    loadProducts(activeCategoryIds, currentPage, window.currentSearchOptions);
+}
+
+// Paginierung in renderPagination anpassen:
 function renderPagination(totalProducts, currentPage) {
     const paginationDiv = document.getElementById('pagination');
     if (!paginationDiv) return;
     paginationDiv.innerHTML = '';
 
     const totalPages = Math.ceil(totalProducts / productsPerPage);
-    // Seitenzahlen anzeigen
     document.getElementById('page-number').textContent = totalProducts === 0 ? 0 : currentPage;
     document.getElementById('max-pages').textContent = totalPages;
 
-    // Optional: Vor-/Zurück-Buttons aktivieren/deaktivieren
     const prevBtn = document.getElementById('prev-page');
     const nextBtn = document.getElementById('next-page');
     if (prevBtn && nextBtn) {
@@ -69,10 +81,16 @@ function renderPagination(totalProducts, currentPage) {
         nextBtn.style.cursor = currentPage < totalPages ? 'pointer' : 'not-allowed';
 
         prevBtn.onclick = () => {
-            if (currentPage > 1) loadProducts(activeCategoryIds, currentPage - 1);
+            if (currentPage > 1) {
+                currentPage--;
+                loadProducts(activeCategoryIds, currentPage, window.currentSearchOptions);
+            }
         };
         nextBtn.onclick = () => {
-            if (currentPage < totalPages) loadProducts(activeCategoryIds, currentPage + 1);
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadProducts(activeCategoryIds, currentPage, window.currentSearchOptions);
+            }
         };
     }
 }
@@ -186,4 +204,28 @@ async function loadAndRenderCategoryFilters() {
 window.onload = async () => {
     await loadAndRenderCategoryFilters();
     await loadProducts();
+
+
+    const searchInput = document.getElementById('search-input');
+    const searchIcon = document.querySelector('.search-icon');
+
+    function triggerSearch() {
+        if (!searchInput) return;
+        const name = searchInput.value.trim();
+        window.currentSearchOptions = { name };
+        currentPage = 1;
+        loadProducts(activeCategoryIds, currentPage, window.currentSearchOptions);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                triggerSearch();
+            }
+        });
+    }
+
+    if (searchIcon) {
+        searchIcon.addEventListener('click', triggerSearch);
+    }
 };

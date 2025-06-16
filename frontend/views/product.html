@@ -34,5 +34,23 @@
 <div id="footer"></div>
 
 <script type="module" src="/js/product.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
 </body>
 </html>
