@@ -140,8 +140,18 @@ async function loadAndRenderCategoryFilters() {
         select.id = category.name.replace(/\s+/g, '');
         select.className = 'filters-selector';
 
+// ... im loadAndRenderCategoryFilters()
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = category.name;
+        emptyOption.disabled = true;
+        emptyOption.selected = true;
+        emptyOption.hidden = true;
+        select.appendChild(emptyOption);
+
+// Dann wie gehabt:
         const mainOption = document.createElement('option');
-        mainOption.value = '';
+        mainOption.value = category.id;
         mainOption.textContent = category.name;
         mainOption.className = 'filters-select';
         select.appendChild(mainOption);

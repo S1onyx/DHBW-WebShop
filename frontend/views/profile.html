@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>Profil</title>
-
-
-
     <style>
+
         .profile-container {
             max-width: 400px;
             margin: 4rem auto;
@@ -112,10 +110,8 @@
                 { label: 'Nachname', value: user.data.last_name },
                 { label: 'Benutzername', value: user.data.username },
                 { label: 'E-Mail', value: user.data.email },
-                { label: 'Straße', value: user.data.street },
-                { label: 'Hausnummer', value: user.data.house_number },
-                { label: 'PLZ', value: user.data.postal_code },
-                { label: 'Stadt', value: user.data.city },
+                { label: 'Straße + Hausnummer', value: `${user.data.street}, ${user.data.house_number}`},
+                { label: 'PLZ + Stadt', value: `${user.data.postal_code ?? ''}, ${user.data.city ?? ''}`.trim() },
                 { label: 'Land', value: user.data.country }
             ];
 
