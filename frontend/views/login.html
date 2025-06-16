@@ -1,4 +1,44 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link rel="stylesheet" href="/frontend/public/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/frontend/public/css/auth.css" type="text/css">
+    <script src="/frontend/utils/auth_util.js" defer></script>
+    <script src="/frontend/utils/login.js" defer></script>
+</head>
+<body>
+    <main>
+        <div class="card-container auth-container" id="login-container">
+            <h1 class="auth-title">Login</h1>
+            <form id="login-form" class="auth-form" novalidate>
+                <label for="username-email" hidden>Username/ E-Mail</label>
+                <input type="text" id="username-email" name="username-email" placeholder="Username/ E-Mail" class="auth-input" required>
+                <div class="error-message" id="username-email-error"></div>
+
+                <label for="password" hidden>Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" class="auth-input" required>
+                <div id="below-password">
+                    <a href="reset-password.html" class="forgot-password-link">Forgot Password? Reset here!</a>
+                    <div class="error-message" id="password-error"></div>
+                </div>
+
+                <input type="submit" class="auth-button first-button" value="Log in">
+                <button class="auth-button second-button" onclick="window.location.href='signup.html'">New here? Sign up!</button>
+            </form>
+        </div>
+    </main>
+</body>
+<footer id="footer-container">
+
+</footer>
+    
+
+</html>
+
+<!--<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -107,4 +147,4 @@
     });
   </script>
 </body>
-</html>
+</html>-->

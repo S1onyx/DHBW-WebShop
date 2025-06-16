@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign up</title>
+    <link rel="stylesheet" href="/frontend/public/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/frontend/public/css/auth.css" type="text/css">
+    <script src="/frontend/utils/auth_util.js" defer></script>
+    <script src="/frontend/utils/signup.js" defer></script>
+</head>
+<body>
+    <main>
+        <div class="card-container auth-container" id="signin-container">
+            <h1 class="auth-title">Sign up</h1>
+            <form id="signup-form" class="auth-form" novalidate>
+                <label for="username" hidden>Username</label>
+                <input type="text" placeholder="Username" id="username" name="username" class="auth-input" required>
+                <div class="error-message" id="username-error"></div>
+
+                <label for="email" hidden>E-Mail</label>
+                <input type="email" placeholder="E-Mail" id="email" name="email" class="auth-input" required>
+                <div class="error-message" id="email-error"></div>
+                <label for="repeat-email" hidden>Repeat E-Mail</label>
+                <input type="email" placeholder="Repeat E-Mail" id="repeat-email" name="repeat-email" class="auth-input repeat-input" required>
+                <div class="error-message" id="repeat-email-error"></div>
+
+                <label for="password" hidden>Password</label>
+                <input type="password" placeholder="Password" id="password" name="password" class="auth-input" required>
+                <div class="error-message" id="password-error"></div>
+                <label for="repeat-password" hidden>Repeat Password</label>
+                <input type="password" placeholder="Repeat Password" id="repeat-password" name="repeat-password" class="auth-input repeat-input" required>
+                <div class="error-message" id="repeat-password-error"></div>
+                
+                <p><span id="page">1</span>/2</p>
+
+                <input type="submit" class="auth-button first-button" value="Continue">
+                <button class="auth-button second-button" onclick="window.location.href='login.html'">Already have an Account? Log in!</button>
+            </form>
+            
+        </div>
+    </main>
+</body>
+<footer id="footer-container">
+
+</footer>
+
+
+</html>

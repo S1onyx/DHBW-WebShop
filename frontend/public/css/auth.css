@@ -1,0 +1,139 @@
+:root {
+    --font-family: Arial, Helvetica, sans-serif;
+    --font-color: #00000;
+    --placeholder-color: #B1B1B1;
+
+    --forgot-password-color: #7B7B7B;
+    --forgot-password-hover-color: #0077B6;
+
+    --first-button-color: #0077B6;
+    --first-button-font-color: #FFFFFF;
+    --button-border-color: rgba(255, 255, 255, 0.1);
+    --second-button-color: #CEF4FF;
+    --second-button-font-color: #000000;
+
+    --first-button-hover-color: #005F94;
+    --second-button-hover-color: #B4E9FA;
+
+    --error-border: #b61313;
+}
+
+p {
+    font-family: var(--font-family);
+}
+
+.auth-container {
+    width: 630px;
+    height: auto;
+}
+
+.auth-title {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    color: var(--font-color);
+    margin: 0;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-input {
+    margin-top: 20px;
+    width: 440px;
+    height: 45px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 1.2rem;
+    line-height: 30px;
+    padding-left: 10px;
+
+    border: 1px trans #000000;
+    border-radius: 10px;
+}
+
+.auth-input::placeholder {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 30px;
+    color: var(--placeholder-color)
+}
+
+/*Forgot Password CSS*/
+
+.forgot-password-link{
+    font-family: var(--font-color);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--forgot-password-color);
+
+    align-self: flex-start;
+}
+
+.forgot-password-link:hover{
+    color: var(--forgot-password-hover-color);
+}
+
+#forgot-password-contaier {
+    width: 630px;
+    height: auto;
+}
+
+/*Button CSS*/
+
+.auth-button{
+    width: 440px;
+    height: 45px;
+
+    border: 3px solid var(--button-border-color);
+    border-radius: 30px;
+
+    font-size: 1.2rem;
+}
+
+.first-button{
+    background-color: var(--first-button-color);
+    font-weight: 900;
+    color: var(--first-button-font-color);
+    margin-top: 30px;
+}
+
+.first-button:hover {
+    background-color: var(--first-button-hover-color);
+}
+
+.second-button{
+    background-color: var(--second-button-color);
+    color: var(--second-button-font-color);
+
+    margin-top: 10px;
+}
+
+.second-button:hover {
+    background-color: var(--second-button-hover-color);
+}
+
+/*Error CSS*/
+
+.input-error {
+    border: 2px var(--error-border) solid;
+}
+
+.error-message {
+    font-family: var(--font-family);
+    align-self: flex-end;
+}
+
+#below-password {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.repeat-input {
+    margin-top: 5px;
+}
