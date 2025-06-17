@@ -1,4 +1,3 @@
-
 header {
     height: 3.5rem;
     display: flex;
@@ -31,7 +30,6 @@ header a {
     font-size: 1.2em;
     display: none;
 }
-
 
 @media screen and (max-width: 678px) {
     .burger {
@@ -72,7 +70,7 @@ header a {
     border: none;
     outline: none;
     font-size: 1.1em;
-    padding: 0 2.5rem 0 0.5rem; /* rechts Platz für das Icon */
+    padding: 0 2.5rem 0 0.5rem;
     background: #efefef;
     border-radius: 0.5rem;
 }
@@ -101,51 +99,12 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 footer a {
     color: #ffffff;
     text-decoration: none;
     font-size: 1.2em;
-}
-
-/* FILTERS */
-
-.filters-wrapper {
-    display: flex;
-    width: 100%;
-    background-color: #CEF4FF;
-    height: 3rem
-}
-
-.filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
-    width: 100%;
-    max-width: 90rem;
-    margin: 0 auto;
-}
-
-.filters .filters-selector {
-    border: none;
-    outline: none;
-    color: #000000;
-    background-color: transparent;
-    font-size: 1.2em;
-    height: 3rem;
-    padding: 0.5rem 0.5rem;
-    text-align: center;
-}
-
-.filters .filters-select {
-    color: #ffffff;
-    background-color: #0077B6;
-    text-decoration: none;
-    font-size: 1.4rem;
-    border: none;
 }
 
 @media screen and (max-width: 678px) {
@@ -155,39 +114,4 @@ footer a {
     .input-search:focus {
         width: 90vw;
     }
-}
-
-
-
-/* DROPDOWN */
-.custom-select {
-    position: relative;
-    font-family: sans-serif;
-    user-select: none;
-}
-
-.options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #343434;
-    border-radius: 5px;
-    overflow: hidden;
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    z-index: 100;
-}
-
-.option {
-    padding: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #ccc;
-}
-
-.option:hover {
-    background-color: #555;
 }

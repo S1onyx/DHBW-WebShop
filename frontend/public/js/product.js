@@ -29,23 +29,29 @@
         price.textContent = `Preis: ${product.price} €`;
         stock.textContent = `Auf Lager: ${product.stock}`;
 
-        // Bilder anzeigen
-        imageContainer.innerHTML = '';
-        if (Array.isArray(product.images) && product.images.length > 0) {
-            product.images.forEach(img => {
-                const image = document.createElement('img');
-                image.src = img.url;
-                image.alt = product.name;
-                image.classList.add('product-image');
-                imageContainer.appendChild(image);
-            });
-        } else if (product.image_url) {
-            const img = document.createElement('img');
-            img.src = product.image_url;
-            img.alt = product.name;
-            img.classList.add('product-image');
-            imageContainer.appendChild(img);
-        }
+// Bilder anzeigen
+imageContainer.innerHTML = '';
+if (Array.isArray(product.images) && product.images.length > 0) {
+    product.images.forEach(img => {
+        const image = document.createElement('img');
+        const imageUrl = img.url;
+        image.src = imageUrl.startsWith('http')
+            ? imageUrl
+            : `http://localhost:3000${imageUrl}`;
+        image.alt = product.name;
+        image.classList.add('product-image');
+        imageContainer.appendChild(image);
+    });
+} else if (product.image_url) {
+    const imageUrl = product.image_url;
+    const img = document.createElement('img');
+    img.src = imageUrl.startsWith('http')
+        ? imageUrl
+        : `http://localhost:3000${imageUrl}`;
+    img.alt = product.name;
+    img.classList.add('product-image');
+    imageContainer.appendChild(img);
+}
 
         // Bewertungen
         reviewList.innerHTML = '';

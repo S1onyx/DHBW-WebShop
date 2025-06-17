@@ -76,3 +76,13 @@ main {
 .back-button:hover {
     background-color: #d0d0d0;
 }
+
+.product-image {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0.5rem auto;
+}

@@ -1,44 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <title>Webshop</title>
 
   <link rel="stylesheet" href="/css/header-footer.css" />
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon">
+  <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon" />
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
 <div id="header"></div>
 
+<!-- Filterleiste -->
 <div class="filters-wrapper">
-  <div class="filters"></div>
+  <div class="filters">
+    
+    <!-- Kategorie-Dropdown (wird durch JS ersetzt) -->
+    <!-- Wird durch loadAndRenderCategoryFilter() ersetzt -->
+    
+    <!-- Nur verfügbare Produkte, Preisbereich, Sortierung und Reset: werden dynamisch durch JS generiert -->
+    
+    <!-- Suchfeld -->
+    <div class="search-wrapper">
+      <input type="text" id="search-input" placeholder="Produktname suchen..." />
+      <button class="search-icon">🔍</button>
+    </div>
+  </div>
 </div>
 
-
-
+<!-- Aktive Filter-Tags -->
 <div class="active-filters"></div>
 
 <main>
   <section>
-    <h2>Unsere Produkte</h2>
+    <h2 class="section-header">Unsere Produkte</h2>
+
+    <!-- Produktliste -->
     <ul id="product-list" class="product-list">
       <li>Produkte werden geladen...</li>
     </ul>
-    <div id="pagination"></div>
+
+    <!-- Paginierung -->
     <div class="pages-list">
-      <i class="fa-solid fa-arrow-left" id="prev-page" style="margin: 0.5rem"></i>
-      <span id="page-number" style="margin: 0.5rem"></span>
+      <i class="fa-solid fa-arrow-left" id="prev-page" style="margin: 0.5rem; cursor: pointer;"></i>
+      <span id="page-number" style="margin: 0.5rem">1</span>
       von
-      <span id="max-pages" style="margin: 0.5rem"></span>
-      <i class="fa-solid fa-arrow-right" id="next-page"></i>
+      <span id="max-pages" style="margin: 0.5rem">1</span>
+      <i class="fa-solid fa-arrow-right" id="next-page" style="margin: 0.5rem; cursor: pointer;"></i>
     </div>
+
+    <!-- Seitenwahl-Buttons -->
+    <div id="pagination" class="pagination"></div>
+    <!-- Produkte pro Seite Auswahl -->
+<div class="products-per-page" style="margin-top: 1rem;">
+  <label for="per-page-select">Produkte pro Seite:</label>
+  <select id="per-page-select">
+    <option value="2">2</option>
+    <option value="4">4</option>
+    <option value="8">8</option>
+    <option value="16" selected>16</option>
+    <option value="32">32</option>
+    <option value="64">64</option>
+    <option value="128">128</option>
+  </select>
+</div>
   </section>
 </main>
 
 <div id="app"></div>
-
 <div id="footer"></div>
 
 <script src="/js/index.js"></script>
@@ -56,6 +87,7 @@
         }
       }
     }
+
     loadFragment('header', '/header-footer/header.html', '/js/header.js');
     loadFragment('footer', '/header-footer/footer.html');
   });
