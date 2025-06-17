@@ -19,14 +19,18 @@
                 <div class="error-message" id="username-email-error"></div>
 
                 <label for="password" hidden>Password</label>
-                <input type="password" id="password" name="password" placeholder="Password" class="auth-input" required>
+                <div class="password-wrapper auth-input" id="password-wrapper">
+                  <input type="password" id="password" name="password" placeholder="Password" class="password-input" required>
+                  <button type="button" id="toggle-password" class="toggle-password-button">Show</button>
+                </div>
+
                 <div id="below-password">
-                    <a href="reset-password.html" class="forgot-password-link">Forgot Password? Reset here!</a>
+                    <a href="#" id="forgot-password-link" class="forgot-password-link">Forgot Password? Reset here!</a>
                     <div class="error-message" id="password-error"></div>
                 </div>
 
                 <input type="submit" class="auth-button first-button" value="Log in">
-                <button class="auth-button second-button" onclick="window.location.href='signup.html'">New here? Sign up!</button>
+                <button class="auth-button second-button" id="to-signup">New here? Sign up!</button>
             </form>
         </div>
     </main>

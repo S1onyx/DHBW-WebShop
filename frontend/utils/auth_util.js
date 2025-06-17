@@ -1,6 +1,7 @@
 class inputObject {
-    constructor(elementId, errorText, errorElementId, validateFn) {
+    constructor(elementId, elementForError, errorText, errorElementId, validateFn) {
         this._element = document.getElementById(elementId);
+        this._elementForError = document.getElementById(elementForError);
         this._errorText = errorText;
         this._errorElement = document.getElementById(errorElementId);
         this._validateFn = validateFn;
@@ -9,8 +10,8 @@ class inputObject {
     validate() {
         const isValid = this._validateFn(this);
         if(!isValid) {
-            showInputError(this._errorText, this._errorElement, this._element);
-            addRemoveErrorEventListener(this._element, this._errorElement);
+            showInputError(this._errorText, this._errorElement, this._elementForError);
+            addRemoveErrorEventListener(this._elementForError, this._errorElement);
             return false;
         } else {
             return true;
@@ -20,6 +21,10 @@ class inputObject {
     getValue() {
         const content = this._element.value.trim();
         return content;
+    }
+
+    getElement() {
+        return this._element;
     }
 }
 
@@ -41,4 +46,14 @@ function isElementEmpty(element) {
 function showInputError(message, errorElement, element) {
     errorElement.textContent = message;
     element.classList.add("input-error");
+}
+
+function togglePassword(toggleButton, passwordInput) {
+    if(passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleButton.textContent = "Hide";
+    } else {
+        passwordInput.type = "password";
+        toggleButton.textContent = "Show";
+    }
 }
