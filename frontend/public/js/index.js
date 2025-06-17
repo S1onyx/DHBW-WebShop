@@ -209,8 +209,14 @@ categoryTag.textContent = cat
   ratingNumber.textContent = ` (${ratingValue.toFixed(1)})`;
   ratingNumber.style.marginLeft = '0.25rem';
 
+  const reviewCount = parseFloat(product.review_count || 0);
+  const reviewCounthtml = document.createElement('span');
+  reviewCounthtml.textContent = ` (${reviewCount} Bew.)`;
+  reviewCounthtml.style.marginLeft = '0.25rem';
+
   ratingWrapper.appendChild(starsSpan);
   ratingWrapper.appendChild(ratingNumber);
+  ratingWrapper.appendChild(reviewCounthtml);
 
   // Info-Wrapper
   const info = document.createElement('div');
