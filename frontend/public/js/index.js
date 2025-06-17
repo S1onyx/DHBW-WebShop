@@ -195,28 +195,31 @@ categoryTag.textContent = cat
     : cat.name
   : 'Unbekannt';
 
-  // Bewertung
-  const ratingWrapper = document.createElement('div');
-  ratingWrapper.className = 'product-rating';
+// Bewertung
+const ratingWrapper = document.createElement('div');
+ratingWrapper.className = 'product-rating';
 
-  const ratingValue = parseFloat(product.average_rating || 0);
-  const stars = '★'.repeat(Math.round(ratingValue)) + '☆'.repeat(5 - Math.round(ratingValue));
+const ratingValue = parseFloat(product.average_rating || 0);
+const reviewCount = parseInt(product.review_count || 0);
 
-  const starsSpan = document.createElement('span');
-  starsSpan.textContent = stars;
+// Sterne
+const starsSpan = document.createElement('span');
+starsSpan.className = 'stars';
+starsSpan.textContent = '★'.repeat(Math.round(ratingValue)) + '☆'.repeat(5 - Math.round(ratingValue));
 
-  const ratingNumber = document.createElement('span');
-  ratingNumber.textContent = ` (${ratingValue.toFixed(1)})`;
-  ratingNumber.style.marginLeft = '0.25rem';
+// Bewertung (z. B. 3.3)
+const ratingNumber = document.createElement('span');
+ratingNumber.className = 'rating-value';
+ratingNumber.textContent = `(${ratingValue.toFixed(1)})`;
 
-  const reviewCount = parseFloat(product.review_count || 0);
-  const reviewCounthtml = document.createElement('span');
-  reviewCounthtml.textContent = ` (${reviewCount} Bew.)`;
-  reviewCounthtml.style.marginLeft = '0.25rem';
+// Review-Zahl (z. B. 6 Bewertungen)
+const reviewCounthtml = document.createElement('span');
+reviewCounthtml.className = 'review-count';
+reviewCounthtml.textContent = `(${reviewCount} Bewertungen)`;
 
-  ratingWrapper.appendChild(starsSpan);
-  ratingWrapper.appendChild(ratingNumber);
-  ratingWrapper.appendChild(reviewCounthtml);
+ratingWrapper.appendChild(starsSpan);
+ratingWrapper.appendChild(ratingNumber);
+ratingWrapper.appendChild(reviewCounthtml);
 
   // Info-Wrapper
   const info = document.createElement('div');
@@ -436,8 +439,7 @@ async function loadAndRenderCategoryFilter() {
 
   const resetBtn = document.createElement('button');
   resetBtn.textContent = 'Filter zurücksetzen';
-  resetBtn.className = 'loginLink';
-  resetBtn.style.marginLeft = '2rem';
+  resetBtn.className = 'reset-filters-btn';
 
   resetBtn.addEventListener('click', () => {
     selectedCategoryId = null;
@@ -464,8 +466,18 @@ async function loadAndRenderCategoryFilter() {
   filtersWrapper.appendChild(checkbox);
   filtersWrapper.appendChild(checkboxLabel);
   filtersWrapper.appendChild(priceWrapper);
-  filtersWrapper.appendChild(sortSelect);
-  filtersWrapper.appendChild(resetBtn);
+  // Nur Sortierung raus in die separate Leiste
+  const controlBar = document.querySelector('.filters-control-bar');
+  if (controlBar) {
+    controlBar.innerHTML = '';
+    controlBar.appendChild(sortSelect);
+  }
+
+// Reset-Button bleibt oben
+const wrapper = document.querySelector('.filters-wrapper');
+if (wrapper) {
+  wrapper.appendChild(resetBtn);
+}
 }
 
 window.onload = async () => {
