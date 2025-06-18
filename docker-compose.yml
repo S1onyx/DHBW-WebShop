@@ -28,6 +28,8 @@ services:
       PORT: 3000
       JWT_ACCESS_SECRET: mySuperSecretAccessKey
       JWT_ACCESS_EXPIRATION: 60
+    volumes:
+      - ./backend/uploads:/app/uploads
     depends_on:
       - db
     networks:
