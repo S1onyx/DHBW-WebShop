@@ -118,6 +118,17 @@ function updateActiveFiltersUI() {
   });
 }
 
+const fetchOptionsWithCredentials = {
+  credentials: 'include',
+  headers: { 'Content-Type': 'application/json' }
+};
+
+async function getCurrentUser() {
+  const res = await fetch('http://localhost:3000/api/users/me', fetchOptionsWithCredentials);
+  const json = await res.json();
+  return json;
+}
+
 async function loadProducts(categoryId = null, page = 1, options = {}) {
   const productList = document.getElementById('product-list');
   if (!productList) return;
@@ -180,11 +191,13 @@ products.forEach(product => {
 
 // Klick-Event für das Bild
   img.addEventListener('click', async function(event) {
-    event.preventDefault(); // Verhindert ggf. das Link-Verhalten
+    event.preventDefault();
+    const body = { productId: product.id, quantity: 1 };
+    console.log('Sende an API:', body);
     await fetch('http://localhost:3000/api/carts/items', {
+      ...fetchOptionsWithCredentials,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: product.id, quantity: 1 })
+      body: JSON.stringify(body)
     });
   });
 
