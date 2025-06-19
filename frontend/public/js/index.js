@@ -155,6 +155,10 @@ products.forEach(product => {
   const li = document.createElement('li');
   li.className = 'product-card';
 
+  const productInfoOverlay = document.createElement('div');
+    productInfoOverlay.className = 'product-info-overlay';
+    productInfoOverlay.textContent = 'Product Page';
+
   const link = document.createElement('a');
   link.href = `/product/${product.id}`;
   link.className = 'product-link';
@@ -250,6 +254,7 @@ ratingWrapper.appendChild(reviewCounthtml);
   info.appendChild(categoryTag);
   info.appendChild(document.createElement('br'));
   info.appendChild(ratingWrapper);
+  info.appendChild(productInfoOverlay);
 
   // Zusammenbauen
   link.appendChild(thumbWrapper);
