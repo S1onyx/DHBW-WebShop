@@ -159,16 +159,37 @@ products.forEach(product => {
   link.href = `/product/${product.id}`;
   link.className = 'product-link';
 
- // Produktbild
-const img = document.createElement('img');
-const imageUrl = product.image_url;
-img.src = imageUrl
-  ? imageUrl.startsWith('http') 
-    ? imageUrl 
-    : `http://localhost:3000${imageUrl}`
-  : '/images/placeholder.jpg';
-img.alt = product.name;
-img.className = 'product-thumb small-thumb';
+// Produktbild
+  const thumbWrapper = document.createElement('div');
+  thumbWrapper.className = 'product-thumb-wrapper';
+
+  const img = document.createElement('img');
+  const imageUrl = product.image_url;
+  img.src = imageUrl
+      ? imageUrl.startsWith('http')
+          ? imageUrl
+          : `http://localhost:3000${imageUrl}`
+      : '/images/placeholder.jpg';
+  img.alt = product.name;
+  img.className = 'product-thumb small-thumb';
+  img.dataset.id = product.id;
+
+// Klick-Event für das Bild
+  img.addEventListener('click', async function(event) {
+    event.preventDefault(); // Verhindert ggf. das Link-Verhalten
+    await fetch('http://localhost:3000/api/carts/items', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: product.id, quantity: 1 })
+    });
+  });
+
+  const buyOverlay = document.createElement('div');
+  buyOverlay.className = 'buy-overlay';
+  buyOverlay.textContent = 'Buy';
+
+  thumbWrapper.appendChild(img);
+  thumbWrapper.appendChild(buyOverlay);
 
   // Produkttitel
   const title = document.createElement('h3');
@@ -231,7 +252,7 @@ ratingWrapper.appendChild(reviewCounthtml);
   info.appendChild(ratingWrapper);
 
   // Zusammenbauen
-  link.appendChild(img);
+  link.appendChild(thumbWrapper);
   link.appendChild(info);
   li.appendChild(link);
   productList.appendChild(li);
@@ -277,24 +298,6 @@ function renderPagination(totalProducts, currentPage) {
     }
   };
 
-  // Seitenzahl-Buttons
-  paginationDiv.innerHTML = '';
-
-  function createPageButton(i) {
-    const btn = document.createElement('button');
-    btn.textContent = i;
-    btn.className = i === currentPage ? 'pagination-button active' : 'pagination-button';
-    btn.onclick = () => loadProducts(selectedCategoryId, i, window.currentSearchOptions);
-    paginationDiv.appendChild(btn);
-  }
-
-  function createEllipsis() {
-    const span = document.createElement('span');
-    span.textContent = '...';
-    span.style.padding = '0 0.5rem';
-    paginationDiv.appendChild(span);
-  }
-
   const visible = new Set();
 
   // immer zeigen
@@ -303,21 +306,6 @@ function renderPagination(totalProducts, currentPage) {
   visible.add(totalPages - 1);
   visible.add(totalPages);
 
-  // aktuelle Seite +/- 2
-  for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-    if (i >= 1 && i <= totalPages) visible.add(i);
-  }
-
-  let lastRendered = 0;
-  for (let i = 1; i <= totalPages; i++) {
-    if (visible.has(i)) {
-      if (i !== lastRendered + 1 && lastRendered !== 0) {
-        createEllipsis();
-      }
-      createPageButton(i);
-      lastRendered = i;
-    }
-  }
 }
 
 async function loadAndRenderCategoryFilter() {
@@ -353,6 +341,8 @@ async function loadAndRenderCategoryFilter() {
     loadProducts(selectedCategoryId, currentPage, window.currentSearchOptions);
   });
 
+  const inStockDiv = document.createElement('div');
+
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.id = 'inStock';
@@ -361,12 +351,14 @@ async function loadAndRenderCategoryFilter() {
   const checkboxLabel = document.createElement('label');
   checkboxLabel.htmlFor = 'inStock';
   checkboxLabel.textContent = 'Nur verfügbare Produkte';
-  checkboxLabel.style.marginLeft = '0.5rem';
 
   checkbox.addEventListener('change', () => {
     window.currentSearchOptions.inStock = checkbox.checked;
     loadProducts(selectedCategoryId, 1, window.currentSearchOptions);
   });
+
+    inStockDiv.appendChild(checkbox);
+    inStockDiv.appendChild(checkboxLabel);
 
   const priceWrapper = document.createElement('div');
   priceWrapper.className = 'price-range-wrapper';
@@ -416,7 +408,7 @@ async function loadAndRenderCategoryFilter() {
   sortSelect.id = 'sort-select';
   sortSelect.className = 'filters-selector';
   sortSelect.innerHTML = `
-    <option value="">Sortierung wählen</option>
+    <option value="">Sortierung wählen <hr></option>
     <option value="price-asc">Preis aufsteigend</option>
     <option value="price-desc">Preis absteigend</option>
     <option value="name-asc">Name A–Z</option>
@@ -463,15 +455,9 @@ async function loadAndRenderCategoryFilter() {
   });
 
   filtersWrapper.appendChild(select);
-  filtersWrapper.appendChild(checkbox);
-  filtersWrapper.appendChild(checkboxLabel);
+  filtersWrapper.appendChild(sortSelect);
+  filtersWrapper.appendChild(inStockDiv);
   filtersWrapper.appendChild(priceWrapper);
-  // Nur Sortierung raus in die separate Leiste
-  const controlBar = document.querySelector('.filters-control-bar');
-  if (controlBar) {
-    controlBar.innerHTML = '';
-    controlBar.appendChild(sortSelect);
-  }
 
 // Reset-Button bleibt oben
 const wrapper = document.querySelector('.filters-wrapper');

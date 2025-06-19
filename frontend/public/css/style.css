@@ -57,10 +57,16 @@ ul#product-list li:hover {
 .product-link {
   color: inherit;
   text-decoration: none;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.product-info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* Produktbild */
@@ -71,6 +77,43 @@ ul#product-list li:hover {
   object-fit: contain;
   margin-bottom: 0.5rem;
   display: block;
+}
+.product-thumb-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 160px;
+  overflow: hidden;
+}
+
+.product-thumb {
+  width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+.buy-overlay {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #001D4A 0%, rgba(21, 27, 241, 0.44) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  opacity: 0.95;
+  transition: top 0.4s cubic-bezier(.4,2,.6,1);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.product-thumb-wrapper:hover .buy-overlay {
+  top: 0;
 }
 
 /* Produkttitel */
@@ -122,26 +165,21 @@ ul#product-list li:hover {
   letter-spacing: 0.1rem;
 }
 
-.product-rating .rating-value {
-  color: #444;
-  font-weight: 500;
-}
-
-.product-rating .review-count {
-  color: #666;
-  font-style: italic;
-  font-size: 0.95rem;
-}
-
 /* === Filterleiste === */
-.filters-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
+
+.wrapper{
   gap: 1rem;
   padding: 1rem 2rem;
   background: #dceaf3;
+}
+
+.filters-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
 }
 
 .filters-control-bar {
@@ -171,30 +209,19 @@ ul#product-list li:hover {
   color: #1a1a1a;
   min-width: 180px;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: 
-    linear-gradient(to top, #fff 50%, transparent 50%),
-    linear-gradient(to bottom, #fff 50%, transparent 50%),
+  background-image:
     url("data:image/svg+xml,%3Csvg fill='%23666' viewBox='0 0 24 24' width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5-5 5 5H7zM7 14l5 5 5-5H7z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position:
     right 1.75rem center,
     right 1.75rem center,
     right 0.75rem center;
-  background-size:
-    1rem 1rem,
-    1rem 1rem,
-    1rem;
   cursor: pointer;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-#sort-select:hover,
-#sort-select:focus {
-  border-color: #0077b6;
-  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.15);
-  outline: none;
+select.filters-selector option:hover {
+  box-shadow: 0 0 10px 100px #1882A8 inset;
 }
 
 .checkbox-inline {
@@ -250,7 +277,7 @@ ul#product-list li:hover {
   font-size: 1rem;
   font-weight: bold;
   border: none;
-  background-color: #0077B6;
+  background-color: #001D4A;
   color: white;
   border-radius: 2rem;
   cursor: pointer;
@@ -266,22 +293,6 @@ ul#product-list li:hover {
   margin-left: auto;
   display: flex;
   gap: 0.5rem;
-}
-
-.sort-wrapper select,
-#sort-select {
-  background: #0077B6;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.4rem;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  margin-left: auto;
-}
-
-#sort-select:hover {
-  background-color: #005f8a;
 }
 
 /* === Aktive Filter-Tags === */
@@ -459,11 +470,6 @@ ul#product-list li:hover {
     flex-direction: column;
     align-items: flex-end;
     padding-top: 0.5rem;
-  }
-
-  .filters-wrapper {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .reset-filters-btn {
