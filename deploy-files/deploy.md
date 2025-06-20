@@ -28,15 +28,26 @@ Diese Datei beinhaltet:
 - Keine erneute Datenbank-Seeds
 - Verlinkung zu Images auf Docker Hub
 
-*(Datei hast du bereits, alternativ liefere ich sie gerne erneut aus.)*
+```bash
+touch docker-compose.yml
+vim docker-compose.yml
+```
+
+```bash
+esc
+:wq (save)
+:q (exit)
+```
 
 ---
 
 ## 4. 🐳 Images holen und starten
 
 ```bash
-docker compose -f docker-compose.deploy.yml pull
-docker compose -f docker-compose.deploy.yml up -d
+docker compose down --volumes --remove-orphans
+docker compose rm -f
+docker compose -f docker-compose.yml pull
+docker compose -f docker-compose.yml up --build
 ```
 
 ---
@@ -55,6 +66,15 @@ Wenn alles wie erwartet läuft:
 
 ```bash
 vim docker-compose.yml
+
+g g     → zum Anfang der Datei  
+V       → visueller Modus  
+G       → bis zum Ende markieren  
+d       → löschen
+
+i → einfügen
+
+[Esc] :wq [Enter]
 ```
 
 Inhalt durch (redeploy) ersetzen
@@ -66,7 +86,7 @@ Inhalt durch (redeploy) ersetzen
 Bei Änderungen im `dev`-Branch:
 
 ```bash
-docker compose -f docker-composeyml down
-docker compose -f docker-composeyml pull
+docker compose -f docker-compose.yml down
+docker compose -f docker-compose.yml pull
 docker compose -f docker-compose.yml up -d
 ```
