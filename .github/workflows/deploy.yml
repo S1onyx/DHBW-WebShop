@@ -12,22 +12,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Build Backend Image
-      run: |
-        docker build -f docker/Dockerfile.backend -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest .
+      - name: Build Backend Image
+        run: |
+          docker build -f docker/Dockerfile.backend \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest .
 
-    - name: Push Backend Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest
+      - name: Push Backend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest
 
-    - name: Build Frontend Image
-      run: |
-        docker build -f docker/Dockerfile.frontend -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest .
+      - name: Build Frontend Image
+        run: |
+          docker build -f docker/Dockerfile.frontend \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest .
 
-    - name: Push Frontend Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest
+      - name: Push Frontend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest
+
+      - name: Build DB Image (with Seed Data)
+        run: |
+          docker build -f docker/Dockerfile.db \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-db:latest .
+
+      - name: Push DB Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-db:latest
