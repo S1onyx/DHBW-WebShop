@@ -20,20 +20,14 @@ jobs:
 
     - name: Build Backend Image
       run: |
-        docker build \
-          -f docker/Dockerfile.backend \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest \
-          backend/
+        docker build -f docker/Dockerfile.backend -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest .
 
     - name: Push Backend Image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-backend:latest
 
     - name: Build Frontend Image
       run: |
-        docker build \
-          -f docker/Dockerfile.frontend \
-          -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest \
-          frontend/
+        docker build -f docker/Dockerfile.frontend -t ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest .
 
     - name: Push Frontend Image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webshop-frontend:latest
