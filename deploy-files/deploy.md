@@ -20,7 +20,7 @@ mkdir -p uploads/products
 
 ---
 
-## 3. 🧾 `docker-compose.deploy.yml` anlegen
+## 3. 🧾 `docker-compose.yml` (deploy version) anlegen
 
 Diese Datei beinhaltet:
 - DB-Volume persistiert
@@ -54,8 +54,10 @@ docker compose -f docker-compose.deploy.yml up -d
 Wenn alles wie erwartet läuft:
 
 ```bash
-mv docker-compose.deploy.yml docker-compose.redeploy.yml
+vim docker-compose.yml
 ```
+
+Inhalt durch (redeploy) ersetzen
 
 ---
 
@@ -64,7 +66,7 @@ mv docker-compose.deploy.yml docker-compose.redeploy.yml
 Bei Änderungen im `dev`-Branch:
 
 ```bash
-docker compose -f docker-compose.redeploy.yml down
-docker compose -f docker-compose.redeploy.yml pull
-docker compose -f docker-compose.redeploy.yml up -d
+docker compose -f docker-composeyml down
+docker compose -f docker-composeyml pull
+docker compose -f docker-compose.yml up -d
 ```
