@@ -1,52 +1,49 @@
+version: "3.8"
+
 services:
   db:
-    image: postgres:16
+    image: simon281/webshop-db:latest
     container_name: webshop_db
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: webshop
+    ports:
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./backend/db/:/docker-entrypoint-initdb.d/
-    ports:
-      - "5432:5432"
     networks:
       - webshop-net
 
   backend:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.backend
+    image: simon281/webshop-backend:latest
     container_name: webshop_backend
     restart: always
-    ports:
-      - "3000:3000"
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/webshop
       PORT: 3000
       JWT_ACCESS_SECRET: mySuperSecretAccessKey
       JWT_ACCESS_EXPIRATION: 60
+    ports:
+      - "3000:3000"
     volumes:
-      - ./backend/uploads:/app/uploads
+      - ./uploads:/app/uploads
     depends_on:
       - db
     networks:
       - webshop-net
 
   frontend:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.frontend
+    image: simon281/webshop-frontend:latest
     container_name: webshop_frontend
     restart: always
+    environment:
+      - NODE_ENV=production
     ports:
       - "1337:1337"
     depends_on:
       - backend
-    environment:
-      - NODE_ENV=production
     networks:
       - webshop-net
 
@@ -55,13 +52,8 @@ services:
     container_name: webshop_mailpit
     restart: unless-stopped
     ports:
-      - "1025:1025" # SMTP
-      - "8025:8025" # Web UI
-    environment:
-      MP_MAX_MESSAGES: 5000
-      MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      - "1025:1025"
+      - "8025:8025"
     volumes:
       - mailpit_data:/data
     networks:
@@ -73,4 +65,3 @@ volumes:
 
 networks:
   webshop-net:
-    driver: bridge

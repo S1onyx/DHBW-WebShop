@@ -1,0 +1,7 @@
+FROM postgres:16
+
+# Kopiere alle SQL-Dateien in den Init-Pfad
+COPY backend/db/*.sql /docker-entrypoint-initdb.d/
+
+# Optional: Encoding und Locale
+ENV LANG en_US.utf8

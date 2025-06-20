@@ -77,7 +77,9 @@ CREATE TABLE IF NOT EXISTS users (
     verification_token TEXT,
     reset_token TEXT,
     reset_expires TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    login_code TEXT,
+    login_code_expires TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS categories (

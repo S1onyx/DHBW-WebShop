@@ -1,6 +1,6 @@
 const db = require('../../db/database');
 
-async function getAllProducts({ minPrice, maxPrice, stockOnly, name, sortBy, sortOrder, categoryIds }) {
+async function getAllProducts({ minPrice, maxPrice, stockOnly, name, sortBy, sortOrder, categoryIds, limit, offset }) {
   const params = [];
   const whereClauses = [];
 
@@ -31,16 +31,16 @@ async function getAllProducts({ minPrice, maxPrice, stockOnly, name, sortBy, sor
 
   const where = whereClauses.length ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-const validSorts = {
-  price: 'p.price',
-  name: 'p.name',
-  rating: 'average_rating'
-};
+  const validSorts = {
+    price: 'p.price',
+    name: 'p.name',
+    rating: 'average_rating'
+  };
 
-const sortColumn = sortBy && validSorts[sortBy] ? validSorts[sortBy] : 'p.id';
-const direction = sortOrder === 'desc' ? 'DESC' : 'ASC';
+  const sortColumn = sortBy && validSorts[sortBy] ? validSorts[sortBy] : 'p.id';
+  const direction = sortOrder === 'desc' ? 'DESC' : 'ASC';
 
-  const query = `
+  const mainQuery = `
     SELECT
       p.id, p.name, p.description, p.price, p.stock, p.category_id,
       COALESCE(AVG(r.rating), 0) AS average_rating,
@@ -56,11 +56,25 @@ const direction = sortOrder === 'desc' ? 'DESC' : 'ASC';
     LEFT JOIN reviews r ON r.product_id = p.id
     ${where}
     GROUP BY p.id
-    ORDER BY ${sortColumn} ${direction};
+    ORDER BY ${sortColumn} ${direction}
+    LIMIT $${params.length + 1}
+    OFFSET $${params.length + 2};
   `;
 
-  const result = await db.query(query, params);
-  return result.rows;
+  const countQuery = `
+    SELECT COUNT(DISTINCT p.id) AS total
+    FROM products p
+    LEFT JOIN reviews r ON r.product_id = p.id
+    ${where};
+  `;
+
+  const rowsResult = await db.query(mainQuery, [...params, limit, offset]);
+  const countResult = await db.query(countQuery, params);
+
+  return {
+    rows: rowsResult.rows,
+    totalCount: parseInt(countResult.rows[0].total, 10)
+  };
 }
 
 module.exports = getAllProducts;

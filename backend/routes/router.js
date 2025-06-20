@@ -15,6 +15,8 @@ const verify = require('../apis/auth/verify');
 const requestReset = require('../apis/auth/requestReset');
 const resetPassword = require('../apis/auth/resetPassword');
 const resendVerification = require('../apis/auth/resendVerification');
+const loginWithCode = require('../apis/auth/loginWithCode');
+const requestLoginCode = require('../apis/auth/requestLoginCode');
 
 // Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
@@ -87,11 +89,13 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/request-reset$/, handler: requestReset },
   { method: 'POST', path: /^\/api\/auth\/reset$/, handler: resetPassword },
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
+  { method: 'POST', path: /^\/api\/auth\/request-login-code$/, handler: requestLoginCode },
+  { method: 'POST', path: /^\/api\/auth\/login-with-code$/, handler: loginWithCode },
 
 {
   method: 'GET',
-  path: /^\/api\/categories\/tree$/,
-  handler: getAllCategories
+  path: /^\/api\/categories$/,
+  handler: (req, res) => getAllCategories(req, res)
 },
 
 {

@@ -1,0 +1,88 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 2rem;
+    text-align: center;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+}
+
+.product-container {
+    background-color: white;
+    padding: 4vh 4vw;
+    border-radius: 1rem;
+    box-shadow: 0 0.5vh 1vw rgba(0, 0, 0, 0.05);
+    max-width: 60vw;
+    margin: 0 auto;
+}
+
+.product-title {
+    font-size: 2rem;
+    margin-bottom: 2vh;
+}
+
+.product-description {
+    font-size: 1.2rem;
+    margin-bottom: 3vh;
+    line-height: 1.6;
+}
+
+.product-price,
+.product-stock {
+    font-size: 1.1rem;
+    margin-bottom: 2vh;
+}
+
+.product-buy {
+    font-size: 1.1rem;
+    padding: 1vh 2vw;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.product-buy:hover {
+    background-color: #555;
+}
+
+.back-button {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #d0d0d0;
+}
+
+.product-image {
+  max-width: 200px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0.5rem auto;
+}
