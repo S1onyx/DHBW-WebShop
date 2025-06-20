@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16
+    container_name: webshop_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: webshop
+    ports:
+      - "5433:5432" # extern auf 5433 erreichbar
+    volumes:
+      - db_data:/var/lib/postgresql/data # persistente Datenbank
+    networks:
+      - webshop-net
+
+  backend:
+    image: simon281/webshop-backend:latest
+    container_name: webshop_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/webshop
+      PORT: 3000
+      JWT_ACCESS_SECRET: mySuperSecretAccessKey
+      JWT_ACCESS_EXPIRATION: 60
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/app/uploads # Uploads bleiben erhalten
+    depends_on:
+      - db
+    networks:
+      - webshop-net
+
+  frontend:
+    image: simon281/webshop-frontend:latest
+    container_name: webshop_frontend
+    restart: always
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "1337:1337"
+    depends_on:
+      - backend
+    networks:
+      - webshop-net
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: webshop_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - webshop-net
+
+volumes:
+  db_data: # bleibt bestehen – keine Löschung der Datenbank
+  mailpit_data: # ebenfalls persistent
+
+networks:
+  webshop-net:
