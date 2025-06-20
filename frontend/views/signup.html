@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sign up</title>
-    <link rel="stylesheet" href="/frontend/public/css/style.css" type="text/css">
-    <link rel="stylesheet" href="/frontend/public/css/auth.css" type="text/css">
-    <script src="/frontend/utils/auth_util.js" defer></script>
-    <script src="/frontend/utils/signup.js" defer></script>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/auth.css" type="text/css">
+    <script src="/js/auth_util.js" defer></script>
+    <script src="/js/signup.js" defer></script>
 </head>
 
 <body>
     <main>
-        <div class="card-container auth-container" id="signin-container">
+        <div class="card-container auth-container" id="signup-container">
             <h1 class="auth-title">Sign up</h1>
             <form id="signup-form" class="auth-form" novalidate>
                 <div id="form-page-one" class="auth-form">
@@ -50,6 +50,8 @@
                     <button class="auth-button second-button" id="to-login">Already have an Account? Log in!</button>
                 </div>
                 <div id="form-page-two" class="auth-form">
+                    <div class="auth-error" id="signup-error">Username/E-Mail or password is wrong.</div>
+                    <div class="auth-success" id="signup-success">Login successful.</div>
                     <label for="fist-name" hidden>First Name</label>
                     <input type="text" placeholder="First Name" id="fist-name" name="fist-name" class="auth-input"
                         required>
@@ -64,7 +66,7 @@
                         <input type="text" placeholder="Street" id="street" name="street" class="auth-input" required>
 
                         <label for="house-number" hidden>House Number</label>
-                        <input type="number" placeholder="No." id="house-number" name="house-number" class="auth-input"
+                        <input type="text" placeholder="No." id="house-number" name="house-number" class="auth-input"
                             required>
                     </div>
 

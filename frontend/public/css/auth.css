@@ -15,7 +15,8 @@
     --first-button-hover-color: #005F94;
     --second-button-hover-color: #B4E9FA;
 
-    --error-border: #b61313;
+    --error-color: #b61313;
+    --success-color: #001d4a;
 }
 
 p {
@@ -64,6 +65,8 @@ p {
     color: var(--placeholder-color)
 }
 
+/* signup css */
+
 #form-page-two {
   display: none;
 }
@@ -105,6 +108,21 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+/* Auth Error */
+.auth-error {
+    font-family: var(--font-color);
+    color: var(--error-color);
+    font-weight: bold;
+    display: none;
+}
+
+.auth-success {
+    font-family: var(--font-color);
+    color: var(--success-color);
+    font-weight: bold;
+    display: none;
 }
 
 /*Forgot Password CSS*/
@@ -207,7 +225,7 @@ input[type="number"] {
 /*Error CSS*/
 
 .input-error {
-    border: 2px var(--error-border) solid;
+    border: 2px var(--error-color) solid;
 }
 
 .error-message {

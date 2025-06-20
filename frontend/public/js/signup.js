@@ -1,6 +1,6 @@
-const username = new inputObject("username", "username", "Username must be longer than 5 characters!", "username-error",
+const username = new inputObject("username", "username", "Username must be longer than 3 characters!", "username-error",
     (usernameElement) => {
-        if (usernameElement.getValue().length > 5) {
+        if (usernameElement.getValue().length > 3) {
             return true;
         } else {
             return false;
@@ -77,9 +77,6 @@ window.onload = function () {
         }
     }
 
-    if (savedPassword) {
-        password.getElement().value = savedPassword;
-    }
 }
 
 document.getElementById("continue-button").addEventListener("click", function (event) {
@@ -90,7 +87,7 @@ document.getElementById("continue-button").addEventListener("click", function (e
     const isPassword = password.validate()
     const isRepeatPassword = repeatPassword.validate()
 
-    if (!isUsername || !isEmail || !isRepeatEmail || !isPassword || !isRepeatEmail) {
+    if (!isUsername || !isEmail || !isRepeatEmail || !isPassword || !isRepeatEmail || !isRepeatPassword) {
         return;
     }
 
@@ -99,7 +96,14 @@ document.getElementById("continue-button").addEventListener("click", function (e
 
 })
 
-document.getElementById("signup-form").addEventListener("submit", function (event) {
+document.getElementById("signup-container").addEventListener('click', (event) => {
+    if (event.target !== document.getElementById("login-container")) {
+        document.getElementById("signup-success").style.display = "none";
+        document.getElementById("signup-error").style.display = "none";
+  }
+})
+
+document.getElementById("signup-form").addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const isFirstNameValid = firstName.validate();
@@ -114,6 +118,43 @@ document.getElementById("signup-form").addEventListener("submit", function (even
         !isPostalCodeValid || !isCityValid || !isCountryValid) {
         return;
     }
+
+
+    const body = {
+        first_name: firstName.getValue(), last_name: lastName.getValue(), username: username.getValue(),
+        email: email.getValue(), password: password.getValue(), street: street.getValue(), house_number: houseNumber.getValue(),
+        postal_code: postalCode.getValue(), city: city.getValue(), country: country.getValue()
+    };
+
+    const signupSuccess = document.getElementById("signup-success");
+    const signupError = document.getElementById("signup-error");
+
+    try {
+        const res = await fetch('http://localhost:3000/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(body)
+        });
+
+        const json = await res.json();
+        if (json.success) {
+            signupSuccess.textContent = 'Signup successful.';
+            signupSuccess.style.display = "block";
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            signupError.textContent = json.error || 'Signup error'; //todo: error handling? username taken? 
+            signupError.style.display = "block";
+        }
+    } catch (err) {
+        signupError.textContent = 'Serverfehler beim Login';
+        signupError.style.display = "block";
+    }
+
 
 })
 
@@ -135,10 +176,7 @@ document.getElementById("to-login").addEventListener("click", function (event) {
         sessionStorage.setItem("identifier", emailContent);
     }
 
-    const passwordContent = password.getValue();
-    sessionStorage.setItem("password", passwordContent);
-
-    window.location.href = "login.html";
+    window.location.href = "login";
 })
 
 document.getElementById("toggle-password").addEventListener("click", function (event) {

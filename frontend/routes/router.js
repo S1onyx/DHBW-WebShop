@@ -6,7 +6,7 @@ const {
   requireAuth,
   requireRole,
   requireStatus,
-} = require('../utils/auth');
+} = require('../public/js/auth');
 
 const router = express.Router();
 
@@ -38,6 +38,14 @@ router.get('/unauthorized', (req, res) => {
 
 router.get('/login', (req, res) => {
   renderPage('login.html', res);
+});
+
+router.get('/signup', (req, res) => {
+  renderPage('signup.html', res);
+});
+
+router.get('/reset-password', (req, res) => {
+  renderPage('reset-password.html', res);
 });
 
 module.exports = router;
