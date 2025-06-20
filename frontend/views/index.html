@@ -1,39 +1,93 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <link rel="stylesheet" href="/css/style.css">
   <meta charset="UTF-8" />
-  <title>Startseite</title>
-  <script>
-    async function loadUserInfo() {
-      try {
-        const res = await fetch('http://localhost:3000/api/users/me', {
-          credentials: 'include'
-        });
-        const json = await res.json();
-        if (json.success) {
-          const user = json.data;
-          document.getElementById('user-info').innerText =
-            `Hallo ${user.first_name} (${user.role})`;
-          document.getElementById('admin-link').style.display =
-            user.role === 'Admin' ? 'inline' : 'none';
-        } else {
-          document.getElementById('user-info').innerText = 'Nicht eingeloggt';
-          document.getElementById('admin-link').style.display = 'none';
+  <title>Webshop</title>
+
+  <link rel="stylesheet" href="/css/header-footer.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="./images/logo-no-background.ico" type="image/x-icon" />
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="header"></div>
+
+<!-- Filterleiste -->
+<div class="wrapper">
+  <div class="filters-wrapper">
+    <div class="filters">
+      <!-- Hier werden Kategorie, Checkbox, Preisbereich durch JS eingefügt -->
+    </div>
+  </div>
+</div>
+
+<!-- Neue Leiste außerhalb des hellblauen Blocks -->
+<div class="filters-control-bar">
+  <!-- Wird durch JS automatisch mit "sort-select" + "reset button" befüllt -->
+</div>
+
+<!-- Aktive Filter-Tags -->
+<div class="active-filters"></div>
+
+<main>
+  <section>
+    <h2 class="section-header">Unsere Produkte</h2>
+
+    <!-- Produktliste -->
+    <ul id="product-list" class="product-list">
+      <li>Produkte werden geladen...</li>
+    </ul>
+
+    <!-- Paginierung -->
+    <div class="pages-list">
+      <i class="fa-solid fa-arrow-left" id="prev-page" style="margin: 0.5rem; cursor: pointer;"></i>
+      <span id="page-number" style="margin: 0.5rem">1</span>
+      von
+      <span id="max-pages" style="margin: 0.5rem">1</span>
+      <i class="fa-solid fa-arrow-right" id="next-page" style="margin: 0.5rem; cursor: pointer;"></i>
+    </div>
+
+    <!-- Seitenwahl-Buttons -->
+    <div id="pagination" class="pagination"></div>
+    <!-- Produkte pro Seite Auswahl -->
+<div class="products-per-page" style="margin-top: 1rem;">
+  <label for="per-page-select">Produkte pro Seite:</label>
+  <select id="per-page-select">
+    <option value="2">2</option>
+    <option value="4">4</option>
+    <option value="8">8</option>
+    <option value="16" selected>16</option>
+    <option value="32">32</option>
+    <option value="64">64</option>
+    <option value="128">128</option>
+  </select>
+</div>
+  </section>
+</main>
+
+<div id="app"></div>
+<div id="footer"></div>
+
+<script src="/js/index.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
         }
-      } catch (e) {
-        document.getElementById('user-info').innerText = 'Nicht eingeloggt';
-        document.getElementById('admin-link').style.display = 'none';
       }
     }
 
-    window.onload = loadUserInfo;
-  </script>
-</head>
-<body>
-  <a id="admin-link" href="/admin">Zum Adminbereich</a>
-  <h1>Willkommen im Webshop</h1>
-  <p id="user-info">Lade Benutzerdaten...</p>
-  <a id="admin-link" href="/admin">Zum Adminbereich</a>
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
 </body>
 </html>

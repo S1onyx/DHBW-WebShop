@@ -1,20 +1,23 @@
-// backend/apis/products/getAllProducts.js
 const getAllProductsModel = require('../../models/products/getAllProductsModel');
 const getCategoryWithChildren = require('../../models/categories/getCategoryWithChildrenModel');
 
 async function getAllProducts(req, res, params) {
   try {
-const sort = params.get('sort');
-const order = params.get('order');
+    const sort = params.get('sort');
+    const order = params.get('order');
+    const limit = parseInt(params.get('limit'), 10) || 16;
+    const offset = parseInt(params.get('offset'), 10) || 0;
 
-const filters = {
-  minPrice: params.get('minPrice'),
-  maxPrice: params.get('maxPrice'),
-  name: params.get('name'),
-  stockOnly: params.get('inStock') === 'true',
-  sortBy: ['price', 'name', 'rating'].includes(sort) ? sort : null,
-  sortOrder: order === 'desc' ? 'desc' : 'asc'
-};
+    const filters = {
+      minPrice: params.get('minPrice'),
+      maxPrice: params.get('maxPrice'),
+      name: params.get('name'),
+      stockOnly: params.get('inStock') === 'true',
+      sortBy: ['price', 'name', 'rating'].includes(sort) ? sort : null,
+      sortOrder: order === 'desc' ? 'desc' : 'asc',
+      limit,
+      offset
+    };
 
     const categoryId = params.get('category');
     let categoryInfo = null;
@@ -40,12 +43,13 @@ const filters = {
       };
     }
 
-    const products = await getAllProductsModel(filters);
+    const { rows, totalCount } = await getAllProductsModel(filters);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       success: true,
-      data: products,
+      data: rows,
+      total: totalCount,
       ...(categoryInfo ? { category: categoryInfo } : {})
     }));
   } catch (err) {
