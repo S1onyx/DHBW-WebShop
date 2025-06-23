@@ -19,6 +19,21 @@
     --success-color: #001d4a;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    position: relative;
+    top: auto;
+    margin-top:80px;
+}
+
 p {
     font-family: var(--font-family);
 }
@@ -26,6 +41,9 @@ p {
 .auth-container {
     width: 630px;
     height: auto;
+    display: flex;
+    justify-self: center;
+    flex-direction: column;
 }
 
 .auth-title {

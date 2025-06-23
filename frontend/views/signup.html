@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <div id="header"></div>
     <main>
         <div class="card-container auth-container" id="signup-container">
             <h1 class="auth-title">Sign up</h1>
@@ -93,10 +94,27 @@
 
         </div>
     </main>
-</body>
-<footer id="footer-container">
+    <div id="footer"></div>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
 
-</footer>
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
+</body>
 
 
 </html>

@@ -10,6 +10,7 @@
     <script src="/js/login.js" defer></script>
 </head>
 <body>
+  <div id="header"></div>
     <main>
         <div class="card-container auth-container" id="login-container">
             <h1 class="auth-title">Login</h1>
@@ -36,121 +37,26 @@
             </form>
         </div>
     </main>
-</body>
-<footer id="footer-container">
+    <div id="footer"></div>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
 
-</footer>
-    
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
+</body>
 
 </html>
-
-<!--<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <title>Login</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 400px;
-      margin: 5rem auto;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-    }
-    h1 {
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      width: 100%;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 0.25rem;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .error {
-      color: red;
-      margin-top: 1rem;
-      text-align: center;
-    }
-    .success {
-      color: green;
-      margin-top: 1rem;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <h1>Login</h1>
-  <form id="login-form">
-    <label for="identifier">E-Mail oder Benutzername:</label>
-    <input type="email" id="identifier" name="identifier" required />
-
-    <label for="password">Passwort:</label>
-    <input type="password" id="password" name="password" required />
-
-    <button type="submit">Einloggen</button>
-
-    <div class="error" id="error-message"></div>
-    <div class="success" id="success-message"></div>
-  </form>
-
-  <script>
-    const form = document.getElementById('login-form');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorMessage.textContent = '';
-      successMessage.textContent = '';
-
-      const identifier = document.getElementById('identifier').value.trim();
-      const password = document.getElementById('password').value;
-
-      const body = identifier.includes('@')
-        ? { email: identifier, password }
-        : { username: identifier, password };
-
-      try {
-        const res = await fetch('http://localhost:3000/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify(body)
-        });
-
-        const json = await res.json();
-        if (json.success) {
-          successMessage.textContent = 'Login erfolgreich. Weiterleitung...';
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 1000);
-        } else {
-          errorMessage.textContent = json.error || 'Login fehlgeschlagen';
-        }
-      } catch (err) {
-        errorMessage.textContent = 'Serverfehler beim Login';
-      }
-    });
-  </script>
-</body>
-</html>-->
