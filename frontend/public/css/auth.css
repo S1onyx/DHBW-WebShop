@@ -30,8 +30,11 @@ html, body {
 main {
     flex: 1;
     position: relative;
-    top: auto;
-    margin-top:80px;
+    margin-top: 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: start;
 }
 
 p {
@@ -42,7 +45,6 @@ p {
     width: 630px;
     height: auto;
     display: flex;
-    justify-self: center;
     flex-direction: column;
 }
 
