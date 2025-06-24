@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: 
+  url: http://localhost:3000/api/auth/check-username?username=user1
   body: none
   auth: inherit
+}
+
+params:query {
+  username: user1
 }
