@@ -26,6 +26,15 @@ class inputObject {
     getElement() {
         return this._element;
     }
+
+    showErrorBorderAndMessage(message) {
+        showInputError(message, this._errorElement, this._elementForError);
+    }
+
+    removeError() {
+        this._elementForError.textContent = "";
+        this._element.classList.remove("input-error");
+    }
 }
 
 function addRemoveErrorEventListener(element, errorElement){
@@ -56,4 +65,9 @@ function togglePassword(toggleButton, passwordInput) {
         passwordInput.type = "password";
         toggleButton.textContent = "Show";
     }
+}
+
+function connectFocusToWrapper(input, wrapper) {
+  input.addEventListener("focus", () => wrapper.classList.add("password-focus"));
+  input.addEventListener("blur", () => wrapper.classList.remove("password-focus"));
 }

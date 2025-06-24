@@ -6,6 +6,7 @@ const username = new inputObject("username", "username", "Username must be longe
             return false;
         }
     })
+let isUsernameUnique = false;
 const email = new inputObject("email", "email", "Please enter an E-Mail!", "email-error",
     (emailElement) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailElement.getValue());
@@ -46,12 +47,18 @@ const password = new inputObject("password", "password-wrapper", "Min. 10 chars 
         return false;
     })
 const repeatPassword = new inputObject("repeat-password", "repeat-password-wrapper", "Passwords don't match!", "repeat-password-error", (repeatPasswordElement) => {
-    if (repeatPasswordElement.getValue() === repeatPassword.getValue() && isElementEmpty(repeatPasswordElement)) {
+    if (repeatPasswordElement.getValue() === password.getValue() && isElementEmpty(repeatPasswordElement)) {
         return true;
     } else {
         return false;
     }
 })
+
+const passwordWrapper = document.getElementById("password-wrapper");
+const repeatPasswordWrapper = document.getElementById("repeat-password-wrapper");
+
+connectFocusToWrapper(password.getElement(), passwordWrapper);
+connectFocusToWrapper(repeatPassword.getElement(), repeatPasswordWrapper);
 
 const addressErrorText = "Please enter address!"
 
