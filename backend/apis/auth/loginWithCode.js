@@ -1,3 +1,4 @@
+// backend/apis/auth/loginWithCode.js
 const db = require('../../db/database');
 const { signAccessToken } = require('../../utils/auth');
 
@@ -29,16 +30,19 @@ async function loginWithCode(req, res) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid JSON format', code: 400 }));
     }
 
-    const { email, code } = data;
-    if (!email || !code) {
+    const { email, username, code } = data;
+    if ((!email && !username) || !code) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Email and code required', code: 400 }));
+      return res.end(JSON.stringify({ success: false, error: 'Email or username and code required', code: 400 }));
     }
 
     try {
+      const queryField = email ? 'email' : 'username';
+      const queryValue = email || username;
+
       const result = await db.query(
-        'SELECT id, username, role_id, status_id, login_code, login_code_expires FROM users WHERE email = $1',
-        [email]
+        `SELECT id, username, role_id, status_id, login_code, login_code_expires FROM users WHERE ${queryField} = $1`,
+        [queryValue]
       );
 
       if (result.rowCount === 0) {
@@ -62,10 +66,12 @@ async function loginWithCode(req, res) {
       await db.query('UPDATE users SET login_code = NULL, login_code_expires = NULL WHERE id = $1', [user.id]);
 
       const accessToken = signAccessToken(user);
+
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Set-Cookie': [`accessToken=${accessToken}; HttpOnly; Path=/; Max-Age=3600`]
       });
+
       res.end(JSON.stringify({
         success: true,
         message: 'Login with code successful',
@@ -76,7 +82,7 @@ async function loginWithCode(req, res) {
         }
       }));
     } catch (err) {
-      console.error('[LOGIN WITH CODE ERROR]', { email, code, error: err });
+      console.error('[LOGIN WITH CODE ERROR]', { email, username, code, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during code login', code: 500 }));
     }
