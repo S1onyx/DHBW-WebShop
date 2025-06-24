@@ -32,10 +32,8 @@ document.getElementById("reset-password-form").addEventListener("submit", async 
             credentials: 'include',
             body: JSON.stringify(body)
         });
-        console.log(res);
 
         const json = await res.json();
-        console.log(json);
         if (json.success) {
             requestSuccess.textContent = 'E-Mail to reset password sent.';
             requestSuccess.style.display = "block";

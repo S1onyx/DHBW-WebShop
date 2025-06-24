@@ -196,11 +196,15 @@ document.getElementById("signup-form").addEventListener("submit", async function
         if (json.success) {
             signupSuccess.textContent = 'Signup successful.';
             signupSuccess.style.display = "block";
+
+            const emailContent = email.getValue();
+            sessionStorage.setItem("identifier", emailContent);
+
             setTimeout(() => {
-                window.location.href = '/';
+                window.location.href = '/resent-verification';
             }, 1000);
         } else {
-            signupError.textContent = json.error || 'Signup error'; //todo: error handling? username taken? 
+            signupError.textContent = json.error || 'Signup error';
             signupError.style.display = "block";
         }
     } catch (err) {

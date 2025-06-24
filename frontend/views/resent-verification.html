@@ -4,26 +4,25 @@
   <script src="/env.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Login</title>
+    <title>Resent Verification</title>
     <link rel="stylesheet" href="/css/style.css" type="text/css">
     <link rel="stylesheet" href="/css/auth.css" type="text/css">
     <script src="/js/auth_util.js" defer></script>
-    <script src="/js/code-login.js" defer></script>
+    <script src="/js/resent-verification.js" defer></script>
 </head>
 <body>
     <div id="header"></div>
     <main>
-        <div class="card-container auth-container" id="code-login-contaier">
-            <h1 class="auth-title">Request Code for Login</h1>
-            <div class="auth-error" id="code-login-error">Username/E-Mail or password is wrong.</div>
-            <div class="auth-success" id="code-login-success">Code sent successfully.</div>
-            <form id="code-login-form" class="auth-form" novalidate>
-                <label for="username-email" hidden>Username/ E-Mail</label>
-                <input type="text" placeholder="Username/ E-Mail" name="username-email" id="username-email" class="auth-input" required>
+        <div class="card-container auth-container" id="forgot-password-contaier">
+            <h1 class="auth-title">Resent Verification</h1>
+            <div class="auth-error" id="reset-error">Username/E-Mail or password is wrong.</div>
+                    <div class="auth-success" id="resent-success">Verification E-Mail sent.</div>
+            <form id="resent-verification-form" class="auth-form" novalidate>
+                <p id="verification-email"></p>
                 <div class="error-message" id="username-email-error"></div>
                 
-                <input type="submit" class="auth-button first-button" value="Request Code for Login">
-                <button class="auth-button second-button" id="back-to-login">Back to Login</button>
+                <input type="submit" class="auth-button first-button" value="Resent Verification">
+                <button class="auth-button second-button" id="back-to-login" type="button">To Login</button>
             </form>
             
         </div>
