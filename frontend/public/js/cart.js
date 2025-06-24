@@ -1,3 +1,6 @@
+import {showPopupMessage} from "/js/utils.js";
+
+
 const fetchOptionsWithCredentials = {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
@@ -17,41 +20,106 @@ async function loadCart() {
     const main = document.querySelector('.main');
 
     cartDiv.innerHTML = `
-        <h2 class="cart-title">Warenkorb von ${cart.cartDetails.customer_name}</h2>
-        <ul class="cart-list">
-            ${cart.items.map(item => `
-                <li class="cart-item">
-                    <span class="cart-item-name">${item.name}</span>
-                    <span class="cart-item-quantity">x${item.quantity}</span>
-                    <span class="cart-item-price">${parseFloat(item.price).toFixed(2)} €</span>
-                </li>
-            `).join('')}
-        </ul>
-        <div class="cart-total">
-            <strong>Gesamt: ${cart.totalPrice.toFixed(2)} €</strong>
-        </div>
-        <div class="cart-actions">
-            <button class="cart-delete-btn" id="deleteCartBtn" title="Warenkorb löschen">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
-                  <path fill="#fff" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/>
-                </svg>
-            </button>
-            <button class="cart-buy-btn" id="buyCartBtn">Kaufen</button>
-        </div>
-    `;
+    <h2 class="cart-title">Warenkorb von ${cart.cartDetails.customer_name}</h2>
+    <ul class="cart-list">
+        ${cart.items.map(item => `
+            <li class="cart-item">
+                <span class="cart-item-name">${item.name}</span>
+                <span class="cart-item-quantity">x${item.quantity}</span>
+                <span class="cart-item-price">${parseFloat(item.price).toFixed(2)} €</span>
+                <div class="cart-item-actions">
+                    <button class="item-minus" data-id="${item.id}">-</button>
+                    <input class="item-quantity-input" data-id="${item.id}" type="number" min="1" value="${item.quantity}">
+                    <button class="item-plus" data-id="${item.id}">+</button>
+                    <button class="item-delete" data-id="${item.id}" title="Entfernen"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path fill="#fff" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/>
+            </svg></button>
+                </div>
+            </li>
+        `).join('')}
+    </ul>
+    <div class="cart-total">
+        <strong>Gesamt: ${cart.totalPrice.toFixed(2)} €</strong>
+    </div>
+    <div class="cart-actions">
+        <button class="cart-delete-btn" id="deleteCartBtn" title="Warenkorb löschen">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path fill="#fff" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/>
+            </svg>
+        </button>
+        <button class="cart-buy-btn" id="buyCartBtn">Buy</button>
+    </div>
+`;
 
     main.appendChild(cartDiv);
 
+
+// Event-Listener für die Item-Buttons
+    cartDiv.querySelectorAll('.item-plus').forEach(btn => {
+        btn.addEventListener('click', async e => {
+            const id = btn.dataset.id;
+            const input = cartDiv.querySelector(`.item-quantity-input[data-id="${id}"]`);
+            let quantity = parseInt(input.value, 10) + 1;
+            await updateQuantity(id, quantity);
+        });
+    });
+
+    cartDiv.querySelectorAll('.item-minus').forEach(btn => {
+        btn.addEventListener('click', async e => {
+            const id = btn.dataset.id;
+            const input = cartDiv.querySelector(`.item-quantity-input[data-id="${id}"]`);
+            let quantity = Math.max(1, parseInt(input.value, 10) - 1);
+            await updateQuantity(id, quantity);
+        });
+    });
+
+    cartDiv.querySelectorAll('.item-quantity-input').forEach(input => {
+        input.addEventListener('change', async e => {
+            const id = input.dataset.id;
+            let quantity = Math.max(1, parseInt(input.value, 10));
+            await updateQuantity(id, quantity);
+        });
+    });
+
+    cartDiv.querySelectorAll('.item-delete').forEach(btn => {
+        btn.addEventListener('click', async e => {
+            const id = btn.dataset.id;
+            if (!confirm('Produkt wirklich entfernen?')) return;
+            await fetch('http://localhost:3000/api/carts/items', {
+                ...fetchOptionsWithCredentials,
+                method: 'DELETE',
+                body: JSON.stringify({ itemId: id })
+            });
+            location.reload();
+        });
+    });
+
+// Hilfsfunktion für Mengenänderung
+    async function updateQuantity(itemId, quantity) {
+        await fetch('http://localhost:3000/api/carts/items', {
+            ...fetchOptionsWithCredentials,
+            method: 'PUT',
+            body: JSON.stringify({ itemId, quantity })
+        });
+        location.reload();
+    }
+
     document.getElementById('buyCartBtn').onclick = async () => {
+        const buyBtn = document.getElementById('buyCartBtn');
+        buyBtn.disabled = true;
+        buyBtn.innerHTML = `<span class="spinner"></span> Buying...`;
+
         const res = await fetch('http://localhost:3000/api/orders', {
             ...fetchOptionsWithCredentials,
             method: 'POST'
         });
         if (res.ok) {
-            alert('Kauf erfolgreich!');
-            location.reload();
+            showPopupMessage('Purchase successful!');
+            setTimeout(() => location.reload(), 1500);
         } else {
-            alert('Kauf fehlgeschlagen.');
+            showPopupMessage('Purchase failed.');
+            buyBtn.disabled = false;
+            buyBtn.innerHTML = 'Buy';
         }
     };
 
@@ -67,12 +135,13 @@ async function loadCart() {
                 ...fetchOptionsWithCredentials,
                 method: 'POST'
             });
-            alert('Warenkorb gelöscht.');
             location.reload();
         } else {
             alert('Löschen fehlgeschlagen.');
         }
     };
 }
+
+
 
 document.addEventListener('DOMContentLoaded', loadCart);
