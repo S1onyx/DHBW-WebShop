@@ -80,4 +80,8 @@ router.get('/reset-password', (req, res) => {
   renderPage('reset-password.html', res);
 });
 
+router.get('/code-login', (req, res) => {
+  renderPage('code-login.html', res);
+});
+
 module.exports = router;

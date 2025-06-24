@@ -99,6 +99,28 @@ p {
     outline: none;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider-text {
+  padding: 0 1em;
+  color: #666;
+  font-weight: 500;
+}
+
+
 
 /* signup css */
 
@@ -233,6 +255,9 @@ input[type="number"] {
     border-radius: 30px;
 
     font-size: 1.2rem;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .first-button{
@@ -255,6 +280,15 @@ input[type="number"] {
 
 .second-button:hover {
     background-color: var(--second-button-hover-color);
+}
+
+#code-login-button {
+  background-color: #d9d9d9;
+}
+
+#code-login-button:hover {
+  background-color: #cccccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /*Error CSS*/

@@ -7,7 +7,7 @@ window.onload = function() {
     }
 }
 
-document.getElementById("reset-password-form").addEventListener("submit", async function (event) {
+document.getElementById("code-login-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     if (!identifier.validate()) {
         return;
@@ -20,8 +20,8 @@ document.getElementById("reset-password-form").addEventListener("submit", async 
         ? { email: identifierContent}
         : { username: identifierContent};
 
-    const requestSuccess = document.getElementById("request-success");
-    const requestError = document.getElementById("request-error");
+    const codeLoginSuccess = document.getElementById("code-login-success");
+    const codeLoginError = document.getElementById("code-login-error");
 
     try {
         const res = await fetch('http://localhost:3000/api/auth/request-reset', {
@@ -37,15 +37,15 @@ document.getElementById("reset-password-form").addEventListener("submit", async 
         const json = await res.json();
         console.log(json);
         if (json.success) {
-            requestSuccess.textContent = 'E-Mail to reset password sent.';
-            requestSuccess.style.display = "block";
+            codeLoginSuccess.textContent = 'Code sent. Please check your E-Mails!';
+            codeLoginSuccess.style.display = "block";
         } else {
-            requestError.textContent = json.error || 'Username/E-Mail is wrong.';
-            requestError.style.display = "block";
+            codeLoginError.textContent = json.error || 'Username/E-Mail is wrong.';
+            codeLoginError.style.display = "block";
         }
     } catch (err) {
-        requestError.textContent = 'Serverfehler while requesting reset.';
-        requestError.style.display = "block";
+        codeLoginError.textContent = 'Serverfehler while requesting code.';
+        codeLoginError.style.display = "block";
     }
 })
 

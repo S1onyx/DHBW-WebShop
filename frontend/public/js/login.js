@@ -74,7 +74,17 @@ document.getElementById("to-signup").addEventListener("click", function (event) 
 
 
     window.location.href = "signup";
-})
+});
+
+document.getElementById("code-login-button").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    const identifierContent = identifier.getValue();
+    sessionStorage.setItem("identifier", identifierContent);
+
+
+    window.location.href = "code-login";
+});
 
 document.getElementById("forgot-password-link").addEventListener("click", function (event) {
     event.preventDefault();
