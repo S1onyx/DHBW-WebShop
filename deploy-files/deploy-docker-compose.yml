@@ -40,7 +40,8 @@ services:
     container_name: webshop_frontend
     restart: always
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      ROOT_URL: 192.168.180.57
     ports:
       - "1337:1337"
     depends_on:
