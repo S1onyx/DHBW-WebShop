@@ -13,7 +13,7 @@
     title.textContent = 'Produkt wird geladen...';
 
     try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${id}`);
         if (!res.ok) throw new Error('Produkt konnte nicht geladen werden');
         const result = await res.json();
         const product = result.data;
@@ -37,7 +37,7 @@ if (Array.isArray(product.images) && product.images.length > 0) {
         const imageUrl = img.url;
         image.src = imageUrl.startsWith('http')
             ? imageUrl
-            : `http://localhost:3000${imageUrl}`;
+            : `http://${window.ROOT_URL}:3000${imageUrl}`;
         image.alt = product.name;
         image.classList.add('product-image');
         imageContainer.appendChild(image);
@@ -47,7 +47,7 @@ if (Array.isArray(product.images) && product.images.length > 0) {
     const img = document.createElement('img');
     img.src = imageUrl.startsWith('http')
         ? imageUrl
-        : `http://localhost:3000${imageUrl}`;
+        : `http://${window.ROOT_URL}:3000${imageUrl}`;
     img.alt = product.name;
     img.classList.add('product-image');
     imageContainer.appendChild(img);

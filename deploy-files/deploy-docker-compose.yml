@@ -22,6 +22,7 @@ services:
     restart: always
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/webshop
+      ROOT_URL: 192.168.180.57
       PORT: 3000
       JWT_ACCESS_SECRET: mySuperSecretAccessKey
       JWT_ACCESS_EXPIRATION: 60

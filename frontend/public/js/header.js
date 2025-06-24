@@ -3,7 +3,7 @@
     const navbarLinks = document.querySelectorAll('.navbar [class$="-link"]');
 
     try {
-        const res = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
         const json = await res.json();
         if (json.success) {
             if (loginDiv) loginDiv.style.display = 'none';

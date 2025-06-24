@@ -60,7 +60,7 @@ async function requestReset(req, res) {
         [token, expiresAt, email]
       );
 
-      const link = `http://localhost:1337/reset.html?token=${token}`;
+      const link = `http://${process.env.ROOT_URL || 'localhost'}:1337/reset.html?token=${token}`;
 
       await sendMail({
         to: email,
