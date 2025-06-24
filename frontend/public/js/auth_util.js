@@ -11,11 +11,16 @@ class inputObject {
         const isValid = this._validateFn(this);
         if(!isValid) {
             showInputError(this._errorText, this._errorElement, this._elementForError);
-            addRemoveErrorEventListener(this._elementForError, this._errorElement);
+            addRemoveErrorEventListener(this._element, this._errorElement, this._elementForError);
             return false;
         } else {
             return true;
         }
+    }
+
+    customError(message) {
+        showInputError(message, this._errorElement, this._elementForError);
+        addRemoveErrorEventListener(this._element, this._errorElement, this._elementForError);
     }
 
     getValue() {
@@ -32,19 +37,22 @@ class inputObject {
     }
 
     removeError() {
-        this._elementForError.textContent = "";
+        this._errorElement.textContent = "";
+        this._elementForError.classList.remove("input-error");
         this._element.classList.remove("input-error");
     }
 }
 
-function addRemoveErrorEventListener(element, errorElement){
-    element.addEventListener("focus", () => {
+function addRemoveErrorEventListener(inputElement, errorElement, wrapperElement){
+    inputElement.addEventListener("focus", () => {
         errorElement.textContent = "";
-        element.classList.remove("input-error");
-    })
+        wrapperElement.classList.remove("input-error");
+    });
 }
 
-function isElementEmpty(element) {
+
+
+function isElementNotEmpty(element) {
     if(!element.getValue()) {
         return false;
     } else {

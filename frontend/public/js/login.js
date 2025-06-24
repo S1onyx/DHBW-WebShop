@@ -1,5 +1,5 @@
-const identifier = new inputObject("username-email", "username-email", "Please enter username or E-Mail!", "username-email-error", isElementEmpty);
-const password = new inputObject("password", "password-wrapper", "Please enter password!", "password-error", isElementEmpty);
+const identifier = new inputObject("username-email", "username-email", "Please enter username or E-Mail!", "username-email-error", isElementNotEmpty);
+const password = new inputObject("password", "password-wrapper", "Please enter password!", "password-error", isElementNotEmpty);
 
 const passwordWrapper = document.getElementById("password-wrapper");
 

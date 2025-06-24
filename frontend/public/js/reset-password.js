@@ -1,4 +1,4 @@
-const identifier = new inputObject("username-email", "username-email", "Please enter username or E-Mail!", "username-email-error", isElementEmpty);
+const identifier = new inputObject("username-email", "username-email", "Please enter username or E-Mail!", "username-email-error", isElementNotEmpty);
 
 document.getElementById("reset-password-form").addEventListener("submit", function (event) {
     event.preventDefault();

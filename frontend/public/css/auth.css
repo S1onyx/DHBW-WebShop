@@ -93,6 +93,13 @@ p {
     color: var(--placeholder-color)
 }
 
+.input-error:focus {
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
+    outline: none;
+}
+
+
 /* signup css */
 
 #form-page-two {

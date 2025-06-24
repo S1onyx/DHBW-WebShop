@@ -6,13 +6,13 @@ const username = new inputObject("username", "username", "Username must be longe
             return false;
         }
     })
-let isUsernameUnique = false;
 const email = new inputObject("email", "email", "Please enter an E-Mail!", "email-error",
     (emailElement) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailElement.getValue());
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailElement.getValue());
+        return isValid;
     })
 const repeatEmail = new inputObject("repeat-email", "repeat-email", "Emails don’t match!", "repeat-email-error", (repeatEmailElement) => {
-    if (repeatEmailElement.getValue() === email.getValue() && isElementEmpty(repeatEmailElement)) {
+    if (repeatEmailElement.getValue() === email.getValue() && isElementNotEmpty(repeatEmailElement)) {
         return true;
     } else {
         return false;
@@ -47,7 +47,7 @@ const password = new inputObject("password", "password-wrapper", "Min. 10 chars 
         return false;
     })
 const repeatPassword = new inputObject("repeat-password", "repeat-password-wrapper", "Passwords don't match!", "repeat-password-error", (repeatPasswordElement) => {
-    if (repeatPasswordElement.getValue() === password.getValue() && isElementEmpty(repeatPasswordElement)) {
+    if (repeatPasswordElement.getValue() === password.getValue() && isElementNotEmpty(repeatPasswordElement)) {
         return true;
     } else {
         return false;
@@ -62,13 +62,13 @@ connectFocusToWrapper(repeatPassword.getElement(), repeatPasswordWrapper);
 
 const addressErrorText = "Please enter address!"
 
-const firstName = new inputObject("fist-name", "fist-name", "Please enter first name!", "fist-name-error", isElementEmpty);
-const lastName = new inputObject("last-name", "last-name", "Please enter last name!", "last-name-error", isElementEmpty);
-const street = new inputObject("street", "street", addressErrorText, "address-error", isElementEmpty);
-const houseNumber = new inputObject("house-number", "house-number", addressErrorText, "address-error", isElementEmpty);
-const postalCode = new inputObject("postal-code", "postal-code", addressErrorText, "address-error", isElementEmpty);
-const city = new inputObject("city", "city", addressErrorText, "address-error", isElementEmpty);
-const country = new inputObject("country", "country", "Please enter Country!", "country-error", isElementEmpty);
+const firstName = new inputObject("fist-name", "fist-name", "Please enter first name!", "fist-name-error", isElementNotEmpty);
+const lastName = new inputObject("last-name", "last-name", "Please enter last name!", "last-name-error", isElementNotEmpty);
+const street = new inputObject("street", "street", addressErrorText, "address-error", isElementNotEmpty);
+const houseNumber = new inputObject("house-number", "house-number", addressErrorText, "address-error", isElementNotEmpty);
+const postalCode = new inputObject("postal-code", "postal-code", addressErrorText, "address-error", isElementNotEmpty);
+const city = new inputObject("city", "city", addressErrorText, "address-error", isElementNotEmpty);
+const country = new inputObject("country", "country", "Please enter Country!", "country-error", isElementNotEmpty);
 
 const formPageOne = document.getElementById("form-page-one");
 const formPageTwo = document.getElementById("form-page-two");
@@ -86,10 +86,29 @@ window.onload = function () {
 
 }
 
-document.getElementById("continue-button").addEventListener("click", function (event) {
+document.getElementById("continue-button").addEventListener("click", async function (event) {
     event.preventDefault();
     const isUsername = username.validate()
-    const isEmail = email.validate()
+    let isEmail = email.validate()
+    if (isEmail) {
+        email.removeError();
+        try {
+            const res = await fetch(`http://localhost:3000/api/auth/check-email?email=${email.getValue()}`);
+            const json = await res.json();
+            if (json.success) {
+                if (json.exists) {
+                    email.customError("E-Mail already exists!");
+                    isEmail = false
+                } else {
+                    email.removeError();
+                }
+            } else {
+                email.customError("No Success when checking email.");
+            }
+        } catch (err) {
+            email.customError('Serverfehler beim Username Checken');
+        }
+    }
     const isRepeatEmail = repeatEmail.validate()
     const isPassword = password.validate()
     const isRepeatPassword = repeatPassword.validate()
@@ -101,14 +120,41 @@ document.getElementById("continue-button").addEventListener("click", function (e
     formPageOne.style.display = "none";
     formPageTwo.style.display = "flex";
 
-})
+});
 
 document.getElementById("signup-container").addEventListener('click', (event) => {
     if (event.target !== document.getElementById("login-container")) {
         document.getElementById("signup-success").style.display = "none";
         document.getElementById("signup-error").style.display = "none";
-  }
+    }
 })
+
+username.getElement().addEventListener('input', async (event) => {
+    checkUsernameExists();
+
+})
+
+async function checkUsernameExists() {
+    if (username.validate()) {
+        try {
+            const res = await fetch(`http://localhost:3000/api/auth/check-username?username=${username.getValue()}`);
+            const json = await res.json();
+            if (json.success) {
+                if (json.exists) {
+                    username.showErrorBorderAndMessage("Username already taken!");
+                } else {
+                    username.removeError();
+                }
+            } else {
+                username.showErrorBorderAndMessage("No Success when checking username.");
+            }
+        } catch (err) {
+            username.showErrorBorderAndMessage('Serverfehler beim Username Checken');
+        }
+    } else if (username.getValue() === "") {
+        username.removeError();
+    }
+}
 
 document.getElementById("signup-form").addEventListener("submit", async function (event) {
     event.preventDefault();
