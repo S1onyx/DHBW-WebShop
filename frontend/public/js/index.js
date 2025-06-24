@@ -1,10 +1,8 @@
-import {showPopupMessage} from "/js/utils.js";
-
 let categoryMap = {};
 
 async function loadCategoryMap() {
   try {
-    const res = await fetch('http://localhost:3000/api/categories');
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
 
     if (!res.ok) throw new Error(`Status ${res.status}`);
 
@@ -126,7 +124,7 @@ const fetchOptionsWithCredentials = {
 };
 
 async function getCurrentUser() {
-  const res = await fetch('http://localhost:3000/api/users/me', fetchOptionsWithCredentials);
+  const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, fetchOptionsWithCredentials);
   const json = await res.json();
   return json;
 }
@@ -149,7 +147,7 @@ async function loadProducts(categoryId = null, page = 1, options = {}) {
   params.append('offset', (page - 1) * productsPerPage);
 
   try {
-    const response = await fetch(`http://localhost:3000/api/products?${params.toString()}`);
+    const response = await fetch(`http://${window.ROOT_URL}:3000/api/products?${params.toString()}`);
     if (!response.ok) throw new Error('Fehler beim Abrufen der Produkte');
     const result = await response.json();
     const products = result.data || [];
@@ -185,7 +183,7 @@ products.forEach(product => {
   img.src = imageUrl
       ? imageUrl.startsWith('http')
           ? imageUrl
-          : `http://localhost:3000${imageUrl}`
+          : `http://${window.ROOT_URL}:3000${imageUrl}`
       : '/images/placeholder.jpg';
   img.alt = product.name;
   img.className = 'product-thumb small-thumb';
@@ -195,21 +193,17 @@ products.forEach(product => {
   img.addEventListener('click', async function(event) {
     event.preventDefault();
     const body = { productId: product.id, quantity: 1 };
-    const res = await fetch('http://localhost:3000/api/carts/items', {
+    console.log('Sende an API:', body);
+    await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
       ...fetchOptionsWithCredentials,
       method: 'POST',
       body: JSON.stringify(body)
     });
-    if (res.status === 401) {
-      window.location.href = '/login';
-      return;
-    }
-    showPopupMessage('Product was added to your cart', 1500);
   });
 
   const buyOverlay = document.createElement('div');
   buyOverlay.className = 'buy-overlay';
-  buyOverlay.textContent = 'Add to cart';
+  buyOverlay.textContent = 'Buy';
 
   thumbWrapper.appendChild(img);
   thumbWrapper.appendChild(buyOverlay);
@@ -336,7 +330,7 @@ async function loadAndRenderCategoryFilter() {
   const filtersWrapper = document.querySelector('.filters');
   if (!filtersWrapper) return;
 
-  const res = await fetch('http://localhost:3000/api/categories');
+  const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
   const json = await res.json();
   if (!json.success || !Array.isArray(json.data)) return;
 

@@ -25,6 +25,7 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/webshop
+      ROOT_URL: localhost
       PORT: 3000
       JWT_ACCESS_SECRET: mySuperSecretAccessKey
       JWT_ACCESS_EXPIRATION: 60
@@ -46,7 +47,8 @@ services:
     depends_on:
       - backend
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      ROOT_URL: localhost
     networks:
       - webshop-net
 

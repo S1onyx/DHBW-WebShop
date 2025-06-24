@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <script src="/env.js"></script>
     <meta charset="UTF-8" />
     <title>Profil</title>
     <style>
@@ -100,7 +101,7 @@
 
     async function loadProfile() {
         try {
-            const res = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
             if (!res.ok) throw new Error('Nicht eingeloggt oder Fehler beim Laden');
             const user = await res.json();
 
@@ -135,7 +136,7 @@
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/auth/logout', {
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/logout`, {
                 method: 'POST',
                 credentials: 'include'
             });
