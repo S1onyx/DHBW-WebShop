@@ -1,0 +1,15 @@
+meta {
+  name: checkEmail
+  type: http
+  seq: 11
+}
+
+get {
+  url: http://localhost:3000/api/auth/check-email?email=user1@example.com
+  body: none
+  auth: inherit
+}
+
+params:query {
+  email: user1@example.com
+}
