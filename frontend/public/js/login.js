@@ -58,6 +58,13 @@ document.getElementById("login-form").addEventListener("submit", async function 
         } else {
             loginError.textContent = json.error || 'Username/E-Mail or password is wrong.';
             loginError.style.display = "block";
+            if(json.retryVerification) {
+                setTimeout(() => {
+                    const identifierContent = identifier.getValue();
+                    sessionStorage.setItem("identifier", identifierContent);
+                    window.location.href = 'resent-verification';
+            }, 1000);
+            }
         }
     } catch (err) {
         loginError.textContent = 'Serverfehler beim Login';
