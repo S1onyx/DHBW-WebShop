@@ -96,4 +96,8 @@ router.get('/verify', (req, res) => {
   renderPage('verify.html', res);
 });
 
+router.get('/reset', (req, res) => {
+  renderPage('reset.html', res);
+});
+
 module.exports = router;

@@ -7,6 +7,13 @@ window.onload = function() {
     }
 }
 
+document.getElementById("forgot-password-contaier").addEventListener('click', (event) => {
+    if (event.target !== document.getElementById("forgot-password-contaier")) {
+        document.getElementById("request-success").style.display = "none";
+        document.getElementById("request-error").style.display = "none";
+    }
+})
+
 document.getElementById("reset-password-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     if (!identifier.validate()) {

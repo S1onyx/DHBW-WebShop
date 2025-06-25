@@ -7,6 +7,13 @@ window.onload = function() {
     }
 }
 
+document.getElementById("resent-verification-contaier").addEventListener('click', (event) => {
+    if (event.target !== document.getElementById("resent-verification-contaier")) {
+        document.getElementById("resent-success").style.display = "none";
+        document.getElementById("resent-error").style.display = "none";
+    }
+})
+
 document.getElementById("resent-verification-form").addEventListener("submit", async function (event) {
     event.preventDefault();
 

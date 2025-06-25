@@ -22,6 +22,13 @@ window.onload = function () {
     }
 }
 
+document.getElementById("code-login-contaier").addEventListener('click', (event) => {
+    if (event.target !== document.getElementById("code-login-contaier")) {
+        document.getElementById("code-login-success").style.display = "none";
+        document.getElementById("code-login-error").style.display = "none";
+    }
+})
+
 document.getElementById("code-login-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     if (!codeInput.validate()) {

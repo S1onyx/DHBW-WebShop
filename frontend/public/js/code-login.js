@@ -7,6 +7,7 @@ window.onload = function() {
     }
 }
 
+
 document.getElementById("code-login-form").addEventListener("submit", async function (event) {
     event.preventDefault();
     if (!identifier.validate()) {
