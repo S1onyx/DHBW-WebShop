@@ -92,4 +92,8 @@ router.get('/enter-login-code', (req, res) => {
   renderPage('enter-login-code.html', res);
 });
 
+router.get('/verify', (req, res) => {
+  renderPage('verify.html', res);
+});
+
 module.exports = router;

@@ -56,7 +56,7 @@ async function resendVerification(req, res) {
       const newToken = crypto.randomBytes(32).toString('hex');
       await db.query(`UPDATE users SET verification_token = $1 WHERE id = $2`, [newToken, user.id]);
 
-      const link = `http://localhost:1337/verify.html?token=${newToken}`;
+      const link = `http://localhost:1337/verify?token=${newToken}`;
 
       await sendMail({
         to: email,
