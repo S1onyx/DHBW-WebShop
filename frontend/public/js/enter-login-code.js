@@ -1,10 +1,24 @@
 const identifier = document.getElementById("email");
 const codeInput = new inputObject("code-input", "code-input", "Please enter code!", "code-error", isElementNotEmpty);
 
-window.onload = function() {
-    const savedIdentifier = sessionStorage.getItem("identifier");
-    if(savedIdentifier) {
-        identifier.textContent = savedIdentifier;
+window.onload = function () {
+    const params = new URLSearchParams(window.location.search);
+
+    const urlEmail = params.get('email');
+    const urlCode = params.get('code');
+
+    if (urlEmail) {
+        identifier.textContent = urlEmail;
+        sessionStorage.setItem('identifier', urlEmail);
+    } else {
+        const savedIdentifier = sessionStorage.getItem("identifier");
+        if (savedIdentifier) {
+            identifier.textContent = savedIdentifier;
+        }
+    }
+
+    if(urlCode) {
+        codeInput.getElement().value = urlCode;
     }
 }
 
@@ -19,8 +33,8 @@ document.getElementById("code-login-form").addEventListener("submit", async func
 
 
     const body = identifierContent.includes('@')
-        ? { email: identifierContent, code: code}
-        : { username: identifierContent, code: code};
+        ? { email: identifierContent, code: code }
+        : { username: identifierContent, code: code };
 
     const codeLoginSuccess = document.getElementById("code-login-success");
     const codeLoginError = document.getElementById("code-login-error");
@@ -40,7 +54,7 @@ document.getElementById("code-login-form").addEventListener("submit", async func
             codeLoginSuccess.textContent = 'Login successful.';
             codeLoginSuccess.style.display = "block";
             setTimeout(() => {
-                    window.location.href = '/';
+                window.location.href = '/';
             }, 1000);
         } else {
             codeLoginError.textContent = json.error || 'Code is wrong.';
