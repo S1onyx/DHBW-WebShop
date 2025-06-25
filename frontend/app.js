@@ -12,5 +12,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
 
 app.listen(PORT, () => {
-  console.log(`[frontend] Express-Frontend läuft auf http://localhost:${PORT}`);
+  console.log(`[frontend] Express-Frontend läuft auf http://${process.env.ROOT_URL || 'localhost'}:${PORT}`);
 });

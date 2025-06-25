@@ -68,7 +68,7 @@ async function requestLoginCode(req, res) {
         [code, expires, user.id]
       );
 
-      const loginLink = `http://localhost:1337/enter-login-code?email=${encodeURIComponent(user.email)}&code=${code}`;
+      const loginLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/enter-login-code?email=${encodeURIComponent(email)}&code=${code}`;
 
       await sendMail({
         to: user.email,

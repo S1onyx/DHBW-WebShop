@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const isDevMode = process.env.NODE_ENV === 'development' || process.env.DEV_MODE === 'true';
 
 // Im Dev-Modus lokal verbinden, sonst im Docker auf den Mailpit-Container
-const mailHost = isDevMode ? 'localhost' : process.env.MAIL_HOST || 'mailpit';
+const mailHost = isDevMode ? (process.env.ROOT_URL || 'localhost') : (process.env.MAIL_HOST || 'mailpit');
 const mailPort = parseInt(process.env.MAIL_PORT) || 1025;
 const mailFrom = process.env.MAIL_FROM || 'Webshop <no-reply@webshop.local>';
 
