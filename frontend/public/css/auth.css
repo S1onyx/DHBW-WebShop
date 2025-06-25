@@ -314,8 +314,14 @@ input[type="number"] {
 }
 
 /* Resent Verification CSS */
-#verification-email {
+.email-info {
     font-family: var(--font-family);
     font-weight: bold;
     font-size: 1.3rem;
+}
+
+/* Code Login */
+#code-input {
+    width: 130px;
+    margin-top: 0;
 }

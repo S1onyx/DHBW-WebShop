@@ -88,4 +88,8 @@ router.get('/resent-verification', (req, res) => {
   renderPage('resent-verification.html', res);
 });
 
+router.get('/enter-login-code', (req, res) => {
+  renderPage('enter-login-code.html', res);
+});
+
 module.exports = router;

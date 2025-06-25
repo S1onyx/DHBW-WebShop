@@ -32,13 +32,16 @@ document.getElementById("code-login-form").addEventListener("submit", async func
             credentials: 'include',
             body: JSON.stringify(body)
         });
-        console.log(res);
 
         const json = await res.json();
-        console.log(json);
         if (json.success) {
             codeLoginSuccess.textContent = 'Code sent. Please check your E-Mails!';
             codeLoginSuccess.style.display = "block";
+            setTimeout(() => {
+                    const identifierContent = identifier.getValue();
+                    sessionStorage.setItem("identifier", identifierContent);
+                    window.location.href = 'enter-login-code';
+            }, 1000);
         } else {
             codeLoginError.textContent = json.error || 'Username/E-Mail is wrong.';
             codeLoginError.style.display = "block";
