@@ -20,9 +20,9 @@ async function getCartModel(userId) {
     [cartId]
   );
 
-  // Hole cartItems
+  // Hole cartItems inkl. Lagerbestand (stock)
   const cartItemsQuery = await db.query(
-    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
+    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock
      FROM cart_items ci
      JOIN products p ON ci.product_id = p.id
      WHERE ci.cart_id = $1`,
@@ -51,7 +51,7 @@ async function byUserId(userId) {
   const cartId = cartDetailsQuery.rows[0].id;
 
   const cartItemsQuery = await db.query(
-    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
+    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock
      FROM cart_items ci
      JOIN products p ON ci.product_id = p.id
      WHERE ci.cart_id = $1`,
