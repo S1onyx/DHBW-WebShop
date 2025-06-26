@@ -1,4 +1,3 @@
-// backend/apis/auth/requestLoginCode.js
 const db = require('../../db/database');
 const sendMail = require('../../utils/mailer');
 
@@ -68,10 +67,11 @@ async function requestLoginCode(req, res) {
         [code, expires, user.id]
       );
 
-      const loginLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/enter-login-code?email=${encodeURIComponent(email)}&code=${code}`;
+      const emailToSend = user.email;
+      const loginLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/enter-login-code?email=${encodeURIComponent(emailToSend)}&code=${code}`;
 
       await sendMail({
-        to: user.email,
+        to: emailToSend,
         subject: 'Dein Login-Code',
         html: `
           <div style="font-family:sans-serif;text-align:center">

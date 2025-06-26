@@ -30,16 +30,22 @@ async function resendVerification(req, res) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid JSON format', code: 400 }));
     }
 
-    const { email } = data || {};
-    if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const { email, username } = data || {};
+    const identifier = email || username;
+
+    if (!identifier || typeof identifier !== 'string') {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Valid email is required', code: 400 }));
+      return res.end(JSON.stringify({
+        success: false,
+        error: 'Username or email is required',
+        code: 400
+      }));
     }
 
     try {
       const userResult = await db.query(
-        `SELECT id, status_id FROM users WHERE email = $1`,
-        [email]
+        `SELECT id, email, status_id FROM users WHERE email = $1 OR username = $1`,
+        [identifier]
       );
 
       if (userResult.rowCount === 0) {
@@ -48,6 +54,7 @@ async function resendVerification(req, res) {
       }
 
       const user = userResult.rows[0];
+
       if (user.status_id === 1) {
         res.writeHead(409, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ success: false, error: 'User already validated', code: 409 }));
@@ -59,7 +66,7 @@ async function resendVerification(req, res) {
       const link = `http://${process.env.ROOT_URL || 'localhost'}:1337/verify?token=${newToken}`;
 
       await sendMail({
-        to: email,
+        to: user.email,
         subject: 'Bestätige erneut deine E-Mail-Adresse',
         html: `
           <div style="font-family:sans-serif;text-align:center">
@@ -78,7 +85,7 @@ async function resendVerification(req, res) {
         data: { token: newToken }
       }));
     } catch (err) {
-      console.error('[RESEND VERIFICATION ERROR]', { email, error: err });
+      console.error('[RESEND VERIFICATION ERROR]', { input: identifier, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during resend', code: 500 }));
     }
