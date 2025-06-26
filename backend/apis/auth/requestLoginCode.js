@@ -1,4 +1,3 @@
-// backend/apis/auth/requestLoginCode.js
 const db = require('../../db/database');
 const sendMail = require('../../utils/mailer');
 
@@ -34,14 +33,20 @@ async function requestLoginCode(req, res) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid JSON format', code: 400 }));
     }
 
-    const { email } = data;
-    if (!email || typeof email !== 'string') {
+    const { email, username } = data;
+    if ((!email && !username) || (email && typeof email !== 'string') || (username && typeof username !== 'string')) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Email is required', code: 400 }));
+      return res.end(JSON.stringify({ success: false, error: 'Email or username is required', code: 400 }));
     }
 
     try {
-      const result = await db.query('SELECT id, first_name, status_id FROM users WHERE email = $1', [email]);
+      const queryField = email ? 'email' : 'username';
+      const queryValue = email || username;
+
+      const result = await db.query(
+        `SELECT id, email, first_name, status_id FROM users WHERE ${queryField} = $1`,
+        [queryValue]
+      );
 
       if (result.rowCount === 0) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -58,14 +63,15 @@ async function requestLoginCode(req, res) {
       const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 Minuten
 
       await db.query(
-        'UPDATE users SET login_code = $1, login_code_expires = $2 WHERE email = $3',
-        [code, expires, email]
+        'UPDATE users SET login_code = $1, login_code_expires = $2 WHERE id = $3',
+        [code, expires, user.id]
       );
 
-      const loginLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/login-code?email=${encodeURIComponent(email)}&code=${code}`;
+      const emailToSend = user.email;
+      const loginLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/enter-login-code?email=${encodeURIComponent(emailToSend)}&code=${code}`;
 
       await sendMail({
-        to: email,
+        to: emailToSend,
         subject: 'Dein Login-Code',
         html: `
           <div style="font-family:sans-serif;text-align:center">
@@ -82,7 +88,7 @@ async function requestLoginCode(req, res) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, message: 'Login code sent' }));
     } catch (err) {
-      console.error('[REQUEST LOGIN CODE ERROR]', { email, error: err });
+      console.error('[REQUEST LOGIN CODE ERROR]', { email, username, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during code request', code: 500 }));
     }

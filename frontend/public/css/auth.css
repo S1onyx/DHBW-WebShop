@@ -1,0 +1,327 @@
+:root {
+    --font-family: Arial, Helvetica, sans-serif;
+    --font-color: #00000;
+    --placeholder-color: #B1B1B1;
+
+    --forgot-password-color: #7B7B7B;
+    --forgot-password-hover-color: #0077B6;
+
+    --first-button-color: #0077B6;
+    --first-button-font-color: #FFFFFF;
+    --button-border-color: rgba(255, 255, 255, 0.1);
+    --second-button-color: #CEF4FF;
+    --second-button-font-color: #000000;
+
+    --first-button-hover-color: #005F94;
+    --second-button-hover-color: #B4E9FA;
+
+    --error-color: #b61313;
+    --success-color: #001d4a;
+
+    --input-focus-color: #001d4a;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    position: relative;
+    margin-top: 80px;
+
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+p {
+    font-family: var(--font-family);
+}
+
+.auth-container {
+    width: 630px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-title {
+    font-family: var(--font-family);
+    font-size: 2rem;
+    color: var(--font-color);
+    margin: 0;
+}
+
+.auth-form {
+    width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-input {
+    margin-top: 20px;
+    width: 100%;
+    height: 45px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 1.2rem;
+    line-height: 30px;
+    padding-left: 10px;
+
+    border: 1px solid #000000;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.auth-input:focus, .password-focus {
+  outline: none;
+  border: 2px solid var(--input-focus-color) !important;
+  box-shadow: 0 0 4px rgba(0, 119, 182, 0.4);
+}
+
+.auth-input::placeholder, .password-input::placeholder {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 30px;
+    color: var(--placeholder-color)
+}
+
+.input-error:focus {
+    border-color: var(--error-color) !important;
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.5);
+    outline: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider-text {
+  padding: 0 1em;
+  color: #666;
+  font-weight: 500;
+}
+
+
+
+/* signup css */
+
+#form-page-two {
+  display: none;
+}
+
+.line-number {
+    margin-top: 16px;
+}
+
+.address-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+}
+
+#house-number {
+    width: 75px;
+}
+
+#street {
+    flex: 1;
+    margin-right: 10px;
+}
+
+#postal-code {
+    width: 145px;
+    margin-right: 10px;
+}
+
+#city {
+    flex: 1;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Auth Error */
+.auth-error {
+    font-family: var(--font-color);
+    color: var(--error-color);
+    font-weight: bold;
+    display: none;
+}
+
+.auth-success {
+    font-family: var(--font-color);
+    color: var(--success-color);
+    font-weight: bold;
+    display: none;
+}
+
+/*Forgot Password CSS*/
+
+.forgot-password-link{
+    font-family: var(--font-color);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--forgot-password-color);
+
+    align-self: flex-start;
+}
+
+.forgot-password-link:hover{
+    color: var(--forgot-password-hover-color);
+}
+
+#forgot-password-contaier {
+    width: 630px;
+    height: auto;
+}
+
+/* Password CSS*/
+.password-wrapper {
+    display: flex;
+    align-items: center;
+
+    margin-top: 20px;
+    width: 440px;
+    height: 45px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 1.2rem;
+    line-height: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    border: 1px solid #000000;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.password-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    height: 100%;
+    background: transparent;
+}
+
+.toggle-password-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--forgot-password-color);
+}
+
+.toggle-password-button:hover {
+    color: var(--forgot-password-hover-color);
+}
+
+
+/*Button CSS*/
+
+.auth-button{
+    width: 440px;
+    height: 45px;
+
+    border: 3px solid var(--button-border-color);
+    border-radius: 30px;
+
+    font-size: 1.2rem;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.first-button{
+    background-color: var(--first-button-color);
+    font-weight: 900;
+    color: var(--first-button-font-color);
+    margin-top: 30px;
+}
+
+.first-button:hover {
+    background-color: var(--first-button-hover-color);
+}
+
+.second-button{
+    background-color: var(--second-button-color);
+    color: var(--second-button-font-color);
+
+    margin-top: 10px;
+}
+
+.second-button:hover {
+    background-color: var(--second-button-hover-color);
+}
+
+#code-login-button {
+  background-color: #d9d9d9;
+}
+
+#code-login-button:hover {
+  background-color: #cccccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/*Error CSS*/
+
+.input-error {
+    border: 2px var(--error-color) solid;
+}
+
+.error-message {
+    font-family: var(--font-family);
+    align-self: flex-end;
+}
+
+#below-password {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.repeat-input {
+    margin-top: 5px;
+}
+
+/* Resent Verification CSS */
+.email-info {
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+/* Code Login */
+#code-input {
+    width: 130px;
+    margin-top: 0;
+}

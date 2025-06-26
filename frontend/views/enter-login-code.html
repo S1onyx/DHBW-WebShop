@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/env.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Login Code</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/auth.css" type="text/css">
+    <script src="/js/auth_util.js" defer></script>
+    <script src="/js/enter-login-code.js" defer></script>
+</head>
+<body>
+    <div id="header"></div>
+    <main>
+        <div class="card-container auth-container" id="code-login-contaier">
+            <h1 class="auth-title">Enter Login Code</h1>
+            <div class="auth-error" id="code-login-error">Username/E-Mail or password is wrong.</div>
+            <div class="auth-success" id="code-login-success">Code sent successfully.</div>
+            <form id="code-login-form" class="auth-form" novalidate>
+                <p id="email" class="email-info"></p>
+                <label for="code" hidden>Code</label>
+                <input type="number" placeholder="Enter Code" name="code" id="code-input" class="auth-input" required>
+                <div class="error-message" id="code-error"></div>
+                
+                <input type="submit" class="auth-button first-button" value="Login via Code">
+                <button class="auth-button second-button" id="back-to-request-code" type="button">Back to Request Code for Login</button>
+            </form>
+            
+        </div>
+    </main>
+    <div id="footer"></div>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
+
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
+</body>
+
+
+</html>

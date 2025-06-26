@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="/env.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/auth.css" type="text/css">
+    <script src="/js/auth_util.js" defer></script>
+    <script src="/js/reset.js" defer></script>
+</head>
+
+<body>
+    <div id="header"></div>
+    <main>
+        <div class="card-container auth-container" id="reset-container">
+            <h1 class="auth-title">Reset Password</h1>
+            <div class="auth-error" id="reset-error">Couldn't reset password.</div>
+            <div class="auth-success" id="reset-success">Password reset successfully.</div>
+
+            <form id="reset-form" class="auth-form" novalidate>
+                <label for="password" hidden>Password</label>
+                <div class="password-wrapper auth-input" id="password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Password" class="password-input"
+                        required>
+                    <button type="button" id="toggle-password" class="toggle-password-button">Show</button>
+                </div>
+                <div class="error-message" id="password-error"></div>
+                <label for="repeat-password" hidden>Repeat Password</label>
+                <div class="password-wrapper auth-input" id="repeat-password-wrapper">
+                    <input type="password" placeholder="Repeat Password" id="repeat-password" name="repeat-password"
+                        class="password-input repeat-input" required>
+                    <button type="button" id="toggle-repeat-password" class="toggle-password-button">Show</button>
+                </div>
+                <div class="error-message" id="repeat-password-error"></div>
+
+                <input id="submit-button" type="submit" class="auth-button first-button" value="Reset Password">
+            </form>
+        </div>
+    </main>
+    <div id="footer"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            async function loadFragment(id, url, scriptUrl) {
+                const res = await fetch(url);
+                if (res.ok) {
+                    document.getElementById(id).innerHTML = await res.text();
+                    if (scriptUrl) {
+                        const script = document.createElement('script');
+                        script.src = scriptUrl;
+                        script.defer = true;
+                        document.body.appendChild(script);
+                    }
+                }
+            }
+
+            loadFragment('header', '/header-footer/header.html', '/js/header.js');
+            loadFragment('footer', '/header-footer/footer.html');
+        });
+    </script>
+</body>
+
+</html>
