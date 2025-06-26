@@ -177,6 +177,21 @@ body {
     display: block;
 }
 
+.cart-item-overstock {
+    border: 2px solid #e74c3c;
+    background: #ffeaea;
+    padding: 0.5rem;
+}
+.cart-product-warning {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-left: 1rem;
+}
+.cart-item-stock {
+    margin-left: 1rem;
+    font-size: 0.95em;
+}
+
 .back-button {
     background-color: #e0e0e0;
     border: none;
@@ -213,3 +228,4 @@ body {
 .item-quantity-input[type="number"] {
     -moz-appearance: textfield;
 }
+
