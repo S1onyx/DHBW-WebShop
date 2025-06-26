@@ -192,36 +192,23 @@
         }
     });
 
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+        try {
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (res.ok) {
+                window.location.href = '/';
+            } else {
+                alert('Logout fehlgeschlagen');
+            }
+        } catch (e) {
+            alert('Fehler beim Logout');
+        }
+    });
+
     loadProfile();
-
-    const fields = ["first_name", "last_name", "street", "house_number", "postal_code", "city", "country"];
-    const profileFieldsDiv = document.getElementById('profile-fields');
-    const editBtn = document.getElementById('editProfileBtn');
-    const saveBtn = document.getElementById('saveProfileBtn');
-
-    editBtn.addEventListener('click', () => {
-        fields.forEach(field => {
-            const span = document.getElementById(field);
-            const value = span.textContent;
-            span.outerHTML = `<input id="${field}" value="${value}" />`;
-        });
-        editBtn.style.display = 'none';
-        saveBtn.style.display = 'inline-block';
-    });
-
-    saveBtn.addEventListener('click', async () => {
-        const data = {};
-        fields.forEach(field => {
-            data[field] = document.getElementById(field).value;
-        });
-        await fetch('http://localhost:3000/api/users/151', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(data)
-        });
-        location.reload();
-    });
 </script>
 </body>
 </html>

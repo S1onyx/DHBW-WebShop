@@ -62,6 +62,24 @@ async function loadCart() {
 
     main.appendChild(cartDiv);
 
+    cartDiv.querySelectorAll('.item-quantity-input').forEach(input => {
+        input.addEventListener('change', async e => {
+            const id = input.dataset.id;
+            const min = 1;
+            const max = parseInt(input.getAttribute('max'), 10);
+            let quantity = parseInt(input.value, 10);
+
+            if (isNaN(quantity) || quantity < min) {
+                quantity = min;
+            } else if (quantity > max) {
+                quantity = max;
+            }
+            input.value = quantity; // Korrigiert die Anzeige im Feld
+
+            await updateQuantity(id, quantity);
+        });
+    });
+
     // Event-Listener für die Item-Buttons
     cartDiv.querySelectorAll('.item-plus').forEach(btn => {
         btn.addEventListener('click', async e => {
@@ -92,7 +110,7 @@ async function loadCart() {
     cartDiv.querySelectorAll('.item-delete').forEach(btn => {
         btn.addEventListener('click', async e => {
             const id = btn.dataset.id;
-            if (!confirm('Produkt wirklich entfernen?')) return;
+            if (!confirm('Really remove product?')) return;
             await fetch('http://localhost:3000/api/carts/items', {
                 ...fetchOptionsWithCredentials,
                 method: 'DELETE',
@@ -133,7 +151,7 @@ async function loadCart() {
     };
 
     document.getElementById('deleteCartBtn').onclick = async () => {
-        if (!confirm('Warenkorb wirklich löschen?')) return;
+        if (!confirm('Really delete cart?')) return;
         const res = await fetch('http://localhost:3000/api/carts', {
             ...fetchOptionsWithCredentials,
             method: 'DELETE'
@@ -146,7 +164,7 @@ async function loadCart() {
             });
             location.reload();
         } else {
-            alert('Löschen fehlgeschlagen.');
+            alert('Delete failed.');
         }
     };
 }

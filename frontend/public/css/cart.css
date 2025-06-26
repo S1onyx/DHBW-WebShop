@@ -214,6 +214,14 @@ body {
     vertical-align: middle;
     margin-right: 8px;
 }
+
+.cart-buy-btn:disabled {
+    background: #ccc !important;
+    color: #888 !important;
+    border-color: #bbb !important;
+    cursor: not-allowed !important;
+}
+
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
