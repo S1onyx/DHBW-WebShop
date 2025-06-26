@@ -100,7 +100,7 @@ document.getElementById("continue-button").addEventListener("click", async funct
     if (isEmail) {
         email.removeError();
         try {
-            const res = await fetch(`http://localhost:3000/api/auth/check-email?email=${email.getValue()}`);
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/check-email?email=${email.getValue()}`);
             const json = await res.json();
             if (json.success) {
                 if (json.exists) {
@@ -145,7 +145,7 @@ async function checkUsernameExists() {
     let exists = true;
     if (username.validate()) {
         try {
-            const res = await fetch(`http://localhost:3000/api/auth/check-username?username=${username.getValue()}`);
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/check-username?username=${username.getValue()}`);
             const json = await res.json();
             if (json.success) {
                 if (json.exists) {
@@ -196,7 +196,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
     const signupError = document.getElementById("signup-error");
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/register', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

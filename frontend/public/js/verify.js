@@ -24,7 +24,7 @@ document.getElementById("verify-button").addEventListener("click", async (event)
 
 
     try {
-        const res = await fetch(`http://localhost:3000/api/auth/verify?token=${encodeURIComponent(token)}`, {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/verify?token=${encodeURIComponent(token)}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

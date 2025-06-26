@@ -25,7 +25,7 @@ document.getElementById("code-login-form").addEventListener("submit", async func
     const codeLoginError = document.getElementById("code-login-error");
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/request-login-code', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/request-login-code`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -31,7 +31,7 @@ document.getElementById("reset-password-form").addEventListener("submit", async 
     const requestError = document.getElementById("request-error");
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/request-reset', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/request-reset`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

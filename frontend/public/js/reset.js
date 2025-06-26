@@ -75,7 +75,7 @@ document.getElementById("reset-form").addEventListener("submit", async (event) =
     const body = {newPassword: password.getValue()};
 
     try {
-        const res = await fetch(`http://localhost:3000/api/auth/reset?token=${encodeURIComponent(token)}`, {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/reset?token=${encodeURIComponent(token)}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

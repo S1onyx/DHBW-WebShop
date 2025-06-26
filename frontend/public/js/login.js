@@ -39,7 +39,7 @@ document.getElementById("login-form").addEventListener("submit", async function 
     const loginError = document.getElementById("login-error");
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -26,7 +26,7 @@ document.getElementById("resent-verification-form").addEventListener("submit", a
     const resentError = document.getElementById("resent-error");
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/resend-verification', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/resend-verification`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
