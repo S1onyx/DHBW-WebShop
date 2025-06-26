@@ -1,5 +1,8 @@
 const username = new inputObject("username", "username", "Username must be longer than 3 characters!", "username-error",
     (usernameElement) => {
+        if(!isElementNotEmpty(usernameElement)) {
+            return false;
+        }
         if (usernameElement.getValue().length > 3) {
             return true;
         } else {
@@ -90,9 +93,12 @@ window.onload = function () {
 document.getElementById("continue-button").addEventListener("click", async function (event) {
     event.preventDefault();
     let isUsername = username.validate()
-    if(checkUsernameExists()) {
-        isUsername = false;
+    if(isUsername) {
+        if(checkUsernameExists()) {
+            isUsername = false;
+        }
     }
+
     let isEmail = email.validate()
     if (isEmail) {
         email.removeError();
