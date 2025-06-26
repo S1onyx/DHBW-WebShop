@@ -61,6 +61,24 @@
             border-radius: 6px;
             transition: background-color 0.2s ease;
         }
+        .edit-profile-btn {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.7rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem 0.2rem;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+        }
+
+        .edit-profile-btn:hover,
+        .edit-profile-btn:focus {
+            background-color: #0056b3;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +94,8 @@
         <!-- Profildaten werden hier eingefügt -->
     </ul>
     <div class="error-message" id="error-message" style="display:none;"></div>
+    <button id="edit-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;">Bearbeiten</button>
+    <button id="save-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;display:none;">Speichern</button>
     <button id="logout-btn" class="loginLink" style="margin-top:2rem;width:100%;color: white">Logout</button>
 </div>
 
@@ -99,33 +119,42 @@
         loadFragment('footer', '/header-footer/footer.html');
     });
 
+    const editableFields = [
+        { key: "first_name", label: "Vorname" },
+        { key: "last_name", label: "Nachname" },
+        { key: "street", label: "Straße" },
+        { key: "house_number", label: "Hausnummer" },
+        { key: "postal_code", label: "PLZ" },
+        { key: "city", label: "Stadt" },
+        { key: "country", label: "Land" }
+    ];
+
+    let userData = null;
+
     async function loadProfile() {
         try {
             const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
             if (!res.ok) throw new Error('Nicht eingeloggt oder Fehler beim Laden');
             const user = await res.json();
-
-            // Optional: Passe die Feldnamen an, falls die API sie anders liefert
-            const fields = [
-                { label: 'Vorname', value: user.data.first_name },
-                { label: 'Nachname', value: user.data.last_name },
-                { label: 'Benutzername', value: user.data.username },
-                { label: 'E-Mail', value: user.data.email },
-                { label: 'Straße + Hausnummer', value: `${user.data.street}, ${user.data.house_number}`},
-                { label: 'PLZ + Stadt', value: `${user.data.postal_code ?? ''}, ${user.data.city ?? ''}`.trim() },
-                { label: 'Land', value: user.data.country }
-            ];
+            userData = user.data;
 
             document.getElementById('profile-username').textContent =
                 `${user.data.username} (${user.data.first_name} ${user.data.last_name})`;
 
             const list = document.getElementById('profile-list');
             list.innerHTML = '';
-            fields.forEach(f => {
+            editableFields.forEach(f => {
                 const li = document.createElement('li');
-                li.innerHTML = `<span class="profile-label">${f.label}:</span> <span class="profile-value">${f.value ?? '-'}</span>`;
+                li.innerHTML = `<span class="profile-label">${f.label}:</span> <span class="profile-value" data-key="${f.key}">${user.data[f.key] ?? '-'}</span>`;
                 list.appendChild(li);
             });
+            // Nicht editierbare Felder
+            const liUser = document.createElement('li');
+            liUser.innerHTML = `<span class="profile-label">Benutzername:</span> <span class="profile-value">${user.data.username}</span>`;
+            list.appendChild(liUser);
+            const liMail = document.createElement('li');
+            liMail.innerHTML = `<span class="profile-label">E-Mail:</span> <span class="profile-value">${user.data.email}</span>`;
+            list.appendChild(liMail);
         } catch (e) {
             document.getElementById('error-message').textContent = 'Fehler beim Laden des Profils. Bitte einloggen.';
             document.getElementById('error-message').style.display = 'block';
@@ -133,6 +162,35 @@
             document.getElementById('profile-username').style.display = 'none';
         }
     }
+
+    document.getElementById('edit-profile-btn').addEventListener('click', () => {
+        editableFields.forEach(f => {
+            const span = document.querySelector(`.profile-value[data-key="${f.key}"]`);
+            const value = userData[f.key] ?? '';
+            span.outerHTML = `<input class="profile-input" data-key="${f.key}" value="${value}" style="max-width:60%;text-align:right;" />`;
+        });
+        document.getElementById('edit-profile-btn').style.display = 'none';
+        document.getElementById('save-profile-btn').style.display = 'inline-block';
+    });
+
+    document.getElementById('save-profile-btn').addEventListener('click', async () => {
+        const data = {};
+        editableFields.forEach(f => {
+            const input = document.querySelector(`input.profile-input[data-key="${f.key}"]`);
+            data[f.key] = input.value;
+        });
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${userData.user_id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            location.reload();
+        } else {
+            alert('Fehler beim Speichern');
+        }
+    });
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
         try {

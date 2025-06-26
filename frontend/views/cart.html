@@ -3,17 +3,25 @@
 <head>
   <script src="/env.js"></script>
   <meta charset="UTF-8">
-  <title>Title</title>
-    <link rel="stylesheet" href="/css/cart.css">
+  <title>Cart</title>
+  <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
-<div id="header"></div>
+<div style="min-height: 95vh">
 
-CART
+  <div id="header"></div>
+
+  <button onclick="history.back()" class="back-button">← Zurück</button>
+
+  <div class="main" >
+
+  </div>
+
+</div>
 
 <div id="footer"></div>
 
-<script src="/js/cart.js"></script>
+<script type="module" src="/js/cart.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     async function loadFragment(id, url, scriptUrl) {

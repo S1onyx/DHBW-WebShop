@@ -1,0 +1,239 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.cart-container {
+    max-width: 500px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 32px 24px 24px 24px;
+}
+
+.cart-title {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+    color: #222;
+}
+
+.cart-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 18px 0 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.cart-item-quantity,
+.cart-item-price {
+    color: #666;
+    font-size: 1rem;
+}
+
+.cart-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+}
+
+.item-minus,
+.item-plus,
+.item-delete {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.item-minus:hover,
+.item-plus:hover {
+    background: #e0e0e0;
+}
+
+.item-delete {
+    color: #fff;
+    background: #e74c3c;
+    padding: 4px 8px;
+    font-size: 1.1rem;
+}
+
+.item-delete:hover {
+    background: #c0392b;
+}
+
+.item-quantity-input {
+    width: 48px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 0;
+}
+
+.cart-total {
+    text-align: right;
+    font-size: 1.2rem;
+    margin: 18px 0 12px 0;
+    color: #222;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.cart-delete-btn,
+.cart-buy-btn {
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.cart-delete-btn:hover {
+    background: #e74c3c;
+}
+
+.cart-buy-btn:hover {
+    background: #27ae60;
+}
+
+.cart-error {
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 24px;
+    font-size: 1.1rem;
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.cart-buy-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cart-buy-btn:hover {
+    background: #0056b3;
+}
+
+.cart-delete-btn {
+    background: #dc3545;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.cart-delete-btn:hover {
+    background: #a71d2a;
+}
+
+.cart-delete-btn svg {
+    display: block;
+}
+
+.cart-item-overstock {
+    border: 2px solid #e74c3c;
+    background: #ffeaea;
+    padding: 0.5rem;
+}
+.cart-product-warning {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-left: 1rem;
+}
+.cart-item-stock {
+    margin-left: 1rem;
+    font-size: 0.95em;
+}
+
+.back-button {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #fff;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.cart-buy-btn:disabled {
+    background: #ccc !important;
+    color: #888 !important;
+    border-color: #bbb !important;
+    cursor: not-allowed !important;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.item-quantity-input::-webkit-outer-spin-button,
+.item-quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Für Firefox */
+.item-quantity-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
