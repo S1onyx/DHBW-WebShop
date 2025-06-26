@@ -6,7 +6,7 @@ const fetchOptionsWithCredentials = {
 };
 
 async function loadCart() {
-    const res = await fetch('http://localhost:3000/api/carts', fetchOptionsWithCredentials);
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts`, fetchOptionsWithCredentials);
     if (!res.ok) {
         document.body.insertAdjacentHTML('beforeend', '<p class="cart-error">Warenkorb konnte nicht geladen werden.</p>');
         return;
@@ -111,7 +111,7 @@ async function loadCart() {
         btn.addEventListener('click', async e => {
             const id = btn.dataset.id;
             if (!confirm('Really remove product?')) return;
-            await fetch('http://localhost:3000/api/carts/items', {
+            await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
                 ...fetchOptionsWithCredentials,
                 method: 'DELETE',
                 body: JSON.stringify({ itemId: id })
@@ -122,7 +122,7 @@ async function loadCart() {
 
     // Hilfsfunktion für Mengenänderung
     async function updateQuantity(itemId, quantity) {
-        await fetch('http://localhost:3000/api/carts/items', {
+        await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
             ...fetchOptionsWithCredentials,
             method: 'PUT',
             body: JSON.stringify({ itemId, quantity })
@@ -136,7 +136,7 @@ async function loadCart() {
         buyBtn.disabled = true;
         buyBtn.innerHTML = `<span class="spinner"></span> Buying...`;
 
-        const res = await fetch('http://localhost:3000/api/orders', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/orders`, {
             ...fetchOptionsWithCredentials,
             method: 'POST'
         });
@@ -152,13 +152,13 @@ async function loadCart() {
 
     document.getElementById('deleteCartBtn').onclick = async () => {
         if (!confirm('Really delete cart?')) return;
-        const res = await fetch('http://localhost:3000/api/carts', {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts`, {
             ...fetchOptionsWithCredentials,
             method: 'DELETE'
         });
         if (res.ok) {
             // Direkt neuen leeren Warenkorb anlegen
-            await fetch('http://localhost:3000/api/carts', {
+            await fetch(`http://${window.ROOT_URL}:3000/api/carts`, {
                 ...fetchOptionsWithCredentials,
                 method: 'POST'
             });
