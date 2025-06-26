@@ -81,6 +81,7 @@ window.onload = function () {
             email.getElement().value = savedIdentifier;
         } else {
             username.getElement().value = savedIdentifier;
+            checkUsernameExists()
         }
     }
 
@@ -88,7 +89,10 @@ window.onload = function () {
 
 document.getElementById("continue-button").addEventListener("click", async function (event) {
     event.preventDefault();
-    const isUsername = username.validate()
+    let isUsername = username.validate()
+    if(checkUsernameExists()) {
+        isUsername = false;
+    }
     let isEmail = email.validate()
     if (isEmail) {
         email.removeError();
@@ -135,6 +139,7 @@ username.getElement().addEventListener('input', async (event) => {
 })
 
 async function checkUsernameExists() {
+    let exists = true;
     if (username.validate()) {
         try {
             const res = await fetch(`http://localhost:3000/api/auth/check-username?username=${username.getValue()}`);
@@ -142,18 +147,23 @@ async function checkUsernameExists() {
             if (json.success) {
                 if (json.exists) {
                     username.showErrorBorderAndMessage("Username already taken!");
+                    exists = true
                 } else {
                     username.removeError();
+                    exists = false
                 }
             } else {
                 username.showErrorBorderAndMessage("No Success when checking username.");
             }
         } catch (err) {
             username.showErrorBorderAndMessage('Serverfehler beim Username Checken');
+            exists = false
         }
     } else if (username.getValue() === "") {
         username.removeError();
     }
+
+    return exists;
 }
 
 document.getElementById("signup-form").addEventListener("submit", async function (event) {
