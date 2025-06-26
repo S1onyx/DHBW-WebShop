@@ -1,14 +1,78 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <script src="/env.js"></script>
   <meta charset="UTF-8" />
   <title>Zugriff verweigert</title>
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .logout-container {
+      background: #fff;
+      padding: 40px 32px 32px 32px;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 350px;
+    }
+    .logout-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #d32f2f;
+      margin-bottom: 18px;
+    }
+    .logout-message {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 32px;
+    }
+    .logout-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .logout-btn {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+      outline: none;
+    }
+    .logout-btn:hover {
+      background: #0d47a1;
+    }
+    .logout-btn.secondary {
+      background: #e0e0e0;
+      color: #333;
+      box-shadow: none;
+    }
+    .logout-btn.secondary:hover {
+      background: #bdbdbd;
+    }
+  </style>
 </head>
 <body>
-  <h1>Zugriff verweigert</h1>
-  <p>Du hast keine Berechtigung für diesen Bereich.</p>
-  <a href="/">Zurück zur Startseite</a> |
-  <a href="/login">Zum Login</a>
+<div class="logout-container">
+  <div class="logout-title">Zugriff verweigert</div>
+  <div class="logout-message">You've been logged out.<br>Please log back again in.</div>
+  <div class="logout-actions">
+    <a href="/" class="logout-btn secondary">Zurück zur Startseite</a>
+    <a href="/login" class="logout-btn">Zum Login</a>
+  </div>
+</div>
 </body>
 </html>
