@@ -4,6 +4,7 @@
     const wishlistLink = navbar.querySelector('.wishlist-link');
     const cartLink = navbar.querySelector('.cart-link');
     const adminLink = navbar.querySelector('.admin-link');
+    const sellerLink = navbar.querySelector('.seller-link');
     const navbarLinks = navbar.querySelectorAll('[class$="-link"]:not(.admin-link)');
 
     try {
@@ -21,9 +22,20 @@
                     }
                 });
                 if (adminLink) adminLink.style.display = 'inline-block';
+                if (sellerLink) sellerLink.style.display = 'inline-block';
+            } else if (json.data && json.data.role_id === 2) { // Seller-Check
+                navbarLinks.forEach(link => {
+                    if (link !== wishlistLink && link !== cartLink) {
+                        link.style.display = 'inline-block';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                });
+                if (sellerLink) sellerLink.style.display = 'inline-block';
             } else {
                 navbarLinks.forEach(link => link.style.display = 'inline-block');
                 if (adminLink) adminLink.style.display = 'none';
+                if (sellerLink) sellerLink.style.display = 'none';
             }
         } else {
             if (loginDiv) loginDiv.style.display = 'block';

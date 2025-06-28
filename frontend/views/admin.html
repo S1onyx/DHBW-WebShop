@@ -1,13 +1,139 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
   <script src="/env.js"></script>
-  <meta charset="UTF-8" />
-  <title>Adminbereich</title>
+  <script src="/js/admin.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    section {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+    }
+
+    form {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    input, select, button {
+      padding: 0.5rem;
+      border: 1px solid #bbb;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #125ea2;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th {
+      background: #e3e3e3;
+      font-weight: bold;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+
+    .actions button {
+      margin-right: 0.5rem;
+    }
+
+    #modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #modal.active {
+      display: flex;
+    }
+
+    #modal > div {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      min-width: 300px;
+      max-width: 90vw;
+    }
+  </style>
 </head>
 <body>
-  <h1>Admin-Bereich</h1>
-  <p>Nur sichtbar für Admins.</p>
-  <a href="/">Zurück zur Startseite</a>
+<div id="header"></div>
+<button onclick="history.back()" class="back-button">← Back</button>
+<h1>Admin Panel</h1>
+<section id="product-management">
+  <h2>Produkte verwalten</h2>
+  <form id="add-product-form">
+    <input name="name" placeholder="Produktname" required>
+    <input name="price" type="number" placeholder="Preis" required>
+    <input name="seller_id" type="number" placeholder="Seller ID" required>
+    <button type="submit">Produkt hinzufügen</button>
+  </form>
+  <div id="product-list"></div>
+</section>
+<section id="user-management">
+  <h2>User verwalten</h2>
+  <div id="user-list"></div>
+</section>
+<div id="modal"></div>
+<div id="footer"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+  });
+</script>
 </body>
 </html>
