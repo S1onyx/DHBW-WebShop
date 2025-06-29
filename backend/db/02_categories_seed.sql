@@ -1,30 +1,34 @@
 -- Hauptkategorien
 INSERT INTO categories (id, name, parent_id) VALUES
-(1, 'Gaming', NULL),
-(2, 'Nature', NULL),
-(3, 'Fantasy', NULL),
-(4, 'Urban', NULL),
-(5, 'Animals', NULL),
-
--- Unterkategorien für Gaming
-(6, 'Retro Games', 1),
-(7, 'RPG Icons', 1),
-(8, 'Game Characters', 1),
-
--- Unterkategorien für Nature
-(9, 'Landscapes', 2),
-(10, 'Seasons', 2),
-
--- Unterkategorien für Fantasy
-(11, 'Magic & Spells', 3),
-(12, 'Monsters', 3),
-(13, 'Medieval Objects', 3),
-
--- Unterkategorien für Urban
-(14, 'City Skylines', 4),
-(15, 'Street Art', 4),
+(1, 'Animals', NULL),
+(2, 'Art', NULL),
+(3, 'Gaming', NULL),
+(4, 'Nature', NULL),
+(5, 'Urban', NULL),
 
 -- Unterkategorien für Animals
-(16, 'Cats & Dogs', 5),
-(17, 'Birds', 5),
-(18, 'Mythical Creatures', 5);
+(6, 'Cats', 1),
+(7, 'Dogs', 1),
+(8, 'Elephants', 1),
+(9, 'Insects', 1),
+
+-- Unterkategorien für Art
+(10, 'Abstract', 2),
+
+-- Unterkategorien für Gaming
+(11, 'Donkeykong', 3),
+(12, 'Mario', 3),
+(13, 'Minecraft', 3),
+(14, 'Pokemon', 3),
+(15, 'Sonic', 3),
+(16, 'Undertale', 3),
+
+-- Unterkategorien für Nature
+(17, 'Landscapes', 4),
+(18, 'Ocean', 4),
+(19, 'Sky', 4),
+
+-- Unterkategorien für Urban
+(20, 'Dystopian', 5),
+(21, 'Futuristic', 5),
+(22, 'Skylines', 5);
