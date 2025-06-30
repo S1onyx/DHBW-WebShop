@@ -195,7 +195,7 @@ products.forEach(product => {
   img.addEventListener('click', async function(event) { 
     event.preventDefault();
     const body = { productId: product.id, quantity: 1 };
-    const res = await fetch('http://localhost:3000/api/carts/items', {
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
       ...fetchOptionsWithCredentials,
       method: 'POST',
       body: JSON.stringify(body)

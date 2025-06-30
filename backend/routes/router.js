@@ -17,6 +17,8 @@ const resetPassword = require('../apis/auth/resetPassword');
 const resendVerification = require('../apis/auth/resendVerification');
 const loginWithCode = require('../apis/auth/loginWithCode');
 const requestLoginCode = require('../apis/auth/requestLoginCode');
+const checkEmail = require('../apis/auth/checkEmail');
+const checkUsername = require('../apis/auth/checkUsername');
 
 // Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
@@ -29,6 +31,7 @@ const putProduct = require('../apis/products/putProduct');
 const deleteProduct = require('../apis/products/deleteProduct');
 const postProduct = require('../apis/products/postProduct')
 const deleteWishlistPermission = require('../apis/wishlists/permissions/deletePermission');
+const getMyProducts = require('../apis/products/getMyProducts');
 
 // ProductImage APIs
 const postProductImage = require('../apis/products/images/postProductImage');
@@ -91,6 +94,8 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
   { method: 'POST', path: /^\/api\/auth\/request-login-code$/, handler: requestLoginCode },
   { method: 'POST', path: /^\/api\/auth\/login-with-code$/, handler: loginWithCode },
+  { method: 'GET', path: /^\/api\/auth\/check-email$/, handler: checkEmail },
+  { method: 'GET', path: /^\/api\/auth\/check-username$/, handler: checkUsername },
 
 {
   method: 'GET',
@@ -105,6 +110,13 @@ const routes = [
 },
 
   // Product Routes
+  {
+  method: 'GET',
+  path: /^\/api\/products\/mine$/,
+  handler: withAuth(
+    and(requireRole(2), requireValidatedUser)(getMyProducts)
+  )
+},
   {
     method: 'GET',
     path: /^\/api\/products$/,

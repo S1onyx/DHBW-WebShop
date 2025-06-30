@@ -1,111 +1,70 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <script src="/env.js"></script>
-  <meta charset="UTF-8" />
-  <title>Login</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 400px;
-      margin: 5rem auto;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-    }
-    h1 {
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      box-sizing: border-box;
-    }
-    button {
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      width: 100%;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 0.25rem;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .error {
-      color: red;
-      margin-top: 1rem;
-      text-align: center;
-    }
-    .success {
-      color: green;
-      margin-top: 1rem;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/auth.css" type="text/css">
+    <script src="/js/auth_util.js" defer></script>
+    <script src="/js/login.js" defer></script>
 </head>
 <body>
-  <h1>Login</h1>
-  <form id="login-form">
-    <label for="identifier">E-Mail oder Benutzername:</label>
-    <input type="email" id="identifier" name="identifier" required />
+  <div id="header"></div>
+    <main>
+        <div class="card-container auth-container" id="login-container">
+            <h1 class="auth-title">Login</h1>
+            <div class="auth-error" id="login-error">Username/E-Mail or password is wrong.</div>
+            <div class="auth-success" id="login-success">Login successful.</div>
+            <form id="login-form" class="auth-form" novalidate>
+                <label for="username-email" hidden>Username/ E-Mail</label>
+                <input type="text" id="username-email" name="username-email" placeholder="Username/ E-Mail" class="auth-input" required>
+                <div class="error-message" id="username-email-error"></div>
 
-    <label for="password">Passwort:</label>
-    <input type="password" id="password" name="password" required />
+                <label for="password" hidden>Password</label>
+                <div class="password-wrapper auth-input" id="password-wrapper">
+                  <input type="password" id="password" name="password" placeholder="Password" class="password-input" required>
+                  <button type="button" id="toggle-password" class="toggle-password-button">Show</button>
+                </div>
 
-    <button type="submit">Einloggen</button>
+                <div id="below-password">
+                    <a href="#" id="forgot-password-link" class="forgot-password-link">Forgot Password? Reset here!</a>
+                    <div class="error-message" id="password-error"></div>
+                </div>
 
-    <div class="error" id="error-message"></div>
-    <div class="success" id="success-message"></div>
-  </form>
+                <input type="submit" class="auth-button first-button" value="Log in">
 
-  <script>
-    const form = document.getElementById('login-form');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
+                <div class="divider">
+                  <span class="divider-text">OR</span>
+                </div>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorMessage.textContent = '';
-      successMessage.textContent = '';
+                <button class="auth-button" id="code-login-button" type="button">Login with Code instead</button>
 
-      const identifier = document.getElementById('identifier').value.trim();
-      const password = document.getElementById('password').value;
-
-      const body = identifier.includes('@')
-        ? { email: identifier, password }
-        : { username: identifier, password };
-
-      try {
-        const res = await fetch(`http://${window.ROOT_URL}:3000/api/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify(body)
-        });
-
-        const json = await res.json();
-        if (json.success) {
-          successMessage.textContent = 'Login erfolgreich. Weiterleitung...';
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 1000);
-        } else {
-          errorMessage.textContent = json.error || 'Login fehlgeschlagen';
+                <button class="auth-button second-button" id="to-signup" type="button">New here? Sign up!</button>
+            </form>
+        </div>
+    </main>
+    <div id="footer"></div>
+    <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
         }
-      } catch (err) {
-        errorMessage.textContent = 'Serverfehler beim Login';
       }
-    });
-  </script>
+    }
+
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+</script>
 </body>
+
 </html>

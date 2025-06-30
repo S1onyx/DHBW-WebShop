@@ -30,21 +30,33 @@ async function requestReset(req, res) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid JSON format', code: 400 }));
     }
 
-    const { email } = data;
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const { email, username } = data;
+
+    if (!email && !username) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Valid email is required', code: 400 }));
+      return res.end(JSON.stringify({ success: false, error: 'Email or username required', code: 400 }));
     }
 
+    let user;
     try {
-      const result = await db.query(`SELECT id, status_id FROM users WHERE email = $1`, [email]);
+      let result;
+
+      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        result = await db.query(`SELECT id, email, status_id FROM users WHERE email = $1`, [email]);
+      } else if (username) {
+        result = await db.query(`SELECT id, email, status_id FROM users WHERE username = $1`, [username]);
+      } else {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: false, error: 'Invalid email format and no username provided', code: 400 }));
+      }
 
       if (result.rowCount === 0) {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ success: false, error: 'User not found', code: 404 }));
       }
 
-      const user = result.rows[0];
+      user = result.rows[0];
+
       if (user.status_id !== 1) {
         res.writeHead(403, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ success: false, error: 'Account not validated', code: 403 }));
@@ -56,14 +68,14 @@ async function requestReset(req, res) {
       await db.query(
         `UPDATE users
          SET reset_token = $1, reset_expires = $2
-         WHERE email = $3`,
-        [token, expiresAt, email]
+         WHERE id = $3`,
+        [token, expiresAt, user.id]
       );
 
-      const link = `http://${process.env.ROOT_URL || 'localhost'}:1337/reset.html?token=${token}`;
+      const link = `http://${process.env.ROOT_URL || 'localhost'}:1337/reset?token=${token}`;
 
       await sendMail({
-        to: email,
+        to: user.email,
         subject: 'Passwort zurücksetzen',
         html: `
           <div style="font-family:sans-serif;text-align:center">
@@ -82,7 +94,7 @@ async function requestReset(req, res) {
         data: { token }
       }));
     } catch (err) {
-      console.error('[RESET REQUEST ERROR]', { email, error: err });
+      console.error('[RESET REQUEST ERROR]', { email, username, error: err });
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: false, error: 'Server error during reset request', code: 500 }));
     }

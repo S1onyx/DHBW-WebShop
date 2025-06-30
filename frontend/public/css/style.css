@@ -1,3 +1,7 @@
+:root {
+  --card-background: #FFFFFF;
+}
+
 /* === Grundlayout === */
 body {
   font-family: Arial, sans-serif;
@@ -25,6 +29,25 @@ main {
   font-weight: bold;
   margin: 2rem 0 1rem;
   color: #222;
+}
+
+/* == Card Container ==*/
+.card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    padding: 30px 0;
+
+    background-color: var(--card-background);
+    border-radius: 20px;
+}
+
+/* === User Info === */
+#user-info {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
 }
 
 /* === Produktliste === */
