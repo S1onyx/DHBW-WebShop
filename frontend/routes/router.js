@@ -58,7 +58,7 @@ router.get(
     '/seller',
     requireAuth,
     requireStatus('validated'),
-    requireRole('Seller'),
+    requireRole('Seller', 'Admin'),
     (req, res) => {
       renderPage('seller.html', res);
     }
