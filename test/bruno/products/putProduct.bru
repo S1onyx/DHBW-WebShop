@@ -18,3 +18,88 @@ body:json {
     "description": "Section could nature interest wear. Morning as police often. Place myself his itself find add sing."
   }
 }
+
+docs {
+  ## PUT /api/products/{id}
+  
+  **Description**  
+  Updates one or more editable attributes (`name`, `description`, `price`, `stock`) of an existing product.  
+  Only the product owner (seller) or an admin can perform this operation. Email verification is required.
+  
+  ### Request
+  
+  - **Method:** `PUT`  
+  - **Endpoint:** `/api/products/{id}`  
+  - **Example:** `/api/products/2`  
+  - **Authentication:** Required (Bearer token or cookie)  
+  - **Email verification required:** Yes  
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                                    |
+  |--------|-----------------------------------------------|
+  | Admin  | May update any product                        |
+  | Seller | May update only products they own             |
+  | User   | Not allowed                                   |
+  
+  ### Request body (JSON)
+  
+  Only the fields listed below are processed; any others are ignored.
+  
+  | Field        | Type    | Rules                           |
+  |--------------|---------|---------------------------------|
+  | `name`       | string  | Optional, non-empty             |
+  | `description`| string  | Optional, non-empty             |
+  | `price`      | number  | Optional, `≥ 0`                 |
+  | `stock`      | integer | Optional, `≥ 0`                 |
+  
+  **Example body**
+  
+  ```json
+  {
+    "name": "Pixelart Magic Wand",
+    "price": 12.50,
+    "stock": 25,
+    "randomField": "ignored"
+  }
+  ```
+  
+  ### Successful response
+  
+  | Status | Description                                                                           |
+  |--------|---------------------------------------------------------------------------------------|
+  | 200    | Product updated successfully (or partially, if some fields were ignored).             |
+  
+  **Example 200 OK**
+  
+  ```json
+  {
+    "success": true,
+    "message": "Product partially updated. Some fields were ignored.",
+    "updatedFields": ["name", "price", "stock"],
+    "ignoredFields": ["randomField"]
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Error message                              | Trigger                                                                                 |
+  |--------|--------------------------------------------|-----------------------------------------------------------------------------------------|
+  | 400    | `Request body is empty`                    | Body present but empty                                                                  |
+  | 400    | `Invalid JSON format`                      | Body is not valid JSON                                                                  |
+  | 400    | `No valid fields provided for update`      | None of the allowed fields (`name`, `description`, `price`, `stock`) were present       |
+  | 400    | `Price must be >= 0`                       | `price` supplied but negative                                                           |
+  | 400    | `Stock must be >= 0`                       | `stock` supplied but negative                                                           |
+  | 403    | `Forbidden` *(middleware)*                 | Authenticated user is neither admin nor owner                                           |
+  | 404    | `Product not found`                        | No product with the given `id`                                                          |
+  | 413    | `Payload too large`                        | Request body exceeds ~1 MB                                                              |
+  | 500    | `Server error`                             | Unhandled exception in the handler or database layer                                    |
+  
+  ### Notes
+  
+  - Fields other than `name`, `description`, `price`, and `stock` are ignored and returned in `ignoredFields`.
+  - If all supplied fields are invalid or ignored, the handler returns a `400` error.
+  - The request body size is capped at **1 MB**. Larger payloads are rejected with **413 Payload Too Large**.
+  - All validation and ownership checks happen before any database update is attempted.
+  
+}

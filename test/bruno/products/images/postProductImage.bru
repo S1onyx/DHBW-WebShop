@@ -15,3 +15,79 @@ body:multipart-form {
   is_primary: true
   image: @file(/Users/simonriedinger/Downloads/Pixelart-Schildkroete.png)
 }
+
+docs {
+  ## POST /api/products/{productId}/images
+  
+  **Description**  
+  Uploads a new product image and creates an image entry for the given product. Only sellers (for their own products) and admins are allowed to use this endpoint.
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/products/{productId}/images`
+  - **Authentication:** Required
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                                  |
+  |--------|---------------------------------------------|
+  | Admin  | May upload image for any product            |
+  | Seller | May upload image for their own products     |
+  | User   | Not allowed (403 Forbidden)                 |
+  
+  ### Request format
+  
+  - **Content-Type:** `multipart/form-data`
+  - **Fields:**
+    - `image` (file, required): JPEG or PNG
+    - `alt_text` (string, optional)
+    - `is_primary` (boolean, optional)
+  
+  **Example using curl**
+  
+  ```bash
+  curl -X POST /api/products/42/images \
+    -H "Authorization: Bearer <token>" \
+    -F "image=@pixel_flower.png" \
+    -F "alt_text=Pixel Flower" \
+    -F "is_primary=true"
+  ```
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 201    | Image uploaded         |
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 87,
+      "product_id": 42,
+      "filename": "1719323552-837394828.png",
+      "alt_text": "Pixel Flower",
+      "is_primary": true
+    }
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                            | Trigger                                      |
+  |--------|------------------------------------|----------------------------------------------|
+  | 400    | `No image uploaded`                | No file provided                             |
+  | 400    | `Only JPEG and PNG files allowed`  | Invalid file type                            |
+  | 404    | `Product not found`                | Given productId does not exist               |
+  | 403    | `Forbidden`                        | Not seller of product or not admin           |
+  | 500    | `Server error during image upload` | Internal server or DB error during handling  |
+  
+  ### Notes
+  
+  - If the product does not exist, the uploaded file is deleted again.
+  - File size limits and storage path are defined by the backend config.
+  - The uploaded file is renamed to a unique timestamp-based filename.
+  
+}

@@ -9,3 +9,60 @@ post {
   body: none
   auth: inherit
 }
+
+docs {
+  ## POST /api/orders
+  
+  **Description**  
+  Creates a new order for the currently authenticated and verified user.  
+  The order will be created using the current contents of their cart.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/orders`
+  - **Authentication:** Required (via accessToken cookie)
+  
+  ---
+  
+  ### Request body
+  
+  _No request body is required._
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 201    | Order created          |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Order created successfully"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                            | Condition                                      |
+  |--------|------------------------------------|------------------------------------------------|
+  | 401    | `Authentication required`          | Missing or invalid accessToken cookie          |
+  | 403    | `Email not verified`               | User is not email-verified                     |
+  | 400    | `Cart is empty`                    | No items found in the user's cart              |
+  | 500    | `Error creating order`             | Internal database or logic error               |
+  
+  ---
+  
+  ### Notes
+  
+  - Orders are created directly from the current cart content.
+  - The cart will likely be cleared or frozen after the order is placed.
+  - Only **verified users** can place orders.
+  
+}

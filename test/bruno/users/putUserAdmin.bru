@@ -29,3 +29,92 @@ body:json {
     "verification_token": "IGNORED"
   }
 }
+
+docs {
+  ## PUT /api/users/admin/{id}
+  
+  **Description**  
+  Updates the user account with the specified ID.  
+  This endpoint is restricted to administrators and allows role changes and email verification updates.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/users/admin/{id}`
+  - **Authentication:** Required (`accessToken` cookie)
+  - **Authorization:**  
+    - User must be an admin (`role_id = 1`)  
+    - Admin must have a verified email address
+  
+  ---
+  
+  ### Path parameters
+  
+  | Parameter | Type   | Required | Description         |
+  |-----------|--------|----------|---------------------|
+  | `id`      | number | Yes      | ID of the user to update |
+  
+  ---
+  
+  ### Request body
+  
+  At least one of the following fields must be present:
+  
+  ```json
+  {
+    "first_name": "Luna",
+    "last_name": "Pixel",
+    "email": "luna@pixelart.com",
+    "password": "securepassword123",
+    "role_id": 2,
+    "verified": true
+  }
+  ```
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | User updated successfully |
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 42,
+      "email": "luna@pixelart.com",
+      "first_name": "Luna",
+      "last_name": "Pixel",
+      "role_id": 2,
+      "verified": true
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                                |
+  |--------|----------------------------------|------------------------------------------|
+  | 400    | `At least one field required`   | Empty or invalid request body            |
+  | 401    | `Authentication required`       | No token present                         |
+  | 401    | `Invalid or expired token`      | Token is malformed or expired            |
+  | 403    | `Access denied`                 | User is not an admin                     |
+  | 403    | `Email not verified`            | Admin is not email-verified              |
+  | 404    | `User not found`                | No user with the given ID exists         |
+  | 500    | `Error updating user`           | Internal server/database error           |
+  
+  ---
+  
+  ### Notes
+  
+  - This is the only route that supports changing `role_id` and `verified` status.
+  - Use this endpoint for user management interfaces or moderation tools.
+  - Changes are immediate and do not require confirmation from the target user.
+  
+}

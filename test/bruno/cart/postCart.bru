@@ -9,3 +9,60 @@ post {
   body: none
   auth: none
 }
+
+docs {
+  ## POST /api/cart
+  
+  **Description**  
+  Creates a new, empty cart for the currently authenticated user.  
+  If a cart already exists, the request fails with a conflict.
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/cart`
+  - **Authentication:** Required
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                    |
+  |--------|-------------------------------|
+  | Admin  | Not allowed (returns 404)     |
+  | Seller | Not allowed (returns 404)     |
+  | User   | Allowed                     |
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 201    | Cart created          |
+  
+  ```json
+  {
+    "message": "Cart created successfully",
+    "cartId": 42
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                                | Trigger                                     |
+  |--------|----------------------------------------|---------------------------------------------|
+  | 404    | `User not found`                       | User ID not found in DB                     |
+  | 409    | `Cart already exists for this user`    | Cart already exists                         |
+  | 500    | `Server error`                         | Unexpected internal failure                 |
+  
+  ### Notes
+  
+  - Only users (not admins/sellers) can create carts.
+  - If a cart already exists, the response includes the existing `cartId`:
+  
+  ```json
+  {
+    "error": "Cart already exists for this user",
+    "cartId": 42
+  }
+  ```
+  
+}

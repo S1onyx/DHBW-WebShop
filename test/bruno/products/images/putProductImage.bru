@@ -16,3 +16,76 @@ body:json {
     "is_primary": true
   }
 }
+
+docs {
+  ## PUT /api/products/images/{imageId}
+  
+  **Description**  
+  Updates metadata or replaces the image file for an existing product image.  
+  Only the product owner (seller) or an admin may perform this operation.
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/products/images/{imageId}`
+  - **Authentication:** Required
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                                       |
+  |--------|--------------------------------------------------|
+  | Admin  | May update any image                             |
+  | Seller | May update images of their own products          |
+  | User   | Not allowed (403 Forbidden)                      |
+  
+  ### Request format
+  
+  - **Content-Type:** `multipart/form-data`
+  - **Fields:**
+    - `image` (file, optional): JPEG or PNG to replace the existing image
+    - `alt_text` (string, optional): Text describing the image
+    - `is_primary` (boolean, optional): Marks image as primary
+  
+  **Example using curl**
+  
+  ```bash
+  curl -X PUT /api/products/images/87 \
+    -H "Authorization: Bearer <token>" \
+    -F "image=@new_pixel_sprite.png" \
+    -F "alt_text=New pixel sprite" \
+    -F "is_primary=true"
+  ```
+  
+  ### Successful response
+  
+  | Status | Description        |
+  |--------|--------------------|
+  | 200    | Image updated      |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Image updated",
+    "updatedFields": ["image", "alt_text", "is_primary"]
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                                  | Trigger                                               |
+  |--------|------------------------------------------|-------------------------------------------------------|
+  | 400    | `No update fields provided`              | Empty form, no `image`, `alt_text`, or `is_primary`   |
+  | 400    | `Only JPEG and PNG files allowed`        | Uploaded file is not of accepted MIME type            |
+  | 404    | `Image not found`                        | No image exists with given `imageId`                  |
+  | 403    | `Forbidden`                              | Not image owner or not admin                          |
+  | 500    | `Server error during image update`       | Internal server or DB error                           |
+  
+  ### Notes
+  
+  - If a new image file is uploaded, the old one is deleted from disk.
+  - All fields are optional, but at least one must be provided.
+  - The response includes which fields were updated.
+  - Validation and authorization happen before any file or DB operations.
+  
+}

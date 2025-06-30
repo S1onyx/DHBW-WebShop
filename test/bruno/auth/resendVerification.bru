@@ -15,3 +15,67 @@ body:json {
      "email": "simon@example.com"
    }
 }
+
+docs {
+  ## POST /api/auth/resend-verification
+  
+  **Description**  
+  Resends a verification email to users who have not yet verified their accounts.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/auth/resend-verification`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "email": "luna@pixelart.com"
+  }
+  ```
+  
+  | Field   | Type   | Required | Description                 |
+  |---------|--------|----------|-----------------------------|
+  | `email` | string | Yes      | The registered user email   |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description             |
+  |--------|-------------------------|
+  | 200    | Email sent successfully |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Verification email resent"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                              |
+  |--------|----------------------------------|-----------------------------------------|
+  | 400    | `Missing email`                 | No email was provided in the request    |
+  | 404    | `User not found`                | No user exists with the given email     |
+  | 400    | `Email is already verified`     | User is already verified                |
+  | 500    | `Error resending verification`  | Mail or DB failure                      |
+  
+  ---
+  
+  ### Notes
+  
+  - Users who are already verified will receive a 400 response.
+  - The token sent is valid for a limited time.
+  - This endpoint does not require a valid session.
+  
+}

@@ -9,3 +9,54 @@ delete {
   body: none
   auth: none
 }
+
+docs {
+  ## DELETE /api/products/images/{imageId}
+  
+  **Description**  
+  Deletes a product image by its ID.  
+  Only the product owner (seller) or an admin may delete an image.
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/products/images/{imageId}`
+  - **Authentication:** Required
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                                       |
+  |--------|--------------------------------------------------|
+  | Admin  | May delete any image                             |
+  | Seller | May delete images of their own products          |
+  | User   | Not allowed (403 Forbidden)                      |
+  
+  ### Successful response
+  
+  | Status | Description        |
+  |--------|--------------------|
+  | 200    | Image deleted      |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Image deleted"
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                            | Trigger                                              |
+  |--------|------------------------------------|------------------------------------------------------|
+  | 404    | `Image not found`                  | No image with given ID exists                        |
+  | 403    | `Forbidden`          | User is not image owner and not admin                |
+  | 500    | `Server error during image delete` | Internal server or filesystem failure                |
+  
+  ### Notes
+  
+  - This operation deletes both the database record and the corresponding image file from disk.
+  - Deletion is **permanent** and cannot be undone.
+  - Admins can delete any image, regardless of ownership.
+  
+}

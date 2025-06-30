@@ -16,3 +16,74 @@ body:json {
      "password": "DHbw123asdf!"
     }
 }
+
+docs {
+  ## POST /api/auth/login
+  
+  **Description**  
+  Authenticates a user via email and password.  
+  Sets an `accessToken` cookie for authenticated sessions.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/login`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "email": "luna@pixelart.com",
+    "password": "securePassword123"
+  }
+  ```
+  
+  | Field     | Type   | Required | Description           |
+  |-----------|--------|----------|-----------------------|
+  | `email`   | string | Yes      | Registered user email |
+  | `password`| string | Yes      | Associated password   |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description              |
+  |--------|--------------------------|
+  | 200    | User logged in successfully |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Login successful"
+  }
+  ```
+  
+  - Also sets HTTP-only cookie:
+    - Name: `accessToken`
+    - Usage: Authentication in protected routes
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                        | Condition                             |
+  |--------|--------------------------------|----------------------------------------|
+  | 400    | `Missing email or password`    | One or both fields are empty          |
+  | 401    | `Invalid credentials`          | User does not exist or password wrong |
+  | 403    | `Email not verified`           | User exists but hasn't confirmed email |
+  | 500    | `Login failed`                 | Internal error (DB, hashing, etc.)    |
+  
+  ---
+  
+  ### Notes
+  
+  - The `accessToken` cookie is used for session authentication on protected routes.
+  - Tokens are signed and verified using internal utility functions.
+  - A verified email is required to complete login.
+  
+}

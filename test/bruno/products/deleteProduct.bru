@@ -9,3 +9,61 @@ delete {
   body: none
   auth: none
 }
+
+docs {
+  ## DELETE /api/products/{id}
+  
+  **Description:**  
+  Permanently deletes a specific product by its unique ID. Only the product owner (seller) or an admin can perform this operation. Email verification is required.
+  
+  ### Request
+  
+  - Method: `DELETE`
+  - Endpoint: `/api/products/{id}`
+  - Example: `/api/products/57`
+  - Authentication: Required
+  - Email verification required: Yes
+  
+  ### Access Control
+  
+  | Role   | Permission                        |
+  |--------|------------------------------------|
+  | Admin  | Can delete any product             |
+  | Seller | Can delete only their own products |
+  | User   | Not allowed                        |
+  
+  ### Request Body
+  
+  No request body is required.
+  
+  ### Successful Responses
+  
+  | Status | Description                   |
+  |--------|-------------------------------|
+  | 200    | Product deleted successfully. Response includes deleted product ID. |
+  
+  **Example Response (200 OK):**
+  ```json
+  {
+    "success": true,
+    "deletedId": 57
+  }
+  ```
+  
+  ### Error Responses
+  
+  | Status | Description                   | Cause                                  |
+  |--------|-------------------------------|----------------------------------------|
+  | 400    | Invalid product ID            | ID is not a valid integer              |
+  | 403    | Forbidden                     | Triggered by authentication or ownership checks before handler execution |
+  | 404    | Product not found             | No product exists with the given ID    |
+  | 500    | Internal server error         | Unexpected server-side failure         |
+  
+  ### Notes
+  
+  - The product ID must be included in the URL path.
+  - Email verification is enforced for all roles.
+  - Authorization and role checks are handled before the route logic executes.
+  - Linked data (e.g. reviews, images) may persist depending on backend logic.
+  
+}

@@ -9,3 +9,57 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/products (unfiltered)
+  
+  **Description:**  
+  Returns a default list of all products without any filters, sorting, or category restrictions. This is the base version of the product listing endpoint.
+  
+  ### Request
+  
+  - Method: `GET`
+  - Endpoint: `/api/products`
+  - Authentication: Not required
+  
+  ### Query Parameters
+  
+  None required. The default behavior is:
+  
+  - `limit = 16`
+  - `offset = 0`
+  - No price filter
+  - No category filter
+  - No stock restriction
+  - No name filtering
+  - No explicit sorting
+  
+  ### Successful Response
+  
+  | Status | Description                   |
+  |--------|-------------------------------|
+  | 200    | Products returned successfully |
+  
+  **Example Response:**
+  ```json
+  {
+    "success": true,
+    "data": [ /* default product list */ ],
+    "total": 124
+  }
+  ```
+  
+  ### Error Responses
+  
+  | Status | Error message           | Cause                                        |
+  |--------|-------------------------|----------------------------------------------|
+  | 500    | `Server error`          | An internal error occurred during execution  |
+  
+  ### Notes
+  
+  - If no query parameters are specified, the endpoint returns the first 16 products.
+  - Default sort order is undefined unless explicitly specified.
+  - Pagination can still be applied via `limit` and `offset` if desired.
+  - If category filters are to be applied, use the version with query parameters.
+  
+}

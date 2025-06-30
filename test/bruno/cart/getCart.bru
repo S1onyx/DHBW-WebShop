@@ -9,3 +9,81 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/carts
+  
+  **Description**  
+  Returns the current user’s cart, including all items and the calculated total price.
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/carts`
+  - **Authentication:** Required
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission  |
+  |--------|-------------|
+  | User   | Allowed     |
+  | Seller | Forbidden   |
+  | Admin  | Forbidden   |
+  
+  ### Successful response
+  
+  | Status | Description                 |
+  |--------|-----------------------------|
+  | 200    | Cart returned successfully  |
+  
+  **Example 1 — cart with items**
+  
+  ```json
+  {
+    "cartDetails": {
+      "id": 14,
+      "created_at": "2025-06-26T08:00:00Z"
+    },
+    "items": [
+      {
+        "itemId": 137,
+        "productId": 59,
+        "name": "Pixelart Dragon",
+        "price": 15.00,
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 30.00
+  }
+  ```
+  
+  **Example 2 — empty cart**
+  
+  ```json
+  {
+    "cartDetails": {
+      "id": 14,
+      "created_at": "2025-06-26T08:00:00Z"
+    },
+    "items": [],
+    "totalPrice": 0,
+    "message": "The cart is empty"
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                                 | Trigger                                         |
+  |--------|-----------------------------------------|-------------------------------------------------|
+  | 401    | `Unauthorized`                          | User not logged in                              |
+  | 403    | `Forbidden`                             | Logged-in user does not have the **user** role  |
+  | 404    | `No cart found for this user`           | User has no cart                                |
+  | 500    | `Server error`                          | Internal server failure                         |
+  
+  ### Notes
+  
+  - `totalPrice` is calculated as the sum of `price × quantity` for all items.
+  - If the cart exists but contains no items, the response still
+  
+}

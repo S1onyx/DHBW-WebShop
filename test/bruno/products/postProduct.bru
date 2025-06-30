@@ -19,3 +19,85 @@ body:multipart-form {
   seller_id: 9
   image: @file(/Users/simonriedinger/Downloads/Pixelart-Schildkroete.png)
 }
+
+docs {
+  ## POST /api/products
+  
+  **Description**  
+  Creates a new product. Only users with the `seller` or `admin` role can create products. The user's email must be verified.
+  
+  ### Request
+  
+  - **Method:** `POST`  
+  - **Endpoint:** `/api/products`  
+  - **Authentication:** Required  
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role   | Permission                         |
+  |--------|------------------------------------|
+  | Admin  | Can create products                |
+  | Seller | Can create products                |
+  | User   | Not allowed (403 Forbidden)        |
+  
+  ### Request body (JSON)
+  
+  | Field        | Type     | Required | Rules                    |
+  |--------------|----------|----------|---------------------------|
+  | `name`       | string   | Yes      | Minimum 3 characters      |
+  | `description`| string   | Yes      | Non-empty                 |
+  | `price`      | number   | Yes      | Must be ≥ 0               |
+  | `stock`      | integer  | Yes      | Must be ≥ 0               |
+  | `categoryId` | integer  | Yes      | Must refer to existing ID |
+  
+  **Example request**
+  
+  ```json
+  {
+    "name": "Pixelart Fireball",
+    "description": "A glowing pixelated fireball animation",
+    "price": 8.90,
+    "stock": 120,
+    "categoryId": 3
+  }
+  ```
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 201    | Product created        |
+  
+  **Example 201 Created**
+  
+  ```json
+  {
+    "success": true,
+    "message": "Product created",
+    "productId": 57
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Error message                            | Trigger                                                 |
+  |--------|------------------------------------------|---------------------------------------------------------|
+  | 400    | `Missing required fields`                | One or more fields are missing                          |
+  | 400    | `Name must be at least 3 characters`     | `name.length < 3`                                       |
+  | 400    | `Price must be >= 0`                     | `price < 0`                                             |
+  | 400    | `Stock must be >= 0`                     | `stock < 0`                                             |
+  | 400    | `Invalid category ID`                    | `categoryId` not a number or invalid format             |
+  | 404    | `Category not found`                     | No category with the given ID exists                    |
+  | 403    | `Forbidden` *(middleware)*               | Authenticated user is not `seller` or `admin`           |
+  | 413    | `Payload too large`                      | Request body exceeds ~1 MB                              |
+  | 500    | `Server error`                           | Internal server/database error                          |
+  
+  ### Notes
+  
+  - The maximum allowed request body size is **1 MB**.
+  - User must be authenticated and have the `admin` or `seller` role.
+  - Email verification is required and enforced via middleware.
+  - Categories must exist in the database. Use `GET /api/categories` to fetch them.
+  
+}

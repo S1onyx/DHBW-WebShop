@@ -9,3 +9,56 @@ delete {
   body: none
   auth: inherit
 }
+
+docs {
+  ## DELETE /api/carts
+  
+  **Description**  
+  Deletes the entire cart for the currently authenticated user, including all associated items.  
+  If no cart exists, a 404 error is returned.
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/carts`
+  - **Authentication:** Required  
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role | Access |
+  |------|--------|
+  | User (role 3) | Allowed |
+  | Seller / Admin | Forbidden → 403 |
+  
+  ### Request body
+  
+  _None_ — no body parameters required.
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Cart deleted          |
+  
+  ```json
+  {
+    "message": "Cart deleted successfully"
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                          | Condition                                   |
+  |--------|----------------------------------|---------------------------------------------|
+  | 403    | `Forbidden`                      | Authenticated user is not role 3            |
+  | 404    | `Cart not found`                 | No cart exists for the user                 |
+  | 500    | `Server error while deleting cart` | Unhandled internal error during deletion   |
+  
+  ### Notes
+  
+  - This operation deletes both the cart itself and all cart items from the database.
+  - The cart is permanently removed — this action cannot be undone.
+  - If the user does not have a cart, the response is `404 Not Found`.
+  
+}

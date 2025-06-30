@@ -9,3 +9,67 @@ delete {
   body: none
   auth: none
 }
+
+docs {
+  ## DELETE /api/users/{id}
+  
+  **Description**  
+  Deletes the user with the specified ID.  
+  Access is restricted to the user themselves or an administrator.  
+  Email verification is required in both cases.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/users/{id}`
+  - **Authentication:** Required (`accessToken` cookie)
+  - **Authorization:**
+    - Admins (`role_id = 1`) may delete any user
+    - Users may delete their own account only
+    - Email must be verified
+  
+  ---
+  
+  ### Path parameters
+  
+  | Parameter | Type   | Required | Description         |
+  |-----------|--------|----------|---------------------|
+  | `id`      | number | Yes      | ID of the user to delete |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | User deleted successfully |
+  
+  ```json
+  {
+    "success": true,
+    "message": "User deleted successfully"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                   | Condition                                       |
+  |--------|---------------------------|-------------------------------------------------|
+  | 401    | `Authentication required` | No token present                                |
+  | 401    | `Invalid or expired token`| Token malformed or expired                      |
+  | 403    | `Access denied`           | Not admin and not deleting own account          |
+  | 403    | `Email not verified`      | Authenticated user has not verified email       |
+  | 404    | `User not found`          | No user with the given ID exists                |
+  | 500    | `Error deleting user`     | Unexpected server/database error                |
+  
+  ---
+  
+  ### Notes
+  
+  - Deleting a user does not cascade to related entities (e.g., orders, products).
+  
+}

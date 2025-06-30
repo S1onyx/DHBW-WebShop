@@ -9,3 +9,58 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/products/{id}
+  
+  **Description:**  
+  Retrieves a single product by its unique ID. The endpoint is publicly accessible and does not require authentication.
+  
+  ### Request
+  
+  - Method: `GET`
+  - Endpoint: `/api/products/{id}`
+  - Example: `/api/products/54`
+  - Authentication: Not required
+  
+  ### Path Parameters
+  
+  | Parameter | Type   | Description                        |
+  |-----------|--------|------------------------------------|
+  | `id`      | number | Unique identifier of the product   |
+  
+  ### Successful Response
+  
+  | Status | Description                |
+  |--------|----------------------------|
+  | 200    | Product returned successfully |
+  
+  **Example Response:**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 54,
+      "name": "Pixel Art Shirt",
+      "price": 19.99,
+      "stock": 12,
+      "description": "Sample product",
+      ...
+    }
+  }
+  ```
+  
+  ### Error Responses
+  
+  | Status | Error message         | Cause                                  |
+  |--------|-----------------------|----------------------------------------|
+  | 404    | `Product not found`   | No product exists with the given ID    |
+  | 500    | `Server error`        | Internal error during retrieval        |
+  
+  ### Notes
+  
+  - If the ID is malformed (e.g. `/api/products/abc`), the backend **does not** return a `400` – it will likely throw a `500`.
+  - No authentication or email verification is required.
+  - If the product exists, the full object is returned in the `data` field.
+  
+}

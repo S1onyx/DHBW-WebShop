@@ -16,3 +16,77 @@ body:json {
     "quantity": 1
   }
 }
+
+docs {
+  ## PUT /api/carts/items
+  
+  **Description**  
+  Updates the quantity of a specific cart item belonging to the authenticated user.  
+  The item must already exist in the user's cart.
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/carts/items`
+  - **Authentication:** Required  
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role         | Access   |
+  |--------------|----------|
+  | User (role 3) | Allowed  |
+  | Seller / Admin | Forbidden → 403 |
+  
+  ### Request body (JSON)
+  
+  The request body must include the ID of the cart item and the new quantity:
+  
+  | Field     | Type    | Required | Description                             |
+  |-----------|---------|----------|-----------------------------------------|
+  | `itemId`  | number  | Yes      | ID of the cart item to update           |
+  | `quantity`| number  | Yes      | New quantity (> 0)                      |
+  
+  #### Example
+  
+  ```json
+  {
+    "itemId": 135,
+    "quantity": 3
+  }
+  ```
+  
+  ### Successful response
+  
+  | Status | Description                  |
+  |--------|------------------------------|
+  | 200    | Quantity updated successfully |
+  
+  ```json
+  {
+    "message": "Cart item quantity updated",
+    "item": {
+      "itemId": 135,
+      "quantity": 3
+    }
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                                | Condition                                 |
+  |--------|----------------------------------------|-------------------------------------------|
+  | 400    | `Invalid input`                        | Missing or malformed JSON / wrong types   |
+  | 400    | `Quantity must be greater than zero`   | Quantity is `<= 0`                        |
+  | 403    | `Forbidden`                            | Authenticated user is not role 3          |
+  | 404    | `Cart not found`                       | No cart exists for current user           |
+  | 404    | `Item not found in cart`               | `itemId` not found in user's cart         |
+  | 500    | `Server error while updating cart`     | Any other unhandled internal error        |
+  
+  ### Notes
+  
+  - This endpoint **does not** accept a product ID – only a cart `itemId`.
+  - If the item does not exist in the user's cart, a `404` is returned.
+  - The quantity is replaced with the new value.
+  
+}

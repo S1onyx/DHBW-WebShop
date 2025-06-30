@@ -9,3 +9,78 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/users/{id}
+  
+  **Description**  
+  Returns detailed user information for the specified user ID.  
+  Access is allowed only to the user themselves (ownership) or to admins (role_id = 1), and only if the user is email-verified.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/users/{id}`
+  - **Authentication:** Required (via accessToken cookie)
+  - **Authorization:**  
+    - Admins (`role_id = 1`) may access any user  
+    - Normal users may access **only their own** user record  
+    - All access requires a **verified email**
+  
+  ---
+  
+  ### Path parameters
+  
+  | Parameter | Type   | Required | Description                     |
+  |-----------|--------|----------|---------------------------------|
+  | `id`      | number | Yes      | ID of the user to retrieve      |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description        |
+  |--------|--------------------|
+  | 200    | User data returned |
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 42,
+      "email": "user@example.com",
+      "first_name": "Luna",
+      "last_name": "Pixel",
+      "role_id": 3,
+      "created_at": "2024-02-01T10:00:00Z",
+      "verified": true
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                                      |
+  |--------|----------------------------------|------------------------------------------------|
+  | 401    | `Authentication required`       | No accessToken provided                        |
+  | 401    | `Invalid or expired token`      | JWT is invalid or expired                      |
+  | 403    | `Access denied`                 | Not admin AND not the user themselves          |
+  | 403    | `Email not verified`            | Authenticated user is not email-verified       |
+  | 404    | `User not found`                | No user exists with the given ID               |
+  | 500    | `Server error`                  | Unexpected error during database access        |
+  
+  ---
+  
+  ### Notes
+  
+  - The access control is enforced via custom router logic:
+    - `requireRole(1)` for admin access
+    - `requireOwnership` for accessing own data
+    - Both paths require email verification (`requireValidatedUser`)
+  - Returned user data may include additional fields depending on database structure.
+  
+}
