@@ -1,3 +1,5 @@
+import { showPopupMessage } from '/js/utils.js';
+
 // --- Produktverwaltung ---
 async function fetchProducts() {
     const res = await fetch(`http://${window.ROOT_URL }:3000/api/products`, {credentials: 'include'});
@@ -10,31 +12,73 @@ async function addProduct(e) {
     const form = e.target;
     const formData = new FormData(form);
 
-    // Zeigt alle Formulardaten in der Konsole an
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value);
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/products`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData // Pass FormData directly, don't set Content-Type manually
+        });
+
+        const json = await res.json();
+
+        if (!res.ok) {
+            showPopupMessage(json.message || 'Error while creating product', 3000);
+            return;
+        }
+
+        showPopupMessage('Product successfully created', 1500);
+        fetchProducts();
+        form.reset();
+    } catch (err) {
+        showPopupMessage('Network error while creating product', 3000);
     }
-
-    await fetch(`http://${window.ROOT_URL}:3000/api/products`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData // kein Content-Type setzen!
-    });
-
-    fetchProducts();
-    form.reset();
 }
 
 document.getElementById('add-product-form').addEventListener('submit', addProduct);
 
-// --- Userverwaltung ---
+// --- Hilfsfunktion: Seller laden für Produktformular ---
+async function loadSellers() {
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/users?role=2`, {credentials: 'include'});
+    const result = await res.json();
+    const sellers = Array.isArray(result.data) ? result.data : [];
+    const select = document.getElementById('seller_id');
+    if (select) {
+        select.innerHTML = sellers.map(s => `<option value="${s.id}">${s.first_name} ${s.last_name} (${s.username})</option>`).join('');
+    }
+}
+
+// --- Produktformular initialisieren (Dropdown für Seller) ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadSellers();
+});
+
+// --- User-Suche & Filter ---
+function filterUsers() {
+    const search = document.getElementById('user-search').value.toLowerCase();
+    const role = document.getElementById('role-filter').value;
+    document.querySelectorAll('#user-list tbody tr').forEach(row => {
+        const cells = Array.from(row.children).map(td => td.textContent.toLowerCase());
+        const matchesSearch = cells.some(text => text.includes(search));
+        const matchesRole = !role || cells[4] === role.toLowerCase();
+        row.style.display = (matchesSearch && matchesRole) ? '' : 'none';
+    });
+}
+
+// --- Userverwaltung (angepasst) ---
 async function fetchUsers() {
-    const res = await fetch(`http://${window.ROOT_URL }:3000/api/users`, {credentials: 'include'});
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/users`, {credentials: 'include'});
     const result = await res.json();
     const users = Array.isArray(result.data) ? result.data.filter(user => user.role !== 'Admin') : [];
 
     const userList = document.getElementById('user-list');
     userList.innerHTML = `
+        <input id="user-search" placeholder="Suche nach Name, Username, Email, Rolle..." oninput="filterUsers()">
+        <select id="role-filter" onchange="filterUsers()">
+            <option value="">Alle Rollen</option>
+            <option value="Admin">Admin</option>
+            <option value="Seller">Seller</option>
+            <option value="Customer">Customer</option>
+        </select>
         <table>
             <thead>
                 <tr>
@@ -60,50 +104,109 @@ async function fetchUsers() {
                         <td>${user.role}</td>
                         <td class="actions">
                             <button class="details-btn"  onclick="showUserDetails(${user.id}, false)">Details</button>
-                            <button onclick="showUserDetails(${user.id}, true)">Bearbeiten</button>
-                            <button class="delete-btn" onclick="deleteUser(${user.id})"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="showUserDetails(${user.id}, true)">Edit</button>
+                            <button class="delete-btn" data-id="${user.id}"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `).join('')}
             </tbody>
         </table>
     `;
+
+    document.getElementById('user-search').addEventListener('input', filterUsers);
+    document.getElementById('role-filter').addEventListener('change', filterUsers);
+
+    userList.querySelectorAll('.delete-btn').forEach(btn => {
+        const id = btn.getAttribute('data-id');
+        btn.addEventListener('click', () => deleteUser(id));
+    });
+
+    async function deleteUser(id) {
+        try {
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            const json = await res.json();
+
+            if (!res.ok) {
+                showPopupMessage(json.message || 'Error while deleting the user', 3000);
+                return;
+            }
+
+            showPopupMessage('User successfully deleted', 1500);
+            fetchUsers(); // or whatever function updates your user list
+        } catch (err) {
+            showPopupMessage('Network error while deleting user', 3000);
+        }
+    }
 }
 
 
+// --- showUserDetails anpassen ---
 async function showUserDetails(id, editable = false) {
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${id}`, {credentials: 'include'});
     const user = await res.json();
+
+    // Beispiel-Status- und Rollenoptionen
+    const statusOptions = [
+        { id: 1, label: 'Pending' },
+        { id: 2, label: 'Validated' },
+        { id: 3, label: 'Rejected' }
+    ];
+    const roleOptions = [
+        { id: 1, label: 'Admin' },
+        { id: 2, label: 'Seller' },
+        { id: 3, label: 'Customer' }
+    ];
 
     const modal = document.getElementById('modal');
     modal.classList.add('active');
 
     modal.innerHTML = `
       <div>
-        <h2>User ${editable ? 'bearbeiten' : 'Details'}</h2>
+        <h2>User ${editable ? 'Edit' : 'Details'}</h2>
         <form id="user-form">
-          <label>Vorname:<br>
+          <label>First name:<br>
             ${editable
         ? `<input name="first_name" value="${user.data.first_name}" required>`
         : `<span>${user.data.first_name}</span>`}
           </label><br>
-          <label>Nachname:<br>
+          <label>Last name:<br>
             ${editable
         ? `<input name="last_name" value="${user.data.last_name}" required>`
         : `<span>${user.data.last_name}</span>`}
           </label><br>
+          <label>Username:<br>
+            <label>${user.data.username}</label>
+          </label><br>
           <label>Email:<br>
-            ${editable
-        ? `<input name="email" value="${user.data.email}" required>`
-        : `<span>${user.data.email}</span>`}
+            <label>${user.data.email}</label>
           </label><br>
-          <label>Rolle:<br>
+          <label>Role:<br>
             ${editable
-        ? `<input name="role" value="${user.data.role}" required>`
-        : `<span>${user.data.role}</span>`}
+        ? `<select name="role_id" required>
+                    ${roleOptions.map(opt => `<option value="${opt.id}" ${user.data.role_id == opt.id ? 'selected' : ''}>${opt.label}</option>`).join('')}
+                  </select>`
+        : `<span>${roleOptions.find(opt => opt.id == user.data.role_id)?.label || ''}</span>`}
           </label><br>
-          <button type="button" onclick="closeModal()">Schließen</button>
-          ${editable ? `<button type="submit">Speichern</button>` : ''}
+          <label>Status:<br>
+            ${editable
+        ? `<select name="status_id" required>
+                    ${statusOptions.map(opt => `<option value="${opt.id}" ${user.data.status_id == opt.id ? 'selected' : ''}>${opt.label}</option>`).join('')}
+                  </select>`
+        : `<span>${statusOptions.find(opt => opt.id == user.data.status_id)?.label || ''}</span>`}
+          </label><br>
+          <label>Address:<br>
+            <span>
+              ${user.data.street} ${user.data.house_number},<br>
+              ${user.data.postal_code} ${user.data.city},<br>
+              ${user.data.country}
+            </span>
+          </label><br>
+          <button type="button" onclick="closeModal()">Close</button>
+          ${editable ? `<button type="submit">Save</button>` : ''}
         </form>
       </div>
     `;
@@ -113,14 +216,24 @@ async function showUserDetails(id, editable = false) {
             e.preventDefault();
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
-            await fetch(`http://${ROOT_URL}:3000/api/users/${id}`, {
-                method: 'PUT',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            closeModal();
-            fetchUsers();
+            try {
+                const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${id}`, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const json = await res.json();
+                if (!res.ok) {
+                    showPopupMessage(json.message || 'Error while saving', 3000);
+                } else {
+                    showPopupMessage('Changes saved!', 1500);
+                    fetchUsers();
+                    setTimeout(closeModal, 1200);
+                }
+            } catch {
+                showPopupMessage('Network error while saving', 3000);
+            }
         };
     }
 }
@@ -133,3 +246,9 @@ function closeModal() {
 // --- Initialisierung ---
 fetchProducts();
 fetchUsers();
+
+window.showUserDetails = showUserDetails;
+window.closeModal = closeModal;
+window.filterUsers = filterUsers;
+window.addProduct = addProduct;
+window.loadSellers = loadSellers;
