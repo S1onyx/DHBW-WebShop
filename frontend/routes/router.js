@@ -55,6 +55,16 @@ router.get('/history', requireAuth, async (req, res) => {
 });
 
 router.get(
+    '/seller',
+    requireAuth,
+    requireStatus('validated'),
+    requireRole('Seller', 'Admin'),
+    (req, res) => {
+      renderPage('seller.html', res);
+    }
+);
+
+router.get(
   '/admin',
   requireAuth,
   requireStatus('validated'),

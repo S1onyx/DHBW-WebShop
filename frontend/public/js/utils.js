@@ -23,3 +23,16 @@ export function showPopupMessage(message, duration = 1500) {
         setTimeout(() => popup.remove(), 200);
     }, duration);
 }
+
+export async function getCurrentUser() {
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, {
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return await res.json();
+    } catch (err) {
+        console.error('Fehler beim Laden des aktuellen Users:', err);
+        return null;
+    }
+}

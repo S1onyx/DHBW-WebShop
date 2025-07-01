@@ -36,13 +36,14 @@ function requireAuth(req, res, next) {
   });
 }
 
-function requireRole(role) {
+function requireRole(...allowedRoles) {
   return (req, res, next) => {
-    if (!req.user || req.user.role !== role) {
+    const userRole = req.user?.role;
+    if (!userRole || !allowedRoles.includes(userRole)) {
       console.warn(
-        `[ROLE] Zugriff verweigert für ${req.ip} → benötigte Rolle: ${role}, aktuelle Rolle: ${req.user?.role}`
+        `[ROLE] Zugriff verweigert für ${req.ip} → benötigte Rollen: [${allowedRoles}], aktuelle Rolle: ${userRole}`
       );
-      return res.redirect('/unauthorized');
+      return res.redirect('/unauthorized'); // oder JSON-Fehler senden
     }
     next();
   };
