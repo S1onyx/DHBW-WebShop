@@ -47,9 +47,36 @@ async function loadSellers() {
     }
 }
 
+async function loadCategoriesDropdown() {
+    const res = await fetch('http://localhost:3000/api/categories');
+    const { data } = await res.json();
+    const select = document.querySelector('select[name="category_id"]');
+    select.innerHTML = '<option value="">Please select:</option>';
+
+    data.forEach(cat => {
+        if (cat.children && cat.children.length > 0) {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = cat.name;
+            cat.children.forEach(child => {
+                const option = document.createElement('option');
+                option.value = child.id;
+                option.textContent = child.name;
+                optgroup.appendChild(option);
+            });
+            select.appendChild(optgroup);
+        } else {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+        }
+    });
+}
+
 // --- Produktformular initialisieren (Dropdown für Seller) ---
 document.addEventListener('DOMContentLoaded', () => {
     loadSellers();
+    loadCategoriesDropdown();
 });
 
 // --- User-Suche & Filter ---
