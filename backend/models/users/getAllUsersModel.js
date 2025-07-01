@@ -14,6 +14,7 @@ async function getAllUsersModel(roleId = null) {
       u.postal_code,
       u.city,
       u.country,
+      u.status_id,
       r.name AS role
     FROM users u
     JOIN roles r ON u.role_id = r.id
