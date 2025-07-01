@@ -7,6 +7,9 @@ const { or, and } = require('../middleware/combine');
 
 const db = require('../db/database');
 
+//permission
+const checkPermission = require('../apis/evaluator/checkPermission');
+
 // Auth APIs
 const login = require('../apis/auth/login');
 const logout = require('../apis/auth/logout');
@@ -17,6 +20,8 @@ const resetPassword = require('../apis/auth/resetPassword');
 const resendVerification = require('../apis/auth/resendVerification');
 const loginWithCode = require('../apis/auth/loginWithCode');
 const requestLoginCode = require('../apis/auth/requestLoginCode');
+const checkEmail = require('../apis/auth/checkEmail');
+const checkUsername = require('../apis/auth/checkUsername');
 
 // Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
@@ -82,6 +87,16 @@ const deleteWishlist = require('../apis/wishlists/wishlist/deleteWishlist');
 const { handleCorsPreflight, setCorsHeaders } = require('../utils/cors');
 
 const routes = [
+
+  {
+  method: 'GET',
+  path: /^\/api\/evaluator$/,
+  handler: withAuth(
+    and(requireRole(1), requireValidatedUser)(
+      checkPermission
+    )
+  )
+},
   // Auth Routes
   { method: 'POST', path: /^\/api\/auth\/login$/, handler: login },
   { method: 'POST', path: /^\/api\/auth\/logout$/, handler: logout },
@@ -92,6 +107,8 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/resend-verification$/, handler: resendVerification },
   { method: 'POST', path: /^\/api\/auth\/request-login-code$/, handler: requestLoginCode },
   { method: 'POST', path: /^\/api\/auth\/login-with-code$/, handler: loginWithCode },
+  { method: 'GET', path: /^\/api\/auth\/check-email$/, handler: checkEmail },
+  { method: 'GET', path: /^\/api\/auth\/check-username$/, handler: checkUsername },
 
 {
   method: 'GET',

@@ -84,7 +84,7 @@ async function register(req, res) {
         street, house_number, postal_code, city, country, token
       ]);
 
-      const verificationLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/verify.html?token=${token}`;
+      const verificationLink = `http://${process.env.ROOT_URL || 'localhost'}:1337/verify?token=${token}`;
 
       await sendMail({
         to: email,

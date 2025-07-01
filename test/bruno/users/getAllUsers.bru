@@ -5,11 +5,10 @@ meta {
 }
 
 get {
-  url: http://localhost:3000/api/users
+  url: http://localhost:3000/api/users?role
   body: none
   auth: none
 }
-
 docs {
   ## GET /api/users
   
@@ -80,5 +79,7 @@ docs {
   - This endpoint returns **all users**, regardless of role or verification status.
   - Intended for administrative dashboards or reporting tools.
   - If no users exist, the `data` array will be empty.
-  
+}
+params:query {
+  role: 
 }

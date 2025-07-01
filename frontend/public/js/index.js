@@ -1,3 +1,5 @@
+import {showPopupMessage} from "/js/utils.js";
+
 let categoryMap = {};
 
 async function loadCategoryMap() {
@@ -190,20 +192,24 @@ products.forEach(product => {
   img.dataset.id = product.id;
 
 // Klick-Event für das Bild
-  img.addEventListener('click', async function(event) {
+  img.addEventListener('click', async function(event) { 
     event.preventDefault();
     const body = { productId: product.id, quantity: 1 };
-    console.log('Sende an API:', body);
-    await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
       ...fetchOptionsWithCredentials,
       method: 'POST',
       body: JSON.stringify(body)
     });
+    if (res.status === 401) {
+      window.location.href = '/login';
+      return;
+    }
+    showPopupMessage('Product was added to your cart', 1500);
   });
 
   const buyOverlay = document.createElement('div');
   buyOverlay.className = 'buy-overlay';
-  buyOverlay.textContent = 'Buy';
+  buyOverlay.textContent = 'Add to cart';
 
   thumbWrapper.appendChild(img);
   thumbWrapper.appendChild(buyOverlay);
