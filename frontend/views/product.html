@@ -1,57 +1,101 @@
 <!-- product_page.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <script src="/env.js"></script>
   <meta charset="UTF-8" />
   <title>Produktdetails</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/css/product.css" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
-<div id="header"></div>
-<main>
-  <button onclick="history.back()" class="back-button">← Zurück</button>
-  <div class="product-container">
+  <div id="header"></div>
+  <main>
+    <button onclick="history.back()" class="back-button">← Zurück</button>
 
-    <div id="product-images" class="product-images"></div>
+    <div id="product-page-wrapper" class="product-page-wrapper">
+      <div id="product-container" class="container">
 
-    <h1 id="product-title" class="product-title"></h1>
-    <p id="product-seller" class="product-seller"></p>
-    <p id="product-description" class="product-description"></p>
-    <p id="product-price" class="product-price"></p>
-    <p id="product-stock" class="product-stock"></p>
+        <div id="product-images" class="product-images"></div>
 
-    <button class="product-buy">Jetzt kaufen</button>
+        <div id="below-images-wrapper" class="below-images-wrapper">
+          <div id="add-to-wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </div>
 
-    <section class="reviews">
-      <h2>Bewertungen</h2>
-      <ul id="review-list" class="review-list"></ul>
-    </section>
-  </div>
-</main>
+          <div id="arrow-wrapper" class="arrow-wrapper">
+            <div id="picture-left" class="arrow">
+              <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div id="picture-right" class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
 
-<div id="footer"></div>
+        <div id="price-title-wrapper" class="price-title-wrapper">
+          <p id="product-price" class="product-price"></p>
+          <h1 id="product-title" class="product-title"></h1>
+        </div>
 
-<script type="module" src="/js/product.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    async function loadFragment(id, url, scriptUrl) {
-      const res = await fetch(url);
-      if (res.ok) {
-        document.getElementById(id).innerHTML = await res.text();
-        if (scriptUrl) {
-          const script = document.createElement('script');
-          script.src = scriptUrl;
-          script.defer = true;
-          document.body.appendChild(script);
+        <div id="product-seller" class="product-seller"></div>
+
+        <div id="amount-buy-wrapper" class="amount-buy-wrapper">
+          <div id="amount-wrapper" class="arrow-wrapper">
+            <div id="amount-less" class="arrow">
+              <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div id="amount" class="amount">1</div>
+            <div id="amount-more" class="arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+          <button type="button" id="buy-button" class="button">Buy</button>
+        </div>
+
+        <button type="button" id="cart-button" class="button">Put in Cart</button>
+
+        <p id="product-description" class="product-description"></p>
+
+      </div>
+
+      <div id="other-products-wrapper" class="container">
+
+      </div>
+
+      <div id="review-container" class="container">
+        <h2>Reviews</h2>
+        <button id="add-review" class="button" type="button">Add Review</button>
+        <ul id="review-list" class="review-list"></ul>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script type="module" src="/js/product.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      async function loadFragment(id, url, scriptUrl) {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById(id).innerHTML = await res.text();
+          if (scriptUrl) {
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.defer = true;
+            document.body.appendChild(script);
+          }
         }
       }
-    }
-    loadFragment('header', '/header-footer/header.html', '/js/header.js');
-    loadFragment('footer', '/header-footer/footer.html');
-  });
-</script>
+      loadFragment('header', '/header-footer/header.html', '/js/header.js');
+      loadFragment('footer', '/header-footer/footer.html');
+    });
+  </script>
 </body>
+
 </html>

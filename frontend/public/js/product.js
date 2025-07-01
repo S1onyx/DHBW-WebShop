@@ -1,14 +1,17 @@
-(async function loadProduct() {
+const title = document.getElementById('product-title');
+const seller = document.getElementById('product-seller');
+const description = document.getElementById('product-description');
+const price = document.getElementById('product-price');
+const imageContainer = document.getElementById('product-images');
+const reviewList = document.getElementById('review-list');
+
+window.onload = () => loadProduct();
+
+
+
+async function loadProduct() {
     const id = getProductIdFromPath();
     if (!id) return;
-
-    const title = document.getElementById('product-title');
-    const seller = document.getElementById('product-seller');
-    const description = document.getElementById('product-description');
-    const price = document.getElementById('product-price');
-    const stock = document.getElementById('product-stock');
-    const imageContainer = document.getElementById('product-images');
-    const reviewList = document.getElementById('review-list');
 
     title.textContent = 'Produkt wird geladen...';
 
@@ -27,9 +30,8 @@
         seller.textContent = product.seller_name ? `Verkäufer: ${product.seller_name}` : '';
         description.textContent = product.description;
         price.textContent = `Preis: ${product.price} €`;
-        stock.textContent = `Auf Lager: ${product.stock}`;
 
-// Bilder anzeigen
+// Show Picture
 imageContainer.innerHTML = '';
 if (Array.isArray(product.images) && product.images.length > 0) {
     product.images.forEach(img => {
@@ -75,4 +77,4 @@ if (Array.isArray(product.images) && product.images.length > 0) {
         const match = window.location.pathname.match(/\/product\/(\d+)/);
         return match ? match[1] : null;
     }
-})();
+};
