@@ -9,3 +9,70 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/wishlists/wishlist
+  
+  **Description**  
+  Retrieves all wishlists belonging to the authenticated user.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/wishlists/wishlist`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  _None_
+  
+  ---
+  
+  ### Request body
+  
+  _None_
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | List of wishlists     |
+  
+  ```json
+  [
+    {
+      "id": 1,
+      "user_id": 42,
+      "name": "My Pixelart Wishlist"
+    },
+    {
+      "id": 2,
+      "user_id": 42,
+      "name": "Christmas List"
+    }
+  ]
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                        |
+  |--------|-------------------------------------|----------------------------------|
+  | 401    | `Authentication required`           | User not authenticated           |
+  | 500    | `Error retrieving wishlists`        | Internal server or DB error      |
+  
+  ---
+  
+  ### Notes
+  
+  - The response includes only wishlists belonging to the authenticated user.
+  - Each wishlist contains its ID, owner ID, and name.
+  
+}

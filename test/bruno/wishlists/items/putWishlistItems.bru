@@ -16,3 +16,80 @@ body:json {
           "quantity": 3
         }
 }
+
+docs {
+  ## PUT /api/wishlists/:wishlistId/items
+  
+  **Description**  
+  Updates the quantity of a product in the specified wishlist.  
+  The product must already exist in the wishlist.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/wishlists/:wishlistId/items`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter    | Type | Required | Description                  |
+  |--------------|------|----------|------------------------------|
+  | `wishlistId` | int  | Yes      | ID of the wishlist           |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "product_id": 42,
+    "quantity": 3
+  }
+  ```
+  
+  | Field        | Type | Required | Description                        |
+  |--------------|------|----------|------------------------------------|
+  | `product_id` | int  | Yes      | ID of the product in the wishlist  |
+  | `quantity`   | int  | Yes      | New quantity (must be ≥ 1)         |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description          |
+  |--------|----------------------|
+  | 200    | Quantity updated     |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Wishlist item updated"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                                       |
+  |--------|-------------------------------------|------------------------------------------------|
+  | 400    | `Missing product_id or quantity`    | Required fields not provided                   |
+  | 400    | `Invalid quantity`                  | Quantity is not a number ≥ 1                   |
+  | 401    | `Authentication required`           | User not authenticated                         |
+  | 403    | `Access denied to this wishlist`    | Wishlist belongs to another user               |
+  | 404    | `Wishlist not found`                | Wishlist ID is invalid                         |
+  | 404    | `Product not found in wishlist`     | Product is not in wishlist                     |
+  | 500    | `Error updating wishlist item`      | Internal server or DB error                    |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint will **not** add a new item if the product is not already in the wishlist.
+  - The backend expects both fields in the body, even if `product_id` is technically redundant with existing entries.
+  
+}

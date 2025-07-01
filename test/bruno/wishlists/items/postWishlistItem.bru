@@ -16,3 +16,78 @@ body:json {
         "quantity": 3
       }
 }
+
+docs {
+  ## POST /api/wishlists/:id/items
+  
+  **Description**  
+  Adds a product to the specified wishlist.  
+  If the product already exists, its quantity will be increased.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/wishlists/:id/items`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description             |
+  |-----------|------|----------|-------------------------|
+  | `id`      | int  | Yes      | ID of the wishlist      |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "productId": 42,
+    "quantity": 1
+  }
+  ```
+  
+  | Field       | Type   | Required | Description                    |
+  |-------------|--------|----------|--------------------------------|
+  | `productId` | int    | Yes      | ID of the product to add       |
+  | `quantity`  | int    | No       | Defaults to 1 if not provided  |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 201    | Product added to wishlist |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Product added to wishlist"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                            | Condition                                     |
+  |--------|------------------------------------|-----------------------------------------------|
+  | 400    | `Missing productId`                | `productId` not provided                      |
+  | 401    | `Authentication required`          | User not authenticated                        |
+  | 403    | `Access denied to this wishlist`   | Wishlist does not belong to the user          |
+  | 404    | `Wishlist not found`               | Wishlist ID is invalid or doesn't exist       |
+  | 500    | `Error adding item to wishlist`    | Internal DB or logic error                    |
+  
+  ---
+  
+  ### Notes
+  
+  - If the product is already on the wishlist, its quantity is incremented.
+  - You cannot add to a wishlist that belongs to another user.
+  
+}

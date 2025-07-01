@@ -15,3 +15,67 @@ body:json {
     "name": "Geburtstagswünsche"
   }
 }
+
+docs {
+  ## POST /api/wishlists/wishlist
+  
+  **Description**  
+  Creates a new wishlist for the authenticated user.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/wishlists/wishlist`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "name": "My Pixelart Wishlist"
+  }
+  ```
+  
+  | Field  | Type   | Required | Description                              |
+  |--------|--------|----------|------------------------------------------|
+  | `name` | string | Yes      | Name of the wishlist (non-empty string)  |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description              |
+  |--------|--------------------------|
+  | 201    | Wishlist successfully created |
+  
+  ```json
+  {
+    "id": 12,
+    "user_id": 4,
+    "name": "My Pixelart Wishlist"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                                           | Condition                                 |
+  |--------|---------------------------------------------------|-------------------------------------------|
+  | 400    | `Wishlist name is required and must be a non-empty string.` | Missing or invalid name                   |
+  | 400    | `Invalid JSON in request body.`                   | Malformed JSON                            |
+  | 401    | `Authentication required`                         | No or invalid access token                |
+  | 500    | `Server error`                                    | Internal server or DB error               |
+  
+  ---
+  
+  ### Notes
+  
+  - The wishlist is created for the currently authenticated user.
+  - The `name` field is trimmed before saving.
+  
+}

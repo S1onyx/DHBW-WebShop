@@ -9,3 +9,78 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/wishlists/wishlist/:id/permissions
+  
+  **Description**  
+  Retrieves all permissions granted for the specified wishlist.  
+  Only the owner of the wishlist can access this endpoint.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/wishlists/wishlist/:id/permissions`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description           |
+  |-----------|------|----------|-----------------------|
+  | `id`      | int  | Yes      | ID of the wishlist    |
+  
+  ---
+  
+  ### Request body
+  
+  _None_
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description                |
+  |--------|----------------------------|
+  | 200    | List of granted permissions |
+  
+  ```json
+  {
+    "success": true,
+    "permissions": [
+      {
+        "user_id": 12,
+        "username": "friend@example.com",
+        "permission_id": 2
+      },
+      {
+        "user_id": 13,
+        "username": "guest@example.com",
+        "permission_id": 1
+      }
+    ]
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                                    |
+  |--------|-------------------------------------|----------------------------------------------|
+  | 401    | `Authentication required`           | No or invalid access token                   |
+  | 403    | `Access denied to this wishlist`    | User is not the owner of the wishlist        |
+  | 404    | `Wishlist not found`                | Wishlist does not exist                      |
+  | 500    | `Error retrieving permissions`      | Internal server or DB error                  |
+  
+  ---
+  
+  ### Notes
+  
+  - The response includes user IDs, emails/usernames, and their permission levels.
+  - Only the owner can list who has which access to a wishlist.
+  
+}

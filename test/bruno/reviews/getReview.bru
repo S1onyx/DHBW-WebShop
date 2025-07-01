@@ -9,3 +9,76 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/products/:id/reviews
+  
+  **Description**  
+  Fetches all reviews for a specific product.  
+  If no reviews are present, a message will be included.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/products/:id/reviews`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description            |
+  |-----------|------|----------|------------------------|
+  | `id`      | int  | Yes      | Product ID to fetch reviews for |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Reviews retrieved     |
+  
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 5,
+        "user_id": 3,
+        "rating": 4.5,
+        "comment": "Beautiful pixel art, fast delivery!",
+        "created_at": "2025-06-26T10:55:42.000Z"
+      }
+    ]
+  }
+  ```
+  
+  - If there are no reviews, the response includes a `"message"`:
+  ```json
+  {
+    "success": true,
+    "data": [],
+    "message": "Noch keine Bewertungen vorhanden"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message               | Condition                         |
+  |--------|------------------------|------------------------------------|
+  | 404    | `Product not found`   | No product with given ID exists   |
+  | 500    | `Server error during review retrieval` | Unexpected DB error |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint is public – anyone can view reviews.
+  - The backend ensures the product exists before fetching reviews.
+  
+}

@@ -15,3 +15,75 @@ body:json {
     "name": "TEST"
   }
 }
+
+docs {
+  ## PUT /api/wishlists/wishlist/:id
+  
+  **Description**  
+  Updates the name of an existing wishlist.  
+  Only the owner of the wishlist may perform this action.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/wishlists/wishlist/:id`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description           |
+  |-----------|------|----------|-----------------------|
+  | `id`      | int  | Yes      | ID of the wishlist    |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "name": "Updated Wishlist Name"
+  }
+  ```
+  
+  | Field  | Type   | Required | Description                          |
+  |--------|--------|----------|--------------------------------------|
+  | `name` | string | Yes      | New name for the wishlist            |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Wishlist updated      |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Wishlist updated"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                                       | Condition                                    |
+  |--------|-----------------------------------------------|----------------------------------------------|
+  | 400    | `Wishlist name is required and must be a non-empty string.` | Missing or invalid `name` field    |
+  | 401    | `Authentication required`                     | No or invalid access token                   |
+  | 403    | `Access denied to this wishlist`              | Wishlist does not belong to the user         |
+  | 404    | `Wishlist not found`                          | Wishlist with given ID does not exist        |
+  | 500    | `Server error during wishlist update`         | Internal server or DB error                  |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint does not allow changes to the products in the wishlist – only the name.
+  
+}

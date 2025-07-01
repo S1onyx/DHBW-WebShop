@@ -15,3 +15,75 @@ body:json {
     "user_id": 5
   }
 }
+
+docs {
+  ## DELETE /api/wishlists/wishlist/:id/permissions
+  
+  **Description**  
+  Removes an existing permission for a given user on the specified wishlist.  
+  Only the owner of the wishlist can remove permissions.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/wishlists/wishlist/:id/permissions`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description           |
+  |-----------|------|----------|-----------------------|
+  | `id`      | int  | Yes      | ID of the wishlist    |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "user_id": 12
+  }
+  ```
+  
+  | Field     | Type | Required | Description                         |
+  |-----------|------|----------|-------------------------------------|
+  | `user_id` | int  | Yes      | ID of the user whose access is removed |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description             |
+  |--------|-------------------------|
+  | 200    | Permission removed      |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Permission removed"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                                     |
+  |--------|-------------------------------------|-----------------------------------------------|
+  | 400    | `Missing user_id`                   | Request body is empty or incomplete            |
+  | 401    | `Authentication required`           | No or invalid access token                    |
+  | 403    | `Access denied to this wishlist`    | Authenticated user is not the wishlist owner  |
+  | 404    | `Permission not found`              | No permission record for the given user       |
+  | 500    | `Error removing permission`         | Internal server or DB error                   |
+  
+  ---
+  
+  ### Notes
+  
+  - Removing a permission means the user will no longer have access to the wishlist.
+  
+}
