@@ -1,6 +1,6 @@
 :root {
     --font-family: Arial, Helvetica, sans-serif;
-    --font-color: #00000;
+    --font-color: #000000;
 
     --cart-button-color: #0077B6;
     --buy-button-color: #001d4a;
@@ -142,10 +142,22 @@ main {
     background-color: var(--cart-button-hover-color);
 }
 
-.product-title .product-price {
-    font-size: large;
-    margin-bottom: 2vh;
+.price, .title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  font-family: var(--font-family);
+  margin: 0;
 }
+
+.seller-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.seller {
+    margin: 5px;
+}
+
 
 .product-description {
     font-size: 1.2rem;
@@ -192,8 +204,16 @@ main {
 
 .product-image {
   width: 100%;
+  max-height: 700px;
   height: auto;
   object-fit: contain;
   display: block;
   margin: 0.5rem auto;
+
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+#product-image.fade-out {
+  opacity: 0;
 }

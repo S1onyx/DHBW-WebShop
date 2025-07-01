@@ -1,12 +1,40 @@
-const title = document.getElementById('product-title');
-const seller = document.getElementById('product-seller');
+const title = document.getElementById('title');
+const seller = document.getElementById('seller');
 const description = document.getElementById('product-description');
-const price = document.getElementById('product-price');
-const imageContainer = document.getElementById('product-images');
+const price = document.getElementById('price');
+const productImage = document.getElementById('product-image');
 const reviewList = document.getElementById('review-list');
+
+const prevPictureButton = document.getElementById('picture-left');
+const nextPictureButton = document.getElementById('picture-right');
+
+let imageUrls;
+let currentImageIndex = 0;
 
 window.onload = () => loadProduct();
 
+prevPictureButton.addEventListener('click', () => {
+    currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+    showImage(currentImageIndex);
+});
+
+nextPictureButton.addEventListener('click', () => {
+    currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+    showImage(currentImageIndex);
+});
+
+function showImage(index) {
+    if (!imageUrls.length) return;
+
+    productImage.classList.add('fade-out');
+
+    setTimeout(() => {
+        productImage.src = imageUrls[index];
+        productImage.alt = title.textContent || 'Produktbild';
+
+        productImage.classList.remove('fade-out');
+    }, 200); // Wartezeit = Dauer der CSS-Transition
+}
 
 
 async function loadProduct() {
@@ -27,33 +55,28 @@ async function loadProduct() {
         }
 
         title.textContent = product.name;
-        seller.textContent = product.seller_name ? `Verkäufer: ${product.seller_name}` : '';
+        seller.textContent = product.seller_name ? `Seller: ${product.seller_name}` : '';
         description.textContent = product.description;
-        price.textContent = `Preis: ${product.price} €`;
+        price.textContent = `${product.price} €`;
 
-// Show Picture
-imageContainer.innerHTML = '';
-if (Array.isArray(product.images) && product.images.length > 0) {
-    product.images.forEach(img => {
-        const image = document.createElement('img');
-        const imageUrl = img.url;
-        image.src = imageUrl.startsWith('http')
-            ? imageUrl
-            : `http://${window.ROOT_URL}:3000${imageUrl}`;
-        image.alt = product.name;
-        image.classList.add('product-image');
-        imageContainer.appendChild(image);
-    });
-} else if (product.image_url) {
-    const imageUrl = product.image_url;
-    const img = document.createElement('img');
-    img.src = imageUrl.startsWith('http')
-        ? imageUrl
-        : `http://${window.ROOT_URL}:3000${imageUrl}`;
-    img.alt = product.name;
-    img.classList.add('product-image');
-    imageContainer.appendChild(img);
-}
+        // Show Picture
+        imageUrls = product.images?.map(img => {
+            const url = img.url;
+            return url.startsWith('http')
+                ? url
+                : `http://${window.ROOT_URL}:3000${url}`;
+        }) ?? (
+                product.image_url
+                    ? [
+                        product.image_url.startsWith('http')
+                            ? product.image_url
+                            : `http://${window.ROOT_URL}:3000${product.image_url}`
+                    ]
+                    : []
+            );
+
+        showImage(currentImageIndex);
+
 
         // Bewertungen
         reviewList.innerHTML = '';

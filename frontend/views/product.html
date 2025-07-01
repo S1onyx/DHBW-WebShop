@@ -8,6 +8,7 @@
   <title>Produktdetails</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <script type="module" src="/js/product.js" defer></script>
   <link rel="stylesheet" href="/css/product.css" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
@@ -15,12 +16,12 @@
 <body>
   <div id="header"></div>
   <main>
-    <button onclick="history.back()" class="back-button">← Zurück</button>
+    <button onclick="history.back()" class="back-button">← Back</button>
 
     <div id="product-page-wrapper" class="product-page-wrapper">
       <div id="product-container" class="container">
 
-        <div id="product-images" class="product-images"></div>
+        <img src="" alt="" id="product-image" class="product-image">
 
         <div id="below-images-wrapper" class="below-images-wrapper">
           <div id="add-to-wishlist">
@@ -38,11 +39,13 @@
         </div>
 
         <div id="price-title-wrapper" class="price-title-wrapper">
-          <p id="product-price" class="product-price"></p>
-          <h1 id="product-title" class="product-title"></h1>
+          <p id="price" class="price"></p>
+          <h1 id="title" class="title"></h1>
         </div>
 
-        <div id="product-seller" class="product-seller"></div>
+        <div id="seller-container" class="seller-container">
+            <div id="seller" class="seller"></div>
+        </div>
 
         <div id="amount-buy-wrapper" class="amount-buy-wrapper">
           <div id="amount-wrapper" class="arrow-wrapper">
@@ -77,7 +80,6 @@
 
   <div id="footer"></div>
 
-  <script type="module" src="/js/product.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       async function loadFragment(id, url, scriptUrl) {
