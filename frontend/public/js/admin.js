@@ -68,7 +68,7 @@ function filterUsers() {
 async function fetchUsers() {
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/users`, {credentials: 'include'});
     const result = await res.json();
-    const users = Array.isArray(result.data) ? result.data.filter(user => user.role !== 'Admin') : [];
+    const users = Array.isArray(result.data) ? result.data : [];
 
     const userList = document.getElementById('user-list');
     userList.innerHTML = `
@@ -188,6 +188,24 @@ async function showUserDetails(id, editable = false) {
           <label>Email:<br>
             <span>${user.data.email}</span>
           </label><br>
+          <label>Role:<br>
+            ${editable
+            ? (user.data.role === 'Admin'
+                ? `<span>Admin</span>`
+                : (() => {
+                    const roles = [
+                        { id: 2, label: 'Seller' },
+                        { id: 3, label: 'Customer' }
+                    ];
+                    // Aktuelle Rolle nach oben sortieren
+                    roles.sort((a, b) => (a.label === user.data.role ? -1 : b.label === user.data.role ? 1 : 0));
+                    return `<select name="role_id" required>
+                ${roles.map(opt => `<option value="${opt.id}" ${opt.label === user.data.role ? 'selected' : ''}>${opt.label}</option>`).join('')}
+              </select>`;
+                })())
+            : `<span>${user.data.role}</span>`
+            }
+        </label>
           <label>Status:<br>
             ${editable
         ? `<select name="status_id" required>

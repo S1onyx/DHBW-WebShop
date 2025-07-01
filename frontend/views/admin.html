@@ -79,27 +79,83 @@
       margin-right: 0.5rem;
     }
 
-    #modal {
+    #modal.active {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.3);
-      display: none;
+      background: rgba(0,0,0,0.4);
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
     }
 
-    #modal.active {
-      display: flex;
-    }
-
     #modal > div {
       background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      min-width: 300px;
-      max-width: 90vw;
+      border-radius: 10px;
+      padding: 32px 28px 24px 28px;
+      min-width: 340px;
+      max-width: 95vw;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      font-family: 'Segoe UI', Arial, sans-serif;
     }
+
+    #modal h2 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 1.4em;
+      color: #2a2a2a;
+    }
+
+    #modal label {
+      display: block;
+      margin-bottom: 14px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    #modal input, #modal select, #modal span {
+      margin-top: 4px;
+      font-size: 1em;
+      padding: 6px 8px;
+      border-radius: 5px;
+      border: 1px solid #d0d0d0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #modal span {
+      background: #f7f7f7;
+      border: none;
+      display: inline-block;
+      min-height: 32px;
+      padding: 6px 8px;
+    }
+
+    #modal button {
+      margin-top: 18px;
+      margin-right: 10px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      background: #1976d2;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #modal button[type="button"] {
+      background: #aaa;
+    }
+
+    #modal button:hover {
+      background: #125ea2;
+    }
+
+    #modal button[type="button"]:hover {
+      background: #888;
+    }
+
     .back-button {
       background-color: #e0e0e0 !important;
       border: none;
@@ -108,6 +164,7 @@
       font-size: 1rem;
       cursor: pointer;
       border-radius: 6px;
+      color: #1a1a1a;
       transition: background-color 0.2s ease;
     }
 
