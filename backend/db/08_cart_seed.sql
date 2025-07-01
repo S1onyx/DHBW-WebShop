@@ -4,5 +4,4 @@ INSERT INTO carts (customer_id) VALUES
 (14),
 (15),
 (17),
-(19),
-(21);
+(19);

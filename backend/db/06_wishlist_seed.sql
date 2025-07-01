@@ -36,26 +36,5 @@ INSERT INTO wishlists (name, customer_id) VALUES
 
 -- User 20 hat 2 Wishlists
 ('Power-Ups', 20),
-('Speed Boosts', 20),
+('Speed Boosts', 20);
 
--- User 21 hat 3 Wishlists
-('Arcade Arsenal', 21),
-('Fighting Gear', 21),
-('Top Scores', 21),
-
--- User 22 hat 1 Wishlist
-('Stealth Equipment', 22),
-
--- User 23 hat 2 Wishlists
-('Hero Loadout', 23),
-('Legendary Weapons', 23),
-
--- User 24 hat 1 Wishlist
-('Armor Sets', 24),
-
--- User 25 hat 2 Wishlists
-('Glitchy Goods', 25),
-('Bugged Items', 25),
-
--- User 26 hat 1 Wishlist
-('Puzzle Pieces', 26);

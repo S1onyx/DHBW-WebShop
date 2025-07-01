@@ -15,14 +15,4 @@ INSERT INTO wishlist_permission (wishlist_id, user_id, permission) VALUES
 (15, 18, 1), -- user 18 darf lesen auf Classic Arcade
 (16, 19, 1), -- user 19 darf lesen auf Rare Finds
 (17, 20, 2), -- user 20 darf schreiben auf Power-Ups
-(18, 20, 1), -- user 20 darf lesen auf Speed Boosts
-(19, 21, 1), -- user 21 darf lesen auf Arcade Arsenal
-(20, 21, 2), -- user 21 darf schreiben auf Fighting Gear
-(21, 21, 1), -- user 21 darf lesen auf Top Scores
-(22, 22, 1), -- user 22 darf lesen auf Stealth Equipment
-(23, 23, 2), -- user 23 darf schreiben auf Hero Loadout
-(24, 23, 1), -- user 23 darf lesen auf Legendary Weapons
-(25, 24, 1), -- user 24 darf lesen auf Armor Sets
-(26, 25, 2), -- user 25 darf schreiben auf Glitchy Goods
-(27, 25, 1), -- user 25 darf lesen auf Bugged Items
-(28, 26, 1); -- user 26 darf lesen auf Puzzle Pieces
+(18, 20, 1); -- user 20 darf lesen auf Speed Boosts
