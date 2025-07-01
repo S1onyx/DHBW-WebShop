@@ -21,15 +21,15 @@ docs {
   ## POST /api/auth/login
   
   **Description**  
-  Authenticates a user via email and password.  
-  Sets an `accessToken` cookie for authenticated sessions.
+  Authenticates a user with email or username and password.  
+  On success, sets a secure `accessToken` cookie and returns basic user info.
   
   ---
   
   ### Request
   
   - **Method:** `POST`
-  - **Endpoint:** `/api/login`
+  - **Endpoint:** `/api/auth/login`
   - **Authentication:** Not required
   
   ---
@@ -38,52 +38,61 @@ docs {
   
   ```json
   {
-    "email": "luna@pixelart.com",
-    "password": "securePassword123"
+    "email": "alice@example.com",
+    "password": "PixelPass123!"
   }
   ```
   
-  | Field     | Type   | Required | Description           |
-  |-----------|--------|----------|-----------------------|
-  | `email`   | string | Yes      | Registered user email |
-  | `password`| string | Yes      | Associated password   |
+  or
+  
+  ```json
+  {
+    "username": "alice123",
+    "password": "PixelPass123!"
+  }
+  ```
+  
+  | Field      | Type   | Required | Description               |
+  |------------|--------|----------|---------------------------|
+  | `email`    | string | ✔ (or username) | User email                |
+  | `username` | string | ✔ (or email)    | Username                  |
+  | `password` | string | ✔        | Account password          |
   
   ---
   
   ### Successful response
   
-  | Status | Description              |
-  |--------|--------------------------|
-  | 200    | User logged in successfully |
+  | Status | Description     |
+  |--------|-----------------|
+  | 200    | Login successful. `accessToken` cookie set. |
   
   ```json
   {
     "success": true,
-    "message": "Login successful"
+    "user": {
+      "id": 42,
+      "username": "alice123",
+      "role_id": 2
+    }
   }
   ```
-  
-  - Also sets HTTP-only cookie:
-    - Name: `accessToken`
-    - Usage: Authentication in protected routes
   
   ---
   
   ### Error responses
   
-  | Status | Message                        | Condition                             |
-  |--------|--------------------------------|----------------------------------------|
-  | 400    | `Missing email or password`    | One or both fields are empty          |
-  | 401    | `Invalid credentials`          | User does not exist or password wrong |
-  | 403    | `Email not verified`           | User exists but hasn't confirmed email |
-  | 500    | `Login failed`                 | Internal error (DB, hashing, etc.)    |
+  | Status | Message                              | Condition                                      |
+  |--------|--------------------------------------|------------------------------------------------|
+  | 400    | `Missing fields` or `Invalid JSON`   | Missing required fields or malformed body     |
+  | 401    | `Invalid credentials`                | Email/username or password is incorrect       |
+  | 403    | `Email not verified`, `retryVerification: true` | Account exists but is not verified |
+  | 413    | `Payload too large`                  | Request body exceeds 1 MB                     |
+  | 500    | `Server error`                       | Internal database or server issue             |
   
   ---
   
   ### Notes
   
-  - The `accessToken` cookie is used for session authentication on protected routes.
-  - Tokens are signed and verified using internal utility functions.
-  - A verified email is required to complete login.
+  - Returns a `Set-Cookie` header with the access token (`HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`)
   
 }

@@ -13,3 +13,51 @@ get {
 params:query {
   email: user1@example.com
 }
+
+docs {
+  ## GET /api/auth/check-email
+  
+  **Description**  
+  Checks whether the given email address is already registered.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/auth/check-email`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Query parameters
+  
+  | Parameter | Type   | Required | Description                  |
+  |-----------|--------|----------|------------------------------|
+  | `email`   | string | ✔        | Email address to check       |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description                  |
+  |--------|------------------------------|
+  | 200    | Email checked successfully   |
+  
+  ```json
+  {
+    "success": true,
+    "exists": true
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                    | Condition                        |
+  |--------|----------------------------|----------------------------------|
+  | 400    | `Valid email required`     | Email missing or invalid format |
+  | 500    | `Server error...`          | DB or internal error            |
+  
+}
