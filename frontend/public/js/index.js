@@ -192,7 +192,7 @@ products.forEach(product => {
   img.dataset.id = product.id;
 
 // Klick-Event für das Bild
-  img.addEventListener('click', async function(event) {
+  img.addEventListener('click', async function(event) { 
     event.preventDefault();
     const body = { productId: product.id, quantity: 1 };
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {

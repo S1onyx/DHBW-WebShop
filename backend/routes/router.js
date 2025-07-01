@@ -7,6 +7,9 @@ const { or, and } = require('../middleware/combine');
 
 const db = require('../db/database');
 
+//permission
+const checkPermission = require('../apis/evaluator/checkPermission');
+
 // Auth APIs
 const login = require('../apis/auth/login');
 const logout = require('../apis/auth/logout');
@@ -84,6 +87,16 @@ const deleteWishlist = require('../apis/wishlists/wishlist/deleteWishlist');
 const { handleCorsPreflight, setCorsHeaders } = require('../utils/cors');
 
 const routes = [
+
+  {
+  method: 'GET',
+  path: /^\/api\/evaluator$/,
+  handler: withAuth(
+    and(requireRole(1), requireValidatedUser)(
+      checkPermission
+    )
+  )
+},
   // Auth Routes
   { method: 'POST', path: /^\/api\/auth\/login$/, handler: login },
   { method: 'POST', path: /^\/api\/auth\/logout$/, handler: logout },

@@ -1,0 +1,27 @@
+meta {
+  name: checkPermission
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/evaluator?user_id=3&resource_type=user&resource_id=12&access=read
+  body: none
+  auth: inherit
+}
+
+params:query {
+  user_id: 3
+  resource_type: user
+  resource_id: 12
+  access: read
+}
+
+docs {
+  nur ein admin kann diesen endpunkt erreichen
+  bei userid gewünschte userid angeben
+  
+  bei resourcetype ist product, user oder wishlist erlaubt
+  
+  resourceId ist dann die user_id, product_id oder wishlist_id
+}
