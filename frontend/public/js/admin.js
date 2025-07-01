@@ -143,22 +143,26 @@ async function fetchUsers() {
     }
 }
 
+function getStatusId(user) {
+    if (typeof user.status_id === 'number') return user.status_id;
+    if (user.status === 'validated') return 1;
+    if (user.status === 'notValidated') return 2;
+    return '';
+}
+function getStatusLabel(user) {
+    if (user.status === 'validated' || user.status_id === 1) return 'Validated';
+    if (user.status === 'notValidated' || user.status_id === 2) return 'Unvalidated';
+    return '';
+}
 
 // --- showUserDetails anpassen ---
 async function showUserDetails(id, editable = false) {
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${id}`, {credentials: 'include'});
     const user = await res.json();
 
-    // Beispiel-Status- und Rollenoptionen
     const statusOptions = [
-        { id: 1, label: 'Pending' },
-        { id: 2, label: 'Validated' },
-        { id: 3, label: 'Rejected' }
-    ];
-    const roleOptions = [
-        { id: 1, label: 'Admin' },
-        { id: 2, label: 'Seller' },
-        { id: 3, label: 'Customer' }
+        { id: 1, label: 'Validated' },
+        { id: 2, label: 'Unvalidated' }
     ];
 
     const modal = document.getElementById('modal');
@@ -179,24 +183,17 @@ async function showUserDetails(id, editable = false) {
         : `<span>${user.data.last_name}</span>`}
           </label><br>
           <label>Username:<br>
-            <label>${user.data.username}</label>
+            <span>${user.data.username}</span>
           </label><br>
           <label>Email:<br>
-            <label>${user.data.email}</label>
-          </label><br>
-          <label>Role:<br>
-            ${editable
-        ? `<select name="role_id" required>
-                    ${roleOptions.map(opt => `<option value="${opt.id}" ${user.data.role_id == opt.id ? 'selected' : ''}>${opt.label}</option>`).join('')}
-                  </select>`
-        : `<span>${roleOptions.find(opt => opt.id == user.data.role_id)?.label || ''}</span>`}
+            <span>${user.data.email}</span>
           </label><br>
           <label>Status:<br>
             ${editable
         ? `<select name="status_id" required>
-                    ${statusOptions.map(opt => `<option value="${opt.id}" ${user.data.status_id == opt.id ? 'selected' : ''}>${opt.label}</option>`).join('')}
+                    ${statusOptions.map(opt => `<option value="${opt.id}" ${getStatusId(user.data) === opt.id ? 'selected' : ''}>${opt.label}</option>`).join('')}
                   </select>`
-        : `<span>${statusOptions.find(opt => opt.id == user.data.status_id)?.label || ''}</span>`}
+        : `<span>${getStatusLabel(user.data)}</span>`}
           </label><br>
           <label>Address:<br>
             <span>
@@ -216,8 +213,10 @@ async function showUserDetails(id, editable = false) {
             e.preventDefault();
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
+            // status_id als Zahl senden
+            data.status_id = Number(data.status_id);
             try {
-                const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/${id}`, {
+                const res = await fetch(`http://${window.ROOT_URL}:3000/api/admin/users/${id}`, {
                     method: 'PUT',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },

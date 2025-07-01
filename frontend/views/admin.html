@@ -190,7 +190,12 @@
       <input name="price" type="number" step="0.01" placeholder="Price" required>
       <input name="stock" type="number" placeholder="Stock" required>
       <input name="category_id" placeholder="Category ID" required>
-      <input name="seller_id" placeholder="Seller ID" required>
+      <label>Seller:
+        <select id="seller_id" name="seller_id" required>
+          <option value="">Please choose:</option>
+          <!-- Optionen werden per JS eingefügt -->
+        </select>
+      </label>
       <input name="image" type="file" accept="image/*" required>
       <button type="submit">Add Product</button>
     </form>
