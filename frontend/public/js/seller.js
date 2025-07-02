@@ -32,6 +32,7 @@ async function addProduct(e) {
 
         if (!res.ok) {
             showPopupMessage(json.message || 'Fehler beim Erstellen', 3000);
+            window.location.reload();
             return;
         }
 

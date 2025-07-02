@@ -24,7 +24,7 @@ async function loadProduct() {
         `<img src="http://${window.ROOT_URL}:3000${img.url}" alt="${img.alt_text}" width="80" style="border:${img.is_primary ? '2px solid green' : '1px solid #ccc'};margin:4px;">`
     ).join('');
 
-    console.log('Images:', images);
+
     await renderImages(images);
 }
 
@@ -36,7 +36,7 @@ document.getElementById('edit-product-form').addEventListener('submit', async (e
         description: form.description.value,
         stock: Number(form.stock.value),
         price: form.price.value,
-        category: form.category.value
+        category: form.category_id.value
     };
 
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}`, {
@@ -48,6 +48,7 @@ document.getElementById('edit-product-form').addEventListener('submit', async (e
 
     if (res.ok) {
         showPopupMessage('Produkt erfolgreich aktualisiert!', 1500);
+        history.back();
     } else {
         const err = await res.json();
         showPopupMessage(err.message || 'Fehler beim Aktualisieren', 2000);
@@ -156,7 +157,7 @@ async function loadCategoriesDropdown(selectedCategoryId) {
         parentOption.value = cat.id;
         parentOption.textContent = cat.name;
         parentOption.style.fontWeight = 'bold';
-        if (cat.id === selectedCategoryId) parentOption.selected = true;
+        if (String(cat.id) === String(selectedCategoryId)) parentOption.selected = true;
         select.appendChild(parentOption);
 
         if (cat.children && cat.children.length > 0) {
@@ -164,7 +165,7 @@ async function loadCategoriesDropdown(selectedCategoryId) {
                 const option = document.createElement('option');
                 option.value = child.id;
                 option.textContent = '↳ ' + child.name;
-                if (child.id === selectedCategoryId) option.selected = true;
+                if (String(child.id) === String(selectedCategoryId)) option.selected = true;
                 select.appendChild(option);
             });
         }
