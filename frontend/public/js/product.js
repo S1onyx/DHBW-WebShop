@@ -22,6 +22,14 @@ let currentImageIndex = 0;
 
 window.onload = () => loadProduct();
 
+// Reviews
+const textarea = document.getElementById('review-input');
+
+textarea.addEventListener('input', () => {
+  textarea.style.height = 'auto'; // zurücksetzen
+  textarea.style.height = textarea.scrollHeight + 'px';
+});
+
 // Amount
 lessBtn.addEventListener('click', () => {
     let currentAmount = parseInt(amountInput.value) || 1;
@@ -106,7 +114,7 @@ async function loadProduct() {
         showImage(currentImageIndex);
 
         // Bewertungen anzeigen
-        renderReviews(product.reviews);
+        renderReviews(product.reviews, product.averageRating);
 
     } catch (error) {
         title.textContent = `Fehler : ${error.message}`;
@@ -152,16 +160,43 @@ function extractImageUrls(product) {
     return [];
 }
 
-function renderReviews(reviews) {
+function reviewStars(starClass, rating, element, ratingInfoClass) {
+    let rating_safe = rating;
+    for (let i = 0; i < 5; i++) {
+        const star = document.createElement('i');
+        star.classList.add(starClass);
+        if(rating >= 0.8) {
+            star.classList.add('fa-star', 'fa-solid');
+            rating--;
+        } else if(rating < 0.8 && rating > 0.2) {
+            star.classList.add('fa-star-half-stroke', 'fa-solid')
+            rating--;
+        } else if(rating <= 0.2) {
+            star.classList.add('fa-regular', 'fa-star')
+        }
+
+        element.appendChild(star);
+    }
+
+    const ratingInfo = document.createElement('p');
+    ratingInfo.textContent = `(${rating_safe.toFixed(1)})`;
+    ratingInfo.classList.add(ratingInfoClass);
+    element.appendChild(ratingInfo);
+}
+
+function renderReviews(reviews, averageRating) {
     reviewList.innerHTML = '';
+
+    const starsContainer = document.getElementById('stars');
+    reviewStars("average-star", parseFloat(averageRating), starsContainer, 'average-rating-info');
 
     if (Array.isArray(reviews) && reviews.length > 0) {
         reviews.forEach(review => {
             const li = document.createElement('li');
-            li.innerHTML = `
-                <strong>${review.name}</strong> – ⭐ ${review.rating}<br>
-                <em>${review.comment}</em>
-            `;
+            reviewStars("review-star", parseFloat(review.rating), li, 'rating-info');
+            li.classList.add('review')
+
+
             reviewList.appendChild(li);
         });
     } else {

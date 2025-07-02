@@ -73,8 +73,19 @@
       </div>
 
       <div id="review-container" class="container">
-        <h2>Reviews</h2>
-        <button id="add-review" class="button" type="button">Add Review</button>
+        <div id="review-top" class="review-top">
+          <h2 id="review-title">Reviews</h2>
+          <div class="stars" id="stars">
+
+          </div>
+        </div>
+        <form class="new-review-form" id="new-review-form" novalidate>
+          <textarea id="review-input" rows="1" placeholder="Your Review..."></textarea>
+          <div class="rating-submit-wrapper">
+              <input type="number" id="review-rating" placeholder="Rating">
+              <input type="submit" class="button review-button" id="review-button" value="Post Review">
+          </div>
+        </form>
         <ul id="review-list" class="review-list"></ul>
       </div>
     </div>
