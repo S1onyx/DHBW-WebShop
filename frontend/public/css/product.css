@@ -90,6 +90,7 @@ main {
     font-size: xx-large;
 }
 
+/* Amount */
 #amount {
     border: black 3px solid;
     padding: 5px 15px;
@@ -99,6 +100,36 @@ main {
 
     font-family: var(--font-family);
     font-size: large;
+
+    width: 40px; 
+    text-align: center;
+}
+
+.availability-info {
+    color: var(--error-color);
+    font-weight: bold;
+    font-family: var(--font-family);
+}
+
+.not-available {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 40px auto;
+    display: block;
+}
+
+#low-availibility-info {
+    margin: 0 40px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 /* Button */
@@ -163,28 +194,9 @@ main {
     font-size: 1.2rem;
     margin-bottom: 3vh;
     line-height: 1.6;
-}
 
-/*.product-price,
-.product-stock {
-    font-size: 1.1rem;
-    margin-bottom: 2vh;
+    text-align: center;
 }
-
-.product-buy {
-    font-size: 1.1rem;
-    padding: 1vh 2vw;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-}
-
-.product-buy:hover {
-    background-color: #555;
-}*/
 
 .back-button {
     background-color: #e0e0e0;

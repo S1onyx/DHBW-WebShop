@@ -44,16 +44,18 @@
         </div>
 
         <div id="seller-container" class="seller-container">
-            <div id="seller" class="seller"></div>
+          <div id="seller" class="seller"></div>
         </div>
 
+
+        <p class="availability-info" id="low-availibility-info" hidden>Only 1 more available.</p>
         <div id="amount-buy-wrapper" class="amount-buy-wrapper">
-          <div id="amount-wrapper" class="arrow-wrapper">
-            <div id="amount-less" class="arrow">
+          <div id="amount-wrapper" class="arrow-wrapper" style="display: flex; align-items: center; gap: 10px;">
+            <div id="amount-less" class="arrow" style="cursor: pointer; user-select: none;">
               <i class="fa-solid fa-arrow-left"></i>
             </div>
-            <div id="amount" class="amount">1</div>
-            <div id="amount-more" class="arrow">
+            <input id="amount" class="amount" type="number" value="1" min="1">
+            <div id="amount-more" class="arrow" style="cursor: pointer; user-select: none;">
               <i class="fa-solid fa-arrow-right"></i>
             </div>
           </div>
