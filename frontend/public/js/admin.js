@@ -54,21 +54,21 @@ async function loadCategoriesDropdown() {
     select.innerHTML = '<option value="">Please select:</option>';
 
     data.forEach(cat => {
+        // Elternkategorie als fette Option
+        const parentOption = document.createElement('option');
+        parentOption.value = cat.id;
+        parentOption.textContent = cat.name;
+        parentOption.style.fontWeight = 'bold';
+        select.appendChild(parentOption);
+
+        // Kinderkategorien als normale Optionen
         if (cat.children && cat.children.length > 0) {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = cat.name;
             cat.children.forEach(child => {
                 const option = document.createElement('option');
                 option.value = child.id;
-                option.textContent = child.name;
-                optgroup.appendChild(option);
+                option.textContent = '↳ ' + child.name;
+                select.appendChild(option);
             });
-            select.appendChild(optgroup);
-        } else {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            select.appendChild(option);
         }
     });
 }
