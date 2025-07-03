@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/products/images/606
+  url: http://localhost:3000/api/products/images/5
   body: json
   auth: none
 }
@@ -23,6 +23,7 @@ docs {
   **Description**  
   Updates metadata or replaces the image file for an existing product image.  
   Only the product owner (seller) or an admin may perform this operation.
+  If is_primary is set to true, all other images of the product will automatically be set to false. Only one primary image is allowed per product.
   
   ### Request
   
