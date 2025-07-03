@@ -294,13 +294,40 @@ input[type="number"] {
 }
 
 .review {
+    display: flex;
+    flex-direction: column;
     list-style-type: none;
     padding-left: 0;
     margin-left: 0;
 }
 
+.star-rating-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+}
+
+.review-name {
+    margin-left: 30px;
+}
+
+.review-comment {
+    margin: 5px 0 20px 0;
+}
+
+.input-error-message {
+    color: var(--error-color);
+    font-family: var(--font-family);
+    margin: 0;
+}
+
+.input-error {
+    border: var(--error-color) solid 2px !important;
+}
+
 #review-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
 }
 
 #review-input {
@@ -314,6 +341,14 @@ input[type="number"] {
     border: #000000 solid 1px;
 
     -moz-appearance: textfield;
+}
+
+#review-input::placeholder {
+    font-family: var(--font-family);
+}
+
+#review-rating::placeholder {
+    font-family: var(--font-family);
 }
 
 #review-input:focus {
@@ -341,3 +376,13 @@ input[type="number"] {
     border: 2px solid var(--dark-blue);
     outline: none;
 }
+
+
+/* other Products */
+.product-card {
+    width: 270px;
+}
+
+
+
+

@@ -1,3 +1,5 @@
+import { showPopupMessage } from "/js/utils.js";
+
 const title = document.getElementById('title');
 const seller = document.getElementById('seller');
 const description = document.getElementById('product-description');
@@ -6,6 +8,7 @@ const productImage = document.getElementById('product-image');
 const reviewList = document.getElementById('review-list');
 
 const cartButton = document.getElementById('cart-button');
+const buyBtn = document.getElementById('buy-button')
 
 const amountBuyWrapper = document.getElementById('amount-buy-wrapper');
 const lowAvailabilityInfo = document.getElementById('low-availibility-info');
@@ -22,18 +25,160 @@ let currentImageIndex = 0;
 
 window.onload = () => loadProduct();
 
+function isPositiveInteger(value) {
+    return Number.isInteger(value) && value > 0;
+}
+
+buyBtn.onclick = async () => {
+        buyBtn.disabled = true;
+        buyBtn.innerHTML = `<span class="spinner"></span> Buying...`;
+
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/orders`, {
+            ...fetchOptionsWithCredentials,
+            method: 'POST'
+        });
+        if (res.ok) {
+            showPopupMessage('Purchase successful!');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showPopupMessage('Purchase failed.');
+            buyBtn.disabled = false;
+            buyBtn.innerHTML = 'Buy';
+        }
+    };
+
+cartButton.addEventListener('click', async function (event) {
+    event.preventDefault();
+    const id = getProductIdFromPath();
+
+    const amount = amountInput.value.trim();
+    if (!isPositiveInteger(amount)) {
+        if (!Number.isInteger(amount) && amount <= maxAmount) {
+            amountInput.value = parseInt(amount); 
+        } else {
+            return;
+        }
+
+    }
+    const body = { productId: id, quantity: amount };
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
+        ...fetchOptionsWithCredentials,
+        method: 'POST',
+        body: JSON.stringify(body)
+    });
+    if (res.status === 401) {
+        window.location.href = '/login';
+        return;
+    }
+    showPopupMessage('Product was added to your cart', 1500);
+})
+
 // Reviews
 const textarea = document.getElementById('review-input');
+const reviewRating = document.getElementById('review-rating');
+
+textarea.addEventListener('focus', () => {
+    const commentError = document.getElementById('comment-error');
+    commentError.hidden = true;
+    textarea.classList.remove('input-error');
+})
+
+document.getElementById('review-rating').addEventListener('focus', (event) => {
+    const ratingError = document.getElementById('rating-error');
+    ratingError.hidden = true;
+    reviewRating.classList.remove('input-error');
+})
+
+document.getElementById('new-review-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const id = getProductIdFromPath();
+
+    try {
+        const res = await fetch(`http://localhost:3000/api/users/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+
+        const json = await res.json();
+        if (!json.success) {
+            if (json.code === 401) {
+                setTimeout(() => {
+                    window.location.href = 'http://localhost:1337/login';
+                }, 1000);
+            }
+        }
+    } catch (err) {
+        const serverError = document.getElementById('review-server-error');
+        serverError.hidden = false;
+    }
+
+    let isComment = true;
+    if (!textarea.value.trim()) {
+        isComment = false;
+        const commentError = document.getElementById('comment-error');
+        commentError.hidden = false;
+        textarea.classList.add('input-error');
+    }
+
+    let isRating = true;
+    let ratingNumber = parseFloat(reviewRating.value.trim().replace(',', '.'));
+    if (!reviewRating.value.trim() || ratingNumber > 5.0 || ratingNumber < 0.0) {
+        isRating = false;
+        const ratingError = document.getElementById('rating-error');
+        ratingError.hidden = false;
+        if (ratingNumber > 5.0 || ratingNumber < 0.0) {
+            ratingError.textContent = "Rating must be a number from 0 to 5!";
+        } else {
+            ratingError.textContent = "Add Rating!";
+        }
+        reviewRating.classList.add('input-error');
+    }
+
+
+    if (!isComment || !isRating) {
+        return;
+    }
+
+    const body = { rating: ratingNumber, comment: textarea.value.trim() };
+
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${id}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(body)
+        });
+
+        const json = await res.json();
+        if (!json.success) {
+            if (json.code === 401) {
+                setTimeout(() => {
+                    window.location.href = 'login';
+                }, 1000);
+            }
+        } else {
+            window.location.reload();
+        }
+    } catch (err) {
+        const serverError = document.getElementById('review-server-error');
+        serverError.hidden = false;
+    }
+})
 
 textarea.addEventListener('input', () => {
-  textarea.style.height = 'auto'; // zurücksetzen
-  textarea.style.height = textarea.scrollHeight + 'px';
+    textarea.style.height = 'auto'; // zurücksetzen
+    textarea.style.height = textarea.scrollHeight + 'px';
 });
 
 // Amount
 lessBtn.addEventListener('click', () => {
     let currentAmount = parseInt(amountInput.value) || 1;
-    if(currentAmount > 1) {
+    if (currentAmount > 1) {
         amountInput.value = currentAmount - 1;
     } else {
         amountInput.value = maxAmount;
@@ -42,7 +187,7 @@ lessBtn.addEventListener('click', () => {
 
 moreBtn.addEventListener('click', () => {
     let currentAmount = parseInt(amountInput.value) || 1;
-    if(currentAmount < maxAmount) {
+    if (currentAmount < maxAmount) {
         amountInput.value = currentAmount + 1;
     } else {
         amountInput.value = 1;
@@ -50,12 +195,13 @@ moreBtn.addEventListener('click', () => {
 });
 
 amountInput.addEventListener('input', () => {
-    let currentAmount = parseInt(amountInput.value);
-    if(currentAmount < 1) {
+    let currentAmount = Int(amountInput.value);
+    if (currentAmount < 1) {
         amountInput.value = 1;
-    } else if(currentAmount > maxAmount) {
+    } else if (currentAmount > maxAmount) {
         amountInput.value = maxAmount;
     }
+
 })
 
 // Image Carusell
@@ -106,7 +252,7 @@ async function loadProduct() {
         seller.textContent = product.seller_name || '';
         description.textContent = product.description;
         price.textContent = `${product.price}€`;
-        
+
         loadAmount(product);
 
         // Bilder anzeigen
@@ -116,19 +262,24 @@ async function loadProduct() {
         // Bewertungen anzeigen
         renderReviews(product.reviews, product.averageRating);
 
+        // Produkte laden
+        loadCategoryMap();
+        otherProductsLoad(1, { category: 3 });
+
     } catch (error) {
         title.textContent = `Fehler : ${error.message}`;
     }
 
-    function getProductIdFromPath() {
-        const match = window.location.pathname.match(/\/product\/(\d+)/);
-        return match ? match[1] : null;
-    }
 }
 
-function loadAmount(product){
+function getProductIdFromPath() {
+    const match = window.location.pathname.match(/\/product\/(\d+)/);
+    return match ? match[1] : null;
+}
+
+function loadAmount(product) {
     maxAmount = product.stock;
-    if(maxAmount == 0) {
+    if (maxAmount == 0) {
         const message = document.createElement('p');
         message.textContent = "Product not available right now"
         message.classList = 'availability-info not-available'
@@ -165,13 +316,13 @@ function reviewStars(starClass, rating, element, ratingInfoClass) {
     for (let i = 0; i < 5; i++) {
         const star = document.createElement('i');
         star.classList.add(starClass);
-        if(rating >= 0.8) {
+        if (rating >= 0.8) {
             star.classList.add('fa-star', 'fa-solid');
             rating--;
-        } else if(rating < 0.8 && rating > 0.2) {
+        } else if (rating < 0.8 && rating > 0.2) {
             star.classList.add('fa-star-half-stroke', 'fa-solid')
             rating--;
-        } else if(rating <= 0.2) {
+        } else if (rating <= 0.2) {
             star.classList.add('fa-regular', 'fa-star')
         }
 
@@ -193,9 +344,24 @@ function renderReviews(reviews, averageRating) {
     if (Array.isArray(reviews) && reviews.length > 0) {
         reviews.forEach(review => {
             const li = document.createElement('li');
-            reviewStars("review-star", parseFloat(review.rating), li, 'rating-info');
-            li.classList.add('review')
 
+            const starRatingContainer = document.createElement('div');
+            starRatingContainer.classList.add('star-rating-container');
+            reviewStars("review-star", parseFloat(review.rating), starRatingContainer, 'rating-info');
+
+            const name = document.createElement('p');
+            name.textContent = review.name;
+            name.classList.add('review-name');
+            starRatingContainer.appendChild(name);
+
+            li.classList.add('review');
+
+            li.appendChild(starRatingContainer);
+
+            const comment = document.createElement('p');
+            comment.textContent = review.comment;
+            comment.classList.add('review-comment');
+            li.appendChild(comment);
 
             reviewList.appendChild(li);
         });
@@ -203,3 +369,200 @@ function renderReviews(reviews, averageRating) {
         reviewList.innerHTML = "<li>No reviews yet.</li>";
     }
 }
+
+async function otherProductsLoad(categoryId, options = {}) {
+    let amount = 9;
+
+    const productList = document.getElementById('product-list');
+    if (!productList) return;
+    productList.innerHTML = '<li>Loading products...</li>';
+
+    const params = new URLSearchParams();
+    if (categoryId) params.append('category', categoryId);
+    if (options.name) params.append('name', options.name);
+    if (typeof options.minPrice === 'number') params.append('minPrice', options.minPrice);
+    if (typeof options.maxPrice === 'number') params.append('maxPrice', options.maxPrice);
+    if (options.inStock === true) params.append('inStock', true);
+    if (options.sort) params.append('sort', options.sort);
+    if (options.order) params.append('order', options.order);
+
+    params.append('limit', amount);
+    params.append('offset', 0);
+
+    try {
+        const response = await fetch(`http://${window.ROOT_URL}:3000/api/products?${params.toString()}`);
+        if (!response.ok) throw new Error('Fehler beim Abrufen der Produkte');
+        const result = await response.json();
+        const products = result.data || [];
+        const total = result.total || products.length;
+
+        if (products.length === 0) {
+            productList.innerHTML = '<li>Keine Produkte verfügbar.</li>';
+            renderPagination(total, page);
+            updateActiveFiltersUI();
+            return;
+        }
+
+        productList.innerHTML = '';
+
+        products.forEach(product => {
+            const li = document.createElement('li');
+            li.className = 'product-card';
+
+            const productInfoOverlay = document.createElement('div');
+            productInfoOverlay.className = 'product-info-overlay';
+            productInfoOverlay.textContent = 'Product Page';
+
+            const link = document.createElement('a');
+            link.href = `/product/${product.id}`;
+            link.className = 'product-link';
+
+            // Produktbild
+            const thumbWrapper = document.createElement('div');
+            thumbWrapper.className = 'product-thumb-wrapper';
+
+            const img = document.createElement('img');
+            const imageUrl = product.image_url;
+            img.src = imageUrl
+                ? imageUrl.startsWith('http')
+                    ? imageUrl
+                    : `http://${window.ROOT_URL}:3000${imageUrl}`
+                : '/images/placeholder.jpg';
+            img.alt = product.name;
+            img.className = 'product-thumb small-thumb';
+            img.dataset.id = product.id;
+
+            // Klick-Event für das Bild
+            img.addEventListener('click', async function (event) {
+                event.preventDefault();
+                const body = { productId: product.id, quantity: 1 };
+                const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
+                    ...fetchOptionsWithCredentials,
+                    method: 'POST',
+                    body: JSON.stringify(body)
+                });
+                if (res.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                showPopupMessage('Product was added to your cart', 1500);
+            });
+
+            const buyOverlay = document.createElement('div');
+            buyOverlay.className = 'buy-overlay';
+            buyOverlay.textContent = 'Add to cart';
+
+            thumbWrapper.appendChild(img);
+            thumbWrapper.appendChild(buyOverlay);
+
+            // Produkttitel
+            const title = document.createElement('h3');
+            title.textContent = product.name;
+            title.className = 'product-title';
+
+            // Preis
+            const price = document.createElement('p');
+            price.textContent = `${product.price} €`;
+            price.className = 'product-price';
+
+            // Kategorie-Tag
+            const cat = categoryMap[product.category_id];
+
+            if (!cat) {
+                console.warn(`Kategorie mit ID ${product.category_id} nicht in categoryMap gefunden`);
+            }
+
+            const categoryTag = document.createElement('span');
+            categoryTag.className = 'tag category-tag';
+            categoryTag.textContent = cat
+                ? cat.parentName
+                    ? `${cat.parentName} / ${cat.name}`
+                    : cat.name
+                : 'Unbekannt';
+
+            // Bewertung
+            const ratingWrapper = document.createElement('div');
+            ratingWrapper.className = 'product-rating';
+
+            const ratingValue = parseFloat(product.average_rating || 0);
+            const reviewCount = parseInt(product.review_count || 0);
+
+            // Sterne
+            const starsSpan = document.createElement('span');
+            starsSpan.className = 'stars';
+            starsSpan.textContent = '★'.repeat(Math.round(ratingValue)) + '☆'.repeat(5 - Math.round(ratingValue));
+
+            // Bewertung (z. B. 3.3)
+            const ratingNumber = document.createElement('span');
+            ratingNumber.className = 'rating-value';
+            ratingNumber.textContent = `(${ratingValue.toFixed(1)})`;
+
+            // Review-Zahl (z. B. 6 Bewertungen)
+            const reviewCounthtml = document.createElement('span');
+            reviewCounthtml.className = 'review-count';
+            reviewCounthtml.textContent = `(${reviewCount} Bewertungen)`;
+
+            ratingWrapper.appendChild(starsSpan);
+            ratingWrapper.appendChild(ratingNumber);
+            ratingWrapper.appendChild(reviewCounthtml);
+
+            // Info-Wrapper
+            const info = document.createElement('div');
+            info.className = 'product-info';
+            info.appendChild(title);
+            info.appendChild(price);
+            info.appendChild(categoryTag);
+            info.appendChild(document.createElement('br'));
+            info.appendChild(ratingWrapper);
+            info.appendChild(productInfoOverlay);
+
+            // Zusammenbauen
+            link.appendChild(thumbWrapper);
+            link.appendChild(info);
+            li.appendChild(link);
+            productList.appendChild(li);
+        });
+
+    } catch (error) {
+        productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
+    }
+
+}
+
+
+
+let categoryMap = {};
+
+async function loadCategoryMap() {
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
+
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+
+        const json = await res.json();
+
+        if (!json.success || !Array.isArray(json.data)) {
+            throw new Error('Ungültige Struktur');
+        }
+
+        const flatMap = {};
+        json.data.forEach(parent => {
+            flatMap[parent.id] = { name: parent.name, parentName: null };
+            if (Array.isArray(parent.children)) {
+                parent.children.forEach(child => {
+                    flatMap[child.id] = { name: child.name, parentName: parent.name };
+                });
+            }
+        });
+
+        categoryMap = flatMap;
+    } catch (err) {
+        console.error('Kategorie-Map konnte nicht geladen werden:', err);
+    }
+}
+
+const fetchOptionsWithCredentials = {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' }
+};
+

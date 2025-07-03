@@ -10,7 +10,6 @@
   <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
   <script type="module" src="/js/product.js" defer></script>
   <link rel="stylesheet" href="/css/product.css" />
-  <link rel="stylesheet" href="/css/style.css" />
 </head>
 
 <body>
@@ -54,7 +53,7 @@
             <div id="amount-less" class="arrow" style="cursor: pointer; user-select: none;">
               <i class="fa-solid fa-arrow-left"></i>
             </div>
-            <input id="amount" class="amount" type="number" value="1" min="1">
+            <input id="amount" class="amount" type="number" value="1" min="1" min="1">
             <div id="amount-more" class="arrow" style="cursor: pointer; user-select: none;">
               <i class="fa-solid fa-arrow-right"></i>
             </div>
@@ -69,7 +68,10 @@
       </div>
 
       <div id="other-products-wrapper" class="container">
+        <h2 id="other-products-title" class="other-products-title">Other Products you might like</h2>
+          <ul id="product-list" class="product-list">
 
+          </ul>
       </div>
 
       <div id="review-container" class="container">
@@ -79,8 +81,11 @@
 
           </div>
         </div>
+        <p id="review-server-error" class="input-error-message" hidden>Server-Error</p>
         <form class="new-review-form" id="new-review-form" novalidate>
+          <p id="comment-error" class="input-error-message" hidden>Add Comment!</p>
           <textarea id="review-input" rows="1" placeholder="Your Review..."></textarea>
+          <p id="rating-error" class="input-error-message" hidden>Add Rating!</p>
           <div class="rating-submit-wrapper">
               <input type="number" id="review-rating" placeholder="Rating">
               <input type="submit" class="button review-button" id="review-button" value="Post Review">
