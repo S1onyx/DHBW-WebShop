@@ -58,10 +58,8 @@
               <i class="fa-solid fa-arrow-right"></i>
             </div>
           </div>
-          <button type="button" id="buy-button" class="button">Buy</button>
+          <button type="button" id="cart-button" class="button">Put in Cart</button>
         </div>
-
-        <button type="button" id="cart-button" class="button">Put in Cart</button>
 
         <p id="product-description" class="product-description"></p>
 
@@ -69,12 +67,14 @@
 
       <div id="other-products-wrapper" class="container">
         <h2 id="other-products-title" class="other-products-title">Other Products you might like</h2>
+        <div id="product-list-container" class="product-list-container">
           <ul id="product-list" class="product-list">
 
           </ul>
+        </div>
       </div>
 
-      <div id="review-container" class="container">
+      <div id="reviews-container" class="container">
         <div id="review-top" class="review-top">
           <h2 id="review-title">Reviews</h2>
           <div class="stars" id="stars">
@@ -82,13 +82,14 @@
           </div>
         </div>
         <p id="review-server-error" class="input-error-message" hidden>Server-Error</p>
+        <p id="review-conflict-error" class="input-error-message" hidden>You already uploaded a review to this product.</p>
         <form class="new-review-form" id="new-review-form" novalidate>
           <p id="comment-error" class="input-error-message" hidden>Add Comment!</p>
-          <textarea id="review-input" rows="1" placeholder="Your Review..."></textarea>
+          <textarea id="review-input" class="review-input" rows="1" placeholder="Your Review..."></textarea>
           <p id="rating-error" class="input-error-message" hidden>Add Rating!</p>
           <div class="rating-submit-wrapper">
-              <input type="number" id="review-rating" placeholder="Rating">
-              <input type="submit" class="button review-button" id="review-button" value="Post Review">
+              <input type="number" id="review-rating" class="review-rating" placeholder="Rating">
+              <input type="submit" class="button submit-review-button" id="review-button" value="Post Review">
           </div>
         </form>
         <ul id="review-list" class="review-list"></ul>

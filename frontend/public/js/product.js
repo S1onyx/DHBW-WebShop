@@ -8,7 +8,6 @@ const productImage = document.getElementById('product-image');
 const reviewList = document.getElementById('review-list');
 
 const cartButton = document.getElementById('cart-button');
-const buyBtn = document.getElementById('buy-button')
 
 const amountBuyWrapper = document.getElementById('amount-buy-wrapper');
 const lowAvailabilityInfo = document.getElementById('low-availibility-info');
@@ -29,46 +28,31 @@ function isPositiveInteger(value) {
     return Number.isInteger(value) && value > 0;
 }
 
-buyBtn.onclick = async () => {
-        buyBtn.disabled = true;
-        buyBtn.innerHTML = `<span class="spinner"></span> Buying...`;
-
-        const res = await fetch(`http://${window.ROOT_URL}:3000/api/orders`, {
-            ...fetchOptionsWithCredentials,
-            method: 'POST'
-        });
-        if (res.ok) {
-            showPopupMessage('Purchase successful!');
-            setTimeout(() => location.reload(), 1500);
-        } else {
-            showPopupMessage('Purchase failed.');
-            buyBtn.disabled = false;
-            buyBtn.innerHTML = 'Buy';
-        }
-    };
-
 cartButton.addEventListener('click', async function (event) {
     event.preventDefault();
     const id = getProductIdFromPath();
 
     const amount = amountInput.value.trim();
-    if (!isPositiveInteger(amount)) {
-        if (!Number.isInteger(amount) && amount <= maxAmount) {
-            amountInput.value = parseInt(amount); 
-        } else {
+    if (isPositiveInteger(amount) && amount <= maxAmount) {
+        amountInput.value = amount;
+    } else {
+        amountInput.value = 1;
+    }
+
+    try {
+        const body = { productId: id, quantity: amount };
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
+            ...fetchOptionsWithCredentials,
+            method: 'POST',
+            body: JSON.stringify(body)
+        });
+        if (res.status === 401) {
+            window.location.href = '/login';
             return;
         }
-
-    }
-    const body = { productId: id, quantity: amount };
-    const res = await fetch(`http://${window.ROOT_URL}:3000/api/carts/items`, {
-        ...fetchOptionsWithCredentials,
-        method: 'POST',
-        body: JSON.stringify(body)
-    });
-    if (res.status === 401) {
-        window.location.href = '/login';
-        return;
+    } catch (err) {
+        const serverError = document.getElementById('review-server-error');
+        serverError.hidden = false;
     }
     showPopupMessage('Product was added to your cart', 1500);
 })
@@ -94,7 +78,7 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
     const id = getProductIdFromPath();
 
     try {
-        const res = await fetch(`http://localhost:3000/api/users/me`, {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -106,8 +90,8 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
         if (!json.success) {
             if (json.code === 401) {
                 setTimeout(() => {
-                    window.location.href = 'http://localhost:1337/login';
-                }, 1000);
+                    window.location.href = `http://localhost:1337/login`;
+                }, 100);
             }
         }
     } catch (err) {
@@ -125,12 +109,14 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
 
     let isRating = true;
     let ratingNumber = parseFloat(reviewRating.value.trim().replace(',', '.'));
-    if (!reviewRating.value.trim() || ratingNumber > 5.0 || ratingNumber < 0.0) {
+    const isStepValid = Number.isFinite(ratingNumber) && (ratingNumber * 2) % 1 === 0;
+
+    if (!reviewRating.value.trim() || ratingNumber > 5.0 || ratingNumber < 0.0 || !isStepValid) {
         isRating = false;
         const ratingError = document.getElementById('rating-error');
         ratingError.hidden = false;
-        if (ratingNumber > 5.0 || ratingNumber < 0.0) {
-            ratingError.textContent = "Rating must be a number from 0 to 5!";
+        if (ratingNumber > 5.0 || ratingNumber < 0.0 || !isStepValid) {
+            ratingError.textContent = "Rating must be a number from 0 to 5, with 0.5 steps!";
         } else {
             ratingError.textContent = "Add Rating!";
         }
@@ -160,6 +146,9 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
                 setTimeout(() => {
                     window.location.href = 'login';
                 }, 1000);
+            } else if(json.code === 409) {
+                const conflictError = document.getElementById('review-conflict-error');
+                conflictError.hidden = false;
             }
         } else {
             window.location.reload();
@@ -168,7 +157,15 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
         const serverError = document.getElementById('review-server-error');
         serverError.hidden = false;
     }
-})
+});
+
+document.getElementById('reviews-container').addEventListener('click', (event) => {
+    const clickedElement = event.target;
+    const conflictError = document.getElementById('review-conflict-error');
+    conflictError.hidden = true;
+
+});
+
 
 textarea.addEventListener('input', () => {
     textarea.style.height = 'auto'; // zurücksetzen
@@ -195,7 +192,7 @@ moreBtn.addEventListener('click', () => {
 });
 
 amountInput.addEventListener('input', () => {
-    let currentAmount = Int(amountInput.value);
+    let currentAmount = parseInt(amountInput.value);
     if (currentAmount < 1) {
         amountInput.value = 1;
     } else if (currentAmount > maxAmount) {
@@ -259,8 +256,18 @@ async function loadProduct() {
         imageUrls = extractImageUrls(product);
         showImage(currentImageIndex);
 
-        // Bewertungen anzeigen
-        renderReviews(product.reviews, product.averageRating);
+        try {
+            const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${id}/reviews`);
+            if (!res.ok) throw new Error('Reviews konnte nicht geladen werden');
+
+            const result = await res.json();
+            const reviews = result.data;
+
+            renderReviews(reviews, product.averageRating);
+        } catch {
+            const serverError = document.getElementById('review-server-error');
+            serverError.hidden = false;
+        }
 
         // Produkte laden
         loadCategoryMap();
@@ -335,35 +342,222 @@ function reviewStars(starClass, rating, element, ratingInfoClass) {
     element.appendChild(ratingInfo);
 }
 
-function renderReviews(reviews, averageRating) {
+async function renderReviews(reviews, averageRating) {
     reviewList.innerHTML = '';
 
     const starsContainer = document.getElementById('stars');
     reviewStars("average-star", parseFloat(averageRating), starsContainer, 'average-rating-info');
 
+    let loggedin = false;
+    let username;
+
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+        });
+
+        const json = await res.json();
+        if (json.success) {
+            loggedin = true;
+            username = json.data.username;
+        } else {
+            loggedin = false;
+        }
+    } catch (err) {
+        const serverError = document.getElementById('review-server-error');
+        serverError.hidden = false;
+    }
+
     if (Array.isArray(reviews) && reviews.length > 0) {
+        let id = 0;
         reviews.forEach(review => {
             const li = document.createElement('li');
+            li.id = `review${id}`
 
             const starRatingContainer = document.createElement('div');
             starRatingContainer.classList.add('star-rating-container');
             reviewStars("review-star", parseFloat(review.rating), starRatingContainer, 'rating-info');
 
             const name = document.createElement('p');
-            name.textContent = review.name;
+            name.textContent = review.customer_name;
             name.classList.add('review-name');
             starRatingContainer.appendChild(name);
 
             li.classList.add('review');
 
-            li.appendChild(starRatingContainer);
+            const reviewContainer = document.createElement('div');
+            reviewContainer.classList.add('review-container');
+            reviewContainer.appendChild(starRatingContainer);
 
             const comment = document.createElement('p');
             comment.textContent = review.comment;
             comment.classList.add('review-comment');
-            li.appendChild(comment);
+            reviewContainer.appendChild(comment);
+            li.appendChild(reviewContainer);
+
+            if (loggedin && review.customer_name == username) {
+                const editButton = document.createElement('button');
+                editButton.classList.add('button', 'review-edit-button', 'review-button');
+                editButton.textContent = 'Edit';
+
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('button', 'review-delete-button', 'review-button');
+                deleteButton.textContent = 'Delete';
+
+                editButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+
+                    const oldComment = li.querySelector('.review-comment')?.textContent ?? '';
+                    const ratingTextRaw = li.querySelector('.rating-info')?.textContent ?? '';
+                    const cleanedRatingText = ratingTextRaw.replace(/[()]/g, '');
+                    const oldRating = parseFloat(cleanedRatingText);
+
+                    const originalLi = li.cloneNode(true); 
+
+
+                    const form = document.createElement('form');
+                    form.innerHTML = `
+                    <p id="update-comment-error" class="input-error-message" hidden>Add Comment!</p>
+                    <textarea id="update-review-input" class="review-input" rows="1" placeholder="Your Review..."></textarea>
+                    <p id="update-rating-error" class="input-error-message" hidden>Add Rating!</p>
+                    <div class="rating-submit-wrapper">
+                        <input type="number" id="update-review-rating" class="review-rating" placeholder="Rating">
+                        <input type="submit" class="button submit-review-button" id="update-review-button" value="Update Review">
+                        <button type="button" id="cancel-button" class="button">Cancel</button>
+                    </div>`;
+
+                    form.querySelector('#update-review-input').value = oldComment;
+                    form.querySelector('#update-review-rating').value = oldRating;
+
+                    const updateButton = form.querySelector('#update-review-button');
+                    const cancelButton = form.querySelector('#cancel-button');
+
+                    const updateTextarea = form.querySelector('#update-review-input');
+                    const updateRatingInput = form.querySelector('#update-review-rating');
+
+                    updateTextarea.addEventListener('focus', () => {
+                        const commentError = document.getElementById('update-comment-error');
+                        commentError.hidden = true;
+                        updateTextarea.classList.remove('input-error');
+                    });
+
+                    updateRatingInput.addEventListener('focus', () => {
+                        const ratingError = document.getElementById('update-rating-error');
+                        ratingError.hidden = true;
+                        updateRatingInput.classList.remove('input-error');
+                    });
+
+                    updateButton.addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        const newComment = form.querySelector('#update-review-input');
+
+                        let isComment = true;
+                        if (!newComment.value.trim()) {
+                            isComment = false;
+                            const reviewError = document.getElementById('update-comment-error');
+                            reviewError.hidden = false;
+                            newComment.classList.add('input-error');
+                        }
+                        const newRating = parseFloat(form.querySelector('#update-review-rating').value.trim().replace(',', '.'));
+                        const reviewRating = form.querySelector('#update-review-rating');
+                        const isStepValid = Number.isFinite(newRating) && (newRating * 2) % 1 === 0;
+
+                        let isRating = true;
+                        if (!reviewRating.value.trim() || newRating > 5.0 || newRating < 0.0 || !isStepValid) {
+                            isRating = false;
+                            const ratingError = document.getElementById('update-rating-error');
+                            ratingError.hidden = false;
+                            if (newRating > 5.0 || newRating < 0.0 || !isStepValid) {
+                                ratingError.textContent = "Rating must be a number from 0 to 5 with 0.5 steps!";
+                            } else {
+                                ratingError.textContent = "Add Rating!";
+                            }
+                            reviewRating.classList.add('input-error');
+                        }
+
+
+                        if (!isComment || !isRating) {
+                            return;
+                        }
+
+
+
+                        const body = { comment: newComment.value.trim(), rating: newRating };
+                        console.log(JSON.stringify(body));
+                        const reviewID = review.id;
+                        try {
+                            const res = await fetch(`http://${window.ROOT_URL}:3000/api/reviews/${review.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                credentials: 'include',
+                                body: JSON.stringify(body)
+                            });
+
+                            const json = await res.json();
+                            if (!json.success) {
+
+                            } else {
+                                window.location.reload();
+                            }
+                        } catch (err) {
+                            const serverError = document.getElementById('review-server-error');
+                            serverError.hidden = false;
+                        }
+
+
+                        location.reload();
+                    });
+
+                    cancelButton.addEventListener('click', () => {
+                        location.reload();
+                    });
+
+
+                    li.replaceWith(form);
+
+                });
+
+                deleteButton.addEventListener('click', async (event) => {
+                    event.preventDefault();
+
+                    try {
+                            const res = await fetch(`http://${window.ROOT_URL}:3000/api/reviews/${review.id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                credentials: 'include'
+                            });
+
+                            const json = await res.json();
+                            if (!json.success) {
+
+                            } else {
+                                window.location.reload();
+                            }
+                        } catch (err) {
+                            const serverError = document.getElementById('review-server-error');
+                            serverError.hidden = false;
+                        }
+                })
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+                buttonContainer.appendChild(editButton);
+                buttonContainer.appendChild(deleteButton);
+
+                li.appendChild(buttonContainer);
+
+            }
 
             reviewList.appendChild(li);
+            id++;
         });
     } else {
         reviewList.innerHTML = "<li>No reviews yet.</li>";
