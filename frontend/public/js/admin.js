@@ -48,7 +48,7 @@ async function loadSellers() {
 }
 
 async function loadCategoriesDropdown() {
-    const res = await fetch('http://localhost:3000/api/categories');
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
     const { data } = await res.json();
     const select = document.querySelector('select[name="category_id"]');
     select.innerHTML = '<option value="">Please select:</option>';

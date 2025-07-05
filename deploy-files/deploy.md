@@ -44,10 +44,10 @@ esc
 ## 4. 🐳 Images holen und starten
 
 ```bash
-docker compose down --volumes --remove-orphans
-docker compose rm -f
-docker compose -f docker-compose.yml pull
-docker compose -f docker-compose.yml up --build
+docker-compose down --volumes --remove-orphans
+docker-compose rm -f
+docker-compose -f docker-compose.yml pull
+docker-compose -f docker-compose.yml up --build
 ```
 
 ---
@@ -86,7 +86,7 @@ Inhalt durch (redeploy) ersetzen
 Bei Änderungen im `dev`-Branch:
 
 ```bash
-docker compose -f docker-compose.yml down
-docker compose -f docker-compose.yml pull
-docker compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml down
+docker-compose -f docker-compose.yml pull
+docker-compose -f docker-compose.yml up -d
 ```
