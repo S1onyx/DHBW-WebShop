@@ -90,7 +90,7 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
         if (!json.success) {
             if (json.code === 401) {
                 setTimeout(() => {
-                    window.location.href = `http://localhost:1337/login`;
+                    window.location.href = `http://${window.ROOT_URL}:1337/login`;
                 }, 100);
             }
         }
