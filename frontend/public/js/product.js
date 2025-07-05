@@ -203,12 +203,20 @@ amountInput.addEventListener('input', () => {
 
 // Image Carusell
 prevPictureButton.addEventListener('click', () => {
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.remove('fa-solid');
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.add('fa-regular');
     currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.remove('fa-regular');
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.add('fa-solid');
     showImage(currentImageIndex);
 });
 
 nextPictureButton.addEventListener('click', () => {
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.remove('fa-solid');
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.add('fa-regular');
     currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.remove('fa-regular');
+    document.getElementById(`picture-dot-${currentImageIndex}`).classList.add('fa-solid');
     showImage(currentImageIndex);
 });
 
@@ -250,6 +258,9 @@ async function loadProduct() {
         description.textContent = product.description;
         price.textContent = `${product.price}€`;
 
+        // Pictore Dots
+        loadPictureDots(product.images.length);
+
         loadAmount(product);
 
         // Bilder anzeigen
@@ -275,6 +286,23 @@ async function loadProduct() {
 
     } catch (error) {
         title.textContent = `Fehler : ${error.message}`;
+    }
+
+}
+
+function loadPictureDots(pictureAmount) {
+    const dotsContainer = document.getElementById('picture-index-dots');
+    for(let i = 0; i < pictureAmount; i++) {
+        const dot = document.createElement('i');
+        dot.classList.add('fa-circle-dot', 'picture-index-dot');
+        dot.id= `picture-dot-${i}`;
+        if(i == 0) {
+            dot.classList.add('fa-solid');
+        } else {
+            dot.classList.add('fa-regular')
+        }
+
+        dotsContainer.appendChild(dot);
     }
 
 }

@@ -31,7 +31,9 @@
     --input-focus-color: #001d4a;
 
     --average-stars: #002c6d;
-    --review-stars: #005F94
+    --review-stars: #005F94;
+
+    --image-dot: #001d4a;
 }
 
 html,
@@ -439,6 +441,20 @@ input[type="number"] {
 /* other Products */
 .product-card {
     width: 270px;
+}
+
+/*image dots*/
+.picture-index-dots {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.picture-index-dot {
+    font-size: 25px;
+    color: var(--image-dot);
 }
 
 
