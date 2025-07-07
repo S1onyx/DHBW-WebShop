@@ -21,6 +21,7 @@ docs {
   
   **Description**  
   Uploads a new product image and creates an image entry for the given product. Only sellers (for their own products) and admins are allowed to use this endpoint.
+  If is_primary is set to true, all other images of the product will automatically be set to false. Only one primary image is allowed per product.
   
   ### Request
   

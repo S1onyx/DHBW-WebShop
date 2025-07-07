@@ -5,7 +5,7 @@ meta {
 }
 
 delete {
-  url: http://localhost:3000/api/products/images/616
+  url: http://localhost:3000/api/products/images/3
   body: none
   auth: none
 }
@@ -16,6 +16,8 @@ docs {
   **Description**  
   Deletes a product image by its ID.  
   Only the product owner (seller) or an admin may delete an image.
+  Each product must have at least one image. The last remaining image cannot be deleted.
+  
   
   ### Request
   
@@ -49,9 +51,11 @@ docs {
   
   | Status | Message                            | Trigger                                              |
   |--------|------------------------------------|------------------------------------------------------|
+  | 400    | `Cannot delete last image of a product` | You cant delete the last image of an product                |
   | 404    | `Image not found`                  | No image with given ID exists                        |
   | 403    | `Forbidden`          | User is not image owner and not admin                |
   | 500    | `Server error during image delete` | Internal server or filesystem failure                |
+  
   
   ### Notes
   

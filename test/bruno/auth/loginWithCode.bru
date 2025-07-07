@@ -42,10 +42,17 @@ docs {
     "code": "294681"
   }
   ```
+  ```json
+  {
+    "username": "luna",
+    "code": "294681"
+  }
+  ```
   
   | Field   | Type   | Required | Description                             |
   |---------|--------|----------|-----------------------------------------|
-  | `email` | string | Yes      | Email address of the user               |
+  | `email`    | string | ✔ (or username) | User email                |
+  | `username` | string | ✔ (or email)    | Username                  |
   | `code`  | string | Yes      | 6-digit code sent via `request-login-code` |
   
   ---
