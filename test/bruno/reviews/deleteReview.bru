@@ -9,3 +9,67 @@ delete {
   body: none
   auth: cookie
 }
+
+docs {
+    # DELETE /api/reviews/:reviewId
+
+    **Description**
+    Deletes a specific product review.
+    Only the author of the review or the seller of the corresponding product is allowed to perform this action.
+
+    ---
+
+    ## Request
+
+    - **Method:** `DELETE`
+    - **Endpoint:** `/api/reviews/:reviewId`
+    - **Authentication:** Required
+
+    ### URL Parameters
+
+    | Name       | Type   | Description                    |
+    |------------|--------|--------------------------------|
+    | `reviewId` | number | ID of the review to be deleted |
+
+    ---
+
+    ## Successful Response
+
+    | Status | Description                  |
+    |--------|------------------------------|
+    | 200    | Review deleted successfully  |
+
+    ```json
+    {
+      "success": true,
+      "message": "Review deleted",
+      "data": {
+        "id": 12,
+        "product_id": 50,
+        "user_id": 3,
+        "rating": 4.5,
+        "comment": "Really great product!"
+      }
+    }
+    ```
+
+    ---
+
+    ## Error Responses
+
+    | Status | Description                        |
+    |--------|------------------------------------|
+    | 401    | Authentication required            |
+    | 403    | Not authorized to delete the review|
+    | 404    | Review not found                   |
+    | 500    | Internal server error              |
+
+    ---
+
+    ## Notes
+
+    - Customers can delete their own reviews.
+    - Sellers can delete reviews for products they own.
+    - Admins are not permitted to delete reviews by default
+
+}

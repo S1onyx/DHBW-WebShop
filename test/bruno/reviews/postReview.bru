@@ -16,3 +16,79 @@ body:json {
     "comment": "Really great product!"
   }
 }
+
+docs {
+    # POST /api/products/:productId/reviews
+
+    **Description**
+    Allows an authenticated customer to submit a review for a specific product. Each customer can post only one review per product.
+
+    ---
+
+    ## Request
+
+    - **Method:** `POST`
+    - **Endpoint:** `/api/products/:productId/reviews`
+    - **Authentication:** Required
+
+    ### URL Parameters
+
+    | Name       | Type   | Required | Description                  |
+    |------------|--------|----------|------------------------------|
+    | productId  | number | Yes      | ID of the product to review  |
+
+    ### Request Body
+
+    ```json
+    {
+      "rating": 4.5,
+      "comment": "Really great product!"
+    }
+    ```
+
+    - `rating`: A number between 0 and 5 (e.g. 3.5)
+    - `comment`: Non-empty string
+
+    ---
+
+    ## Successful Response
+
+    | Status | Description               |
+    |--------|---------------------------|
+    | 201    | Review created successfully |
+
+    ```json
+    {
+      "success": true,
+      "message": "Review created",
+      "data": {
+        "id": 123,
+        "user_id": 42,
+        "product_id": 50,
+        "rating": 4.5,
+        "comment": "Really great product!"
+      }
+    }
+    ```
+
+    ---
+
+    ## Error Responses
+
+    | Status | Description                            |
+    |--------|----------------------------------------|
+    | 400    | Missing or invalid rating/comment       |
+    | 404    | Product not found                       |
+    | 409    | Review already exists for this user/product |
+    | 500    | Internal server error                   |
+
+    ---
+
+    ## Notes
+
+    - Only logged-in users with role **Customer** can create reviews.
+    - Sellers cannot leave reviews for their own products.
+    - One review per user per product is enforced.
+
+
+}

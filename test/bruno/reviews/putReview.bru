@@ -16,3 +16,84 @@ body:json {
     "comment": "Update: Sehr gutes Produkt!"
   }
 }
+
+docs {
+    # PUT /api/reviews/:id
+
+    **Description**
+    Update an existing product review.
+    Only the user who created the review is allowed to update it.
+    Only `rating` and `comment` fields are accepted for update.
+
+    ---
+
+    ## Request
+
+    - **Method:** `PUT`
+    - **Endpoint:** `/api/reviews/:id`
+    - **Authentication:** Required
+
+    ### URL Parameters
+
+    | Name | Type   | Description        |
+    |------|--------|--------------------|
+    | id   | number | ID of the review   |
+
+    ### Request Body
+
+    ```json
+    {
+      "rating": 4.5,
+      "comment": "Updated review comment"
+    }
+    ```
+
+    - `rating` must be between 0 and 5 in steps of 0.5
+    - `comment` must be a non-empty string
+
+    ---
+
+    ## Successful Response
+
+    | Status | Description         |
+    |--------|---------------------|
+    | 200    | Review updated      |
+
+    ```json
+    {
+      "success": true,
+      "message": "Review updated",
+      "updatedFields": ["rating", "comment"],
+      "ignoredFields": []
+    }
+    ```
+
+    ---
+
+    ## Error Responses
+
+    | Status | Description                  |
+    |--------|------------------------------|
+    | 400    | Invalid input                |
+    | 401    | Authentication required      |
+    | 404    | Review not found or denied   |
+    | 500    | Server error                 |
+
+    ```json
+    {
+      "success": false,
+      "error": "No valid fields provided. Only \"rating\" and \"comment\" are allowed.",
+      "ignoredFields": ["extraField"],
+      "code": 400
+    }
+    ```
+
+    ---
+
+    ## Notes
+
+    - Fields other than `rating` and `comment` will be ignored.
+    - If no valid fields are provided, the request will fail with a `400` error.
+    - Users can only update their own reviews. Admins or other roles cannot update reviews of others.
+
+}
