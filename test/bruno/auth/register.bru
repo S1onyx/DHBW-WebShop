@@ -24,3 +24,80 @@ body:json {
     "country": "Deutschland"
   }
 }
+
+docs {
+  ## POST /api/auth/register
+  
+  **Description**  
+  Registers a new user account.  
+  Sends a verification email after successful registration.  
+  The user cannot log in until the email is verified.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/register`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  All fields are required:
+  
+  ```json
+  {
+    "email": "luna@pixelart.com",
+    "first_name": "Luna",
+    "last_name": "Pixel",
+    "password": "securePassword123",
+    "role_id": 2
+  }
+  ```
+  
+  | Field       | Type     | Required | Description                     |
+  |-------------|----------|----------|---------------------------------|
+  | `email`     | string   | Yes      | Must be a valid, unique email   |
+  | `first_name`| string   | Yes      | User's first name               |
+  | `last_name` | string   | Yes      | User's last name                |
+  | `password`  | string   | Yes      | Minimum 6 characters            |
+  | `role_id`   | number   | Yes      | User role (e.g., 2 = Seller, 3 = Customer) |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description               |
+  |--------|---------------------------|
+  | 200    | User created, email sent  |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Registration successful. Please check your email to verify your account."
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                                 | Condition                                |
+  |--------|------------------------------------------|------------------------------------------|
+  | 400    | `Missing required fields`               | One or more fields are missing           |
+  | 400    | `Invalid email`                         | Email is not valid                       |
+  | 400    | `Password must be at least 6 characters`| Password too short                       |
+  | 409    | `Email already registered`              | Duplicate email in database              |
+  | 500    | `Error during registration`             | Database or mail server error            |
+  
+  ---
+  
+  ### Notes
+  
+  - New accounts are created with `verified: false`
+  - Verification email includes a link to `GET /api/verify?token=...`
+  - Users cannot log in until they confirm their email
+  
+}

@@ -13,3 +13,51 @@ get {
 params:query {
   username: user1
 }
+
+docs {
+  ## GET /api/auth/check-username
+  
+  **Description**  
+  Checks whether the given username is already taken.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/auth/check-username`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Query parameters
+  
+  | Parameter   | Type   | Required | Description             |
+  |-------------|--------|----------|-------------------------|
+  | `username`  | string | ✔        | Username to check       |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description                     |
+  |--------|---------------------------------|
+  | 200    | Username checked successfully   |
+  
+  ```json
+  {
+    "success": true,
+    "exists": false
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                       | Condition                       |
+  |--------|-------------------------------|---------------------------------|
+  | 400    | `Valid username required`     | Username missing or too short  |
+  | 500    | `Server error...`             | DB or internal error           |
+  
+}

@@ -13,3 +13,64 @@ delete {
 body:json {
   { "itemId": 134 }
 }
+
+docs {
+  ## DELETE /api/carts/items
+  
+  **Description**  
+  Removes a specific product from the current user's cart.  
+  The product ID is passed in the request body (not the URL).
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/carts/items`
+  - **Authentication:** Required  
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role | Access |
+  |------|--------|
+  | User (role 3) | Allowed |
+  | Seller / Admin | Forbidden → 403 |
+  
+  ### Request body (JSON)
+  
+  ```json
+  {
+    "productId": 42
+  }
+  ```
+  
+  - `productId` is required and must reference a product currently in the cart.
+  
+  ### Successful response
+  
+  | Status | Description             |
+  |--------|-------------------------|
+  | 200    | Product removed from cart |
+  
+  ```json
+  {
+    "message": "Product removed from cart"
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Message                              | Condition                              |
+  |--------|--------------------------------------|----------------------------------------|
+  | 400    | `Invalid request body`               | Body not parsable or productId missing |
+  | 403    | `Forbidden`                          | Authenticated user is not role 3       |
+  | 404    | `Cart not found`                     | No cart exists for current user        |
+  | 404    | `Product not found in cart`          | Product is not part of the cart        |
+  | 500    | `Server error`                       | Unhandled internal error               |
+  
+  ### Notes
+  
+  - If the cart exists but does not contain the given product, a 404 is returned.
+  - The `productId` is provided via JSON body, not in the URL.
+  - This endpoint will not create or reset a cart; it only operates on an existing one.
+  
+}

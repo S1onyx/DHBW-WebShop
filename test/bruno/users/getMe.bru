@@ -9,3 +9,66 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/users/me
+  
+  **Description**  
+  Returns the profile information of the currently authenticated user.  
+  Requires a valid session and verified email.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/users/me`
+  - **Authentication:** Required (`accessToken` cookie)
+  - **Authorization:**  
+    - Any verified user can access their own profile  
+    - No role restriction
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | Current user returned  |
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 7,
+      "email": "pixel@art.com",
+      "first_name": "Luna",
+      "last_name": "Pixel",
+      "role_id": 2,
+      "verified": true,
+      "created_at": "2024-02-01T12:00:00Z"
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                                  |
+  |--------|----------------------------------|--------------------------------------------|
+  | 401    | `Authentication required`       | No accessToken present                     |
+  | 401    | `Invalid or expired token`      | Token malformed or expired                 |
+  | 403    | `Email not verified`            | Authenticated user has not verified email  |
+  | 404    | `User not found`                | User ID in token does not exist in DB      |
+  | 500    | `Server error while retrieving user` | Unexpected DB/server error              |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint is ideal for profile pages, account settings, and session validation.
+  - It uses the `userId` extracted from the validated accessToken.
+  - Users cannot specify an ID manually – it always returns **their own data**.
+  
+}

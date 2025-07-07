@@ -18,10 +18,92 @@ params:query {
 }
 
 docs {
-  nur ein admin kann diesen endpunkt erreichen
-  bei userid gewünschte userid angeben
+  ## GET /api/evaluator/check-permission
   
-  bei resourcetype ist product, user oder wishlist erlaubt
+  **Description**  
+  Evaluates whether a given user has permission to access or modify a resource (`product`, `wishlist`, or `user`).
   
-  resourceId ist dann die user_id, product_id oder wishlist_id
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/evaluator/check-permission`
+  - **Authentication:** Not required (user ID is passed as query param)
+  
+  ---
+  
+  ### Query Parameters
+  
+  | Parameter       | Type   | Required | Description                                                         |
+  |-----------------|--------|----------|---------------------------------------------------------------------|
+  | `user_id`       | number | ✔        | ID of the user to evaluate                                          |
+  | `resource_type` | string | ✔        | One of `product`, `wishlist`, or `user`                             |
+  | `resource_id`   | number | ✔        | ID of the target resource                                           |
+  | `access`        | string | Optional | For `wishlist` only: either `read` or `write`                       |
+  
+  ---
+  
+  ### Access Logic
+  
+  - **Admin shortcut**  
+    If `user_id` is `1`, permission is **always granted**, regardless of resource type or ownership.
+  
+  - **resource_type = `product`**  
+    - User must be the **seller** of the product.
+  
+  - **resource_type = `wishlist`**  
+    - User must either:
+      - Be the **owner** of the wishlist, or  
+      - Have an entry in `wishlist_permission` table for the given `wishlist_id`.
+    - `access=read` → permission level `1` (read) or `2` (write)  
+    - `access=write` → permission level must be `2`
+  
+  - **resource_type = `user`**  
+    - Allowed if:
+      - `user_id` matches `resource_id`, or  
+      - The user has role ID `1` (admin)
+  
+  ---
+  
+  ### Successful Response
+  
+  | Status | Description               |
+  |--------|---------------------------|
+  | 200    | Evaluation completed      |
+  
+  ```json
+  {
+    "success": true,
+    "allowed": true
+  }
+  ```
+  
+  or
+  
+  ```json
+  {
+    "success": true,
+    "allowed": false
+  }
+  ```
+  
+  ---
+  
+  ### Error Responses
+  
+  | Status | Message                                     | Condition                                      |
+  |--------|---------------------------------------------|------------------------------------------------|
+  | 400    | `Missing or invalid parameters`             | Required query parameters are missing or invalid |
+  | 400    | `Missing or invalid access type`            | If `access` is not `read` or `write` (for wishlist) |
+  | 400    | `Unknown resource type`                     | `resource_type` is not one of the allowed values |
+  | 500    | `Server error during permission evaluation` | Internal database or server error             |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint does **not** require authentication or cookies — it relies solely on the query parameters.
+  - For security, this should only be used internally or server-side to prevent user ID spoofing.
+  
 }

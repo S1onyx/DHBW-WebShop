@@ -13,3 +13,69 @@ get {
 params:query {
   role: 
 }
+
+docs {
+  ## GET /api/users
+  
+  **Description**  
+  Returns a list of all users in the system. Optionally, users can be filtered by their role (e.g., admin, seller, buyer).
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/users`
+  - **Authentication:** Required (admin only)
+  
+  ---
+  
+  ### Query Parameters
+  
+  | Parameter | Type   | Required | Description                                           |
+  |-----------|--------|----------|-------------------------------------------------------|
+  | `role`    | number | Optional | Role ID to filter by: `1` (admin), `2` (seller), `3` (buyer) |
+  
+  ---
+  
+  ### Successful Response
+  
+  | Status | Description       |
+  |--------|-------------------|
+  | 200    | List of users     |
+  
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 7,
+        "username": "pixeldude",
+        "email": "pixeldude@example.com",
+        "role_id": 2,
+        "verified": true
+      }
+    ]
+  }
+  ```
+  
+  ---
+  
+  ### Error Responses
+  
+  | Status | Message                                          | Condition                                   |
+  |--------|--------------------------------------------------|---------------------------------------------|
+  | 400    | `Invalid role filter. Allowed values: 1, 2, or 3.` | If `role` query param is provided but invalid |
+  | 401    | `Authentication required`                        | No valid access token present                |
+  | 403    | `Access denied`                                  | Authenticated user is not an admin           |
+  | 500    | `Server error while fetching users`              | Internal database or server error            |
+  
+  ---
+  
+  ### Notes
+  
+  - If no `role` is provided, all users are returned.
+  - Only admin users (`role_id = 1`) are allowed to access this endpoint.
+  - This endpoint is protected via authentication middleware and role-checking.
+  
+}

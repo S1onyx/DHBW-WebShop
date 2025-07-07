@@ -15,3 +15,75 @@ body:json {
     "email": "user5@example.com"
   }
 }
+
+docs {
+  ## POST /api/auth/request-login-code
+  
+  **Description**  
+  Initiates a passwordless login process by generating and emailing a 6-digit login code.  
+  The code is later used in `POST /api/auth/login-code` to complete the login.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/auth/request-login-code`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "email": "luna@pixelart.com"
+  }
+  ```
+  
+  ```josn
+  {
+    "username": "luna"
+  }
+  ```
+  
+  | Field   | Type   | Required | Description                    |
+  |---------|--------|----------|--------------------------------|
+  | `email`    | string | ✔ (or username) | User email                |
+  | `username` | string | ✔ (or email)    | Username                  |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Code sent by email    |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Login code sent to your email"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                        | Condition                                |
+  |--------|--------------------------------|-------------------------------------------|
+  | 400    | `Missing email`               | Email was not provided in the body        |
+  | 404    | `Email not found`             | No user account matches the given email   |
+  | 403    | `Email not verified`          | User exists but hasn't verified email     |
+  | 500    | `Error sending login code`    | Mail server or DB error                   |
+  
+  ---
+  
+  ### Notes
+  
+  - The generated code is exactly 6 digits and is stored temporarily.
+  - Codes expire after a short time and can only be used once.
+  - You must use `POST /api/auth/login-code` to log in with the code sent by this endpoint.
+  
+}

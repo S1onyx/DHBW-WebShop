@@ -15,3 +15,67 @@ body:json {
     "wishlist_id": 35
   }
 }
+
+docs {
+  ## DELETE /api/wishlists/wishlist/:id
+  
+  **Description**  
+  Deletes the specified wishlist, including all its items.  
+  Only the wishlist's owner can delete it.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/wishlists/wishlist/:id`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description           |
+  |-----------|------|----------|-----------------------|
+  | `id`      | int  | Yes      | ID of the wishlist    |
+  
+  ---
+  
+  ### Request body
+  
+  _None_
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Wishlist deleted      |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Wishlist deleted"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                                      |
+  |--------|-------------------------------------|------------------------------------------------|
+  | 401    | `Authentication required`           | No or invalid access token                     |
+  | 403    | `Access denied to this wishlist`    | User is not the owner of the wishlist          |
+  | 404    | `Wishlist not found`                | Wishlist with given ID does not exist          |
+  | 500    | `Error deleting wishlist`           | Internal server or DB error                    |
+  
+  ---
+  
+  ### Notes
+  
+  - Deletion is permanent and cannot be undone.
+  - All wishlist items associated with this list will also be deleted.
+  
+}

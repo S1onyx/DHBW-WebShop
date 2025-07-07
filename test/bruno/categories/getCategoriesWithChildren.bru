@@ -9,3 +9,78 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/categories/:id/with-children
+  
+  **Description**  
+  Retrieves a single category by ID including its direct child categories.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/categories/:id/with-children`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description           |
+  |-----------|------|----------|-----------------------|
+  | `id`      | int  | Yes      | ID of the parent category |
+  
+  ---
+  
+  ### Request body
+  
+  _None_
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Category with children retrieved |
+  
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "data": {
+      "id": 3,
+      "name": "Pixel Shirts",
+      "children": [
+        {
+          "id": 5,
+          "name": "Unisex"
+        },
+        {
+          "id": 6,
+          "name": "Limited Edition"
+        }
+      ]
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                      | Condition                        |
+  |--------|------------------------------|-----------------------------------|
+  | 400    | `Invalid category ID`        | ID is missing or malformed       |
+  | 404    | `Category not found`         | No category exists with that ID  |
+  | 500    | `Server error`               | Internal server or DB failure    |
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint is useful for constructing category trees (e.g. for filters or navigation).
+  
+}

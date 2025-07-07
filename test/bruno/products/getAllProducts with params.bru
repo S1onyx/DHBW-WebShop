@@ -21,3 +21,72 @@ params:query {
   limit: 16
   offset: 12
 }
+
+docs {
+  ## GET /api/products (with filters and pagination)
+  
+  **Description:**  
+  Fetches a filtered and paginated list of products. Supports sorting, price ranges, category restriction, name search, and stock filtering.
+  
+  ### Request
+  
+  - Method: `GET`
+  - Endpoint: `/api/products`
+  - Authentication: Not required
+  
+  ### Example Request
+  
+  ```http
+  GET /api/products?minPrice=100&maxPrice=300&name=t&inStock=true&sort=price&order=asc&category=3&limit=16&offset=12
+  ```
+  
+  ### Query Parameters
+  
+  | Parameter    | Type     | Description                                                             |
+  |--------------|----------|-------------------------------------------------------------------------|
+  | `minPrice`   | number   | Minimum price (inclusive)                                               |
+  | `maxPrice`   | number   | Maximum price (inclusive)                                               |
+  | `name`       | string   | Partial product name (case-insensitive)                                 |
+  | `inStock`    | boolean  | If `true`, only include products with stock > 0                         |
+  | `sort`       | string   | Field to sort by: `price`, `name`, `rating`                             |
+  | `order`      | string   | Sort direction: `asc` (default) or `desc`                               |
+  | `category`   | integer  | Category ID; also includes all child categories                         |
+  | `limit`      | integer  | Max number of results to return (default: 16)                           |
+  | `offset`     | integer  | Number of results to skip (for pagination) (default: 0)                 |
+  
+  ### Successful Response
+  
+  | Status | Description                   |
+  |--------|-------------------------------|
+  | 200    | Filtered products returned successfully |
+  
+  **Example Response:**
+  ```json
+  {
+    "success": true,
+    "data": [ /* filtered products */ ],
+    "total": 42,
+    "category": {
+      "id": 3,
+      "name": "Shirts",
+      "children": [ /* subcategories */ ]
+    }
+  }
+  ```
+  
+  ### Error Responses
+  
+  | Status | Error message           | Cause                                               |
+  |--------|-------------------------|------------------------------------------------------|
+  | 400    | `Invalid category ID`   | Category ID is not a valid integer                  |
+  | 404    | `Category not found`    | The specified category ID does not exist            |
+  | 500    | `Server error`          | An internal error occurred during the request       |
+  
+  ### Notes
+  
+  - You can combine multiple filters in a single request.
+  - Category filter automatically includes all child categories.
+  - `limit` and `offset` support full pagination handling.
+  - Sorting works only on predefined fields (`price`, `name`, `rating`).
+  
+}

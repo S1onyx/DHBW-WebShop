@@ -21,3 +21,90 @@ body:json {
     "country": "Deutschland"
   }
 }
+
+docs {
+  ## PUT /api/users/{id}
+  
+  **Description**  
+  Updates user information for the specified user ID.  
+  Allowed for admins or the user themselves, if the email is verified.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/users/{id}`
+  - **Authentication:** Required (`accessToken` cookie)
+  - **Authorization:**
+    - Admins (`role_id = 1`) may update any user
+    - Users may update their own account only
+    - Email verification is required in both cases
+  
+  ---
+  
+  ### Path parameters
+  
+  | Parameter | Type   | Required | Description            |
+  |-----------|--------|----------|------------------------|
+  | `id`      | number | Yes      | ID of the user to update |
+  
+  ---
+  
+  ### Request body
+  
+  At least one of the following fields must be provided:
+  
+  ```json
+  {
+    "first_name": "Luna",
+    "last_name": "Pixel",
+    "email": "luna@example.com",
+    "password": "newpassword123"
+  }
+  ```
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | User updated successfully |
+  
+  ```json
+  {
+    "success": true,
+    "data": {
+      "id": 7,
+      "email": "luna@example.com",
+      "first_name": "Luna",
+      "last_name": "Pixel",
+      "role_id": 3,
+      "verified": true
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                                |
+  |--------|----------------------------------|------------------------------------------|
+  | 400    | `At least one field required`   | Empty or invalid request body            |
+  | 401    | `Authentication required`       | No token present                         |
+  | 401    | `Invalid or expired token`      | Token malformed or expired               |
+  | 403    | `Access denied`                 | Not admin and not updating own account   |
+  | 403    | `Email not verified`            | Authenticated user has not verified email |
+  | 404    | `User not found`                | No user exists with the specified ID     |
+  | 500    | `Error updating user`           | Unexpected server/database error         |
+  
+  ---
+  
+  ### Notes
+  
+  - You can partially update user data; only provided fields will be changed.
+  - Role changes must be handled via the dedicated admin route (`PUT /api/users/admin/{id}`).
+  
+}

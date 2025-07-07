@@ -16,3 +16,67 @@ body:json {
     "quantity": 2
   }
 }
+
+docs {
+  ## POST /api/carts/items
+  
+  **Description**  
+  Adds a product to the authenticated user’s cart.  
+  If no cart exists yet, the backend creates one automatically.  
+  If the product is already present, its quantity is increased.
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/carts/items`
+  - **Authentication:** Required  
+  - **Email verification required:** Yes
+  
+  #### Roles and permissions
+  
+  | Role | Access |
+  |------|--------|
+  | User (role 3) | Allowed |
+  | Seller / Admin | Forbidden → 403 |
+  
+  ### Request body (JSON)
+  
+  | Field       | Type    | Required | Constraints                    |
+  |-------------|---------|----------|--------------------------------|
+  | `productId` | number  | Yes      | Must reference an existing product |
+  | `quantity`  | number  | Yes      | Positive integer (`> 0`)          |
+  
+  ```json
+  {
+    "productId": 42,
+    "quantity": 2
+  }
+  ```
+  
+  ### Successful responses
+  
+  | Status | When returned | Example body |
+  |--------|---------------|--------------|
+  | **201** | Product was **not** in the cart (new item) | ```json { "message": "Item added to cart successfully", "itemId": 135, "newQuantity": 2 } ``` |
+  | **200** | Product already in cart → quantity updated | ```json { "message": "Quantity updated", "itemId": 135, "newQuantity": 4 } ``` |
+  
+  ### Error responses
+  
+  | Status | Message (exact)                         | Condition in code                              |
+  |--------|-----------------------------------------|-----------------------------------------------|
+  | 400    | `Invalid input`                         | `productId` or `quantity` missing / wrong type |
+  | 400    | `Quantity must be greater than zero`    | `quantity <= 0`                                |
+  | 400    | `Invalid JSON in request body`          | Body cannot be parsed                          |
+  | 403    | `Forbidden`                             | Authenticated but **not** role 3 (user)        |
+  | 404    | `Product not found`                     | Product-ID unbekannt                           |
+  | 404    | `Cart not found` *(rare)*               | Model meldet fehlenden Cart                    |
+  | 404    | `Quantity must be positive`             | (Model-Level Plausibilitäts­fehler)            |
+  | 500    | `Server error`                          | Any other unhandled exception                  |
+  
+  ### Notes
+  
+  - If the user has **no cart**, the handler creates one internally via `postCartModel`; the operation then proceeds.
+  - Quantity updates are idempotent: repeating the same request increases the stored quantity additively.
+  - All validation and ownership checks occur **before** database writes.
+  
+}

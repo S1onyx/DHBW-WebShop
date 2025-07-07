@@ -9,3 +9,46 @@ post {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/auth/logout
+  
+  **Description**  
+  Logs out the currently authenticated user by clearing the session cookie.  
+  This is done by setting the `accessToken` cookie to expire immediately.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/auth/logout`
+  - **Authentication:** Not required  
+    *(even without a valid session, the endpoint returns success)*
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | Session ended          |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Logged out successfully"
+  }
+  ```
+  
+  The response also sets the `accessToken` cookie to an empty value with `Max-Age=0` to remove it from the client.
+  
+  ---
+  
+  ### Notes
+  
+  - This endpoint is idempotent — calling it multiple times has the same effect.
+  - This endpoint **does not** require a valid token or user session.
+  - Useful for both manual logout buttons and session expiration handling on the client.
+  
+}

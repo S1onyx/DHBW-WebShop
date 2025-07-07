@@ -9,3 +9,69 @@ get {
   body: none
   auth: none
 }
+
+docs {
+  ## GET /api/wishlists/:id/items
+  
+  **Description**  
+  Returns all items in the specified wishlist.  
+  Access is restricted to the wishlist's owner.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `GET`
+  - **Endpoint:** `/api/wishlists/:id/items`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description             |
+  |-----------|------|----------|-------------------------|
+  | `id`      | int  | Yes      | ID of the wishlist      |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | Wishlist items returned |
+  
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "product_id": 42,
+        "quantity": 2,
+        "product_name": "8-bit Space Invader",
+        "price": 15.99
+      },
+      ...
+    ]
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                          | Condition                                |
+  |--------|----------------------------------|-------------------------------------------|
+  | 401    | `Authentication required`        | User not authenticated                    |
+  | 403    | `Access denied to this wishlist` | Wishlist does not belong to this user     |
+  | 404    | `Wishlist not found`             | ID does not match an existing wishlist    |
+  | 500    | `Server error during wishlist fetch` | DB or logic error during retrieval   |
+  
+  ---
+  
+  ### Notes
+  
+  - The response contains all products with their quantity and minimal product info.
+  - Users can only access wishlists they own.
+  
+}

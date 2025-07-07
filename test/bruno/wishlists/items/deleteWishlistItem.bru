@@ -15,3 +15,79 @@ body:json {
           "product_id": 2
         }
 }
+
+docs {
+  ## DELETE /api/wishlists/:id/items
+  
+  **Description**  
+  Removes a product from the specified wishlist.  
+  The product ID must be passed in the request body.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `DELETE`
+  - **Endpoint:** `/api/wishlists/:id/items`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description             |
+  |-----------|------|----------|-------------------------|
+  | `id`      | int  | Yes      | ID of the wishlist      |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "product_id": 42
+  }
+  ```
+  
+  | Field        | Type | Required | Description                       |
+  |--------------|------|----------|-----------------------------------|
+  | `product_id` | int  | Yes      | ID of the product to be removed   |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description            |
+  |--------|------------------------|
+  | 200    | Item removed from wishlist |
+  
+  ```json
+  {
+    "success": true,
+    "result": {
+      /* optional metadata */
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                             | Condition                                       |
+  |--------|-------------------------------------|------------------------------------------------|
+  | 400    | `product_id is required`            | Missing or invalid `product_id` in body        |
+  | 401    | `Authentication required`           | User not authenticated                         |
+  | 403    | `Access denied to this wishlist`    | Wishlist belongs to another user               |
+  | 404    | `Wishlist or item not found`        | Wishlist or product not found in DB            |
+  | 413    | `Payload too large`                 | Body exceeds allowed size                      |
+  | 500    | `Error deleting wishlist item`      | Internal server or DB error                    |
+  
+  ---
+  
+  ### Notes
+  
+  - The `product_id` must be present in the request body.
+  - This will silently ignore already-removed or non-existent products in the wishlist.
+  
+}

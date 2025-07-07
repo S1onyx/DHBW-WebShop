@@ -16,3 +16,83 @@ body:json {
      "password": "Customer123!"
     }
 }
+
+docs {
+  ## POST /api/auth/login
+  
+  **Description**  
+  Authenticates a user with email or username and password.  
+  On success, sets a secure `accessToken` cookie and returns basic user info.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/auth/login`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "email": "alice@example.com",
+    "password": "PixelPass123!"
+  }
+  ```
+  
+  or
+  
+  ```json
+  {
+    "username": "alice123",
+    "password": "PixelPass123!"
+  }
+  ```
+  
+  | Field      | Type   | Required | Description               |
+  |------------|--------|----------|---------------------------|
+  | `email`    | string | ✔ (or username) | User email                |
+  | `username` | string | ✔ (or email)    | Username                  |
+  | `password` | string | ✔        | Account password          |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description     |
+  |--------|-----------------|
+  | 200    | Login successful. `accessToken` cookie set. |
+  
+  ```json
+  {
+    "success": true,
+    "user": {
+      "id": 42,
+      "username": "alice123",
+      "role_id": 2
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                              | Condition                                      |
+  |--------|--------------------------------------|------------------------------------------------|
+  | 400    | `Missing fields` or `Invalid JSON`   | Missing required fields or malformed body     |
+  | 401    | `Invalid credentials`                | Email/username or password is incorrect       |
+  | 403    | `Email not verified`, `retryVerification: true` | Account exists but is not verified |
+  | 413    | `Payload too large`                  | Request body exceeds 1 MB                     |
+  | 500    | `Server error`                       | Internal database or server issue             |
+  
+  ---
+  
+  ### Notes
+  
+  - Returns a `Set-Cookie` header with the access token (`HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`)
+  
+}

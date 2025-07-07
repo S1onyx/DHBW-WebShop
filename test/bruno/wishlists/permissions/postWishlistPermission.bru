@@ -16,3 +16,84 @@ body:json {
     "permission_id": 1
   }
 }
+
+docs {
+  ## POST /api/wishlists/wishlist/:id/permissions
+  
+  **Description**  
+  Grants a specific permission level to another user for the given wishlist.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/wishlists/wishlist/:id/permissions`
+  - **Authentication:** Required
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type | Required | Description            |
+  |-----------|------|----------|------------------------|
+  | `id`      | int  | Yes      | ID of the wishlist     |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "user_id": 12,
+    "permission_id": 2
+  }
+  ```
+  
+  | Field          | Type   | Required | Description                                      |
+  |----------------|--------|----------|--------------------------------------------------|
+  | `user_id`      | int    | Yes      | ID of the user to grant permission to            |
+  | `permission_id`| int    | Yes      | ID of the permission (e.g. 1 = view, 2 = edit)   |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description                    |
+  |--------|--------------------------------|
+  | 201    | Permission granted             |
+  
+  ```json
+  {
+    "success": true,
+    "message": "User added to wishlist with permission",
+    "data": {
+      "wishlist_id": 5,
+      "user_id": 12,
+      "permission_id": 2
+    }
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                                       | Condition                             |
+  |--------|-----------------------------------------------|----------------------------------------|
+  | 400    | `Missing user_id or permission_id`            | Required field(s) missing              |
+  | 400    | `Invalid JSON body`                           | Malformed request body                 |
+  | 401    | `Authentication required`                     | No or invalid access token             |
+  | 403    | `Access denied to this wishlist` (assumed)    | Wishlist not owned by the requester   |
+  | 409    | `User already has permission` (assumed)       | Duplicate permission                   |
+  | 500    | `Server error`                                | Internal failure during permission save|
+  
+  ---
+  
+  ### Notes
+  
+  - Only the owner of a wishlist may assign permissions to others.
+  - Permissions could be "view", "edit", etc., depending on `permission_id`.
+  
+  
+}

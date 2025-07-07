@@ -15,3 +15,76 @@ body:json {
     "status_id": 2
   }
 }
+
+docs {
+  ## PUT /api/orders/:id
+  
+  **Description**  
+  Updates the status of a specific order.  
+  Only admins are allowed to change the order status.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `PUT`
+  - **Endpoint:** `/api/orders/:id`
+  - **Authentication:** Required (admin role only)
+  
+  ---
+  
+  ### URL parameters
+  
+  | Parameter | Type   | Required | Description         |
+  |-----------|--------|----------|---------------------|
+  | `id`      | int    | Yes      | The ID of the order |
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "status": "shipped"
+  }
+  ```
+  
+  | Field    | Type   | Required | Description                         |
+  |----------|--------|----------|-------------------------------------|
+  | `status` | string | Yes      | New status of the order (e.g. "shipped", "cancelled") |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description           |
+  |--------|-----------------------|
+  | 200    | Order status updated  |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Order status updated"
+  }
+  ```
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                         | Condition                                    |
+  |--------|----------------------------------|-----------------------------------------------|
+  | 401    | `Authentication required`       | No or invalid accessToken cookie              |
+  | 403    | `Access denied`                 | User is not an admin                          |
+  | 404    | `Order not found`               | No order with that ID exists                  |
+  | 400    | `Missing or invalid status`     | Status field is missing or malformed          |
+  | 500    | `Error updating order`          | Internal server or DB error                   |
+  
+  ---
+  
+  ### Notes
+  
+  - Only admins (`role_id = 1`) may update order statuses.
+  - Allowed status values should match your internal business logic.
+  
+}

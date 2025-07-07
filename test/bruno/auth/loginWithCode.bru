@@ -16,3 +16,81 @@ body:json {
     "code": "130334"
   }
 }
+
+docs {
+  ## POST /api/auth/login-with-code
+  
+  **Description**  
+  Logs a user in using a previously emailed 6-digit login code.  
+  This is the second step of the passwordless authentication flow.
+  
+  ---
+  
+  ### Request
+  
+  - **Method:** `POST`
+  - **Endpoint:** `/api/auth/login-code`
+  - **Authentication:** Not required
+  
+  ---
+  
+  ### Request body
+  
+  ```json
+  {
+    "email": "luna@pixelart.com",
+    "code": "294681"
+  }
+  ```
+  ```json
+  {
+    "username": "luna",
+    "code": "294681"
+  }
+  ```
+  
+  | Field   | Type   | Required | Description                             |
+  |---------|--------|----------|-----------------------------------------|
+  | `email`    | string | ✔ (or username) | User email                |
+  | `username` | string | ✔ (or email)    | Username                  |
+  | `code`  | string | Yes      | 6-digit code sent via `request-login-code` |
+  
+  ---
+  
+  ### Successful response
+  
+  | Status | Description         |
+  |--------|---------------------|
+  | 200    | Login successful    |
+  
+  ```json
+  {
+    "success": true,
+    "message": "Login successful"
+  }
+  ```
+  
+  - A secure `accessToken` cookie is set for authentication (HTTP-only).
+  
+  ---
+  
+  ### Error responses
+  
+  | Status | Message                        | Condition                                      |
+  |--------|--------------------------------|------------------------------------------------|
+  | 400    | `Missing email or code`        | One or both fields are missing                 |
+  | 400    | `Invalid code format`          | Code is not exactly 6 digits                   |
+  | 401    | `Invalid login code`           | Code does not match or has expired             |
+  | 403    | `Email not verified`           | Email exists but has not been verified         |
+  | 404    | `User not found`               | Email address does not match any user          |
+  | 500    | `Login failed`                 | Unexpected DB or logic failure                 |
+  
+  ---
+  
+  ### Notes
+  
+  - The code is one-time use and expires after a short duration.
+  - This endpoint sets the session cookie — it does **not** return the token in the response body.
+  - It is the final step in the "magic link" or passwordless login process.
+  
+}

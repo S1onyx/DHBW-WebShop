@@ -9,3 +9,45 @@ get {
   body: none
   auth: inherit
 }
+
+docs {
+  ## GET /api/products/mine
+  
+  **Description**  
+  Returns all products created by the authenticated seller.
+  
+  ### Request
+  
+  - Method: `GET`
+  - Endpoint: `/api/products/mine`
+  - Authentication: Required
+  - Email verification required: Yes
+  - Allowed role: **seller** (`role_id = 2`)
+  
+  ### Successful response
+  
+  | Status | Description          |
+  |--------|----------------------|
+  | 200    | Seller’s products    |
+  
+  ```json
+  {
+    "success": true,
+    "data": [ /* seller's products */ ]
+  }
+  ```
+  
+  ### Error responses
+  
+  | Status | Error message                                    | Trigger                                              |
+  |--------|--------------------------------------------------|------------------------------------------------------|
+  | 401    | `Unauthorized` *(middleware)*                    | Not logged in                                        |
+  | 403    | `Forbidden`  *(middleware)*                      | Logged in but not role `seller`                      |
+  | 500    | `Server error while fetching seller products`    | Internal server/database failure                     |
+  
+  ### Notes
+  
+  - Admins and regular users cannot access this endpoint (403).
+  - If the seller has no products, `data` is an empty array.
+  
+}
