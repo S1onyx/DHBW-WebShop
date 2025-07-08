@@ -17,12 +17,12 @@
                 navbarLinks.forEach(link => {
                     if (link !== wishlistLink && link !== cartLink) {
                         link.style.display = 'inline-block';
+                        sellerLink.style.display = 'none';
                     } else {
                         link.style.display = 'none';
                     }
                 });
                 if (adminLink) adminLink.style.display = 'inline-block';
-                if (sellerLink) sellerLink.style.display = 'inline-block';
             } else if (json.data && json.data.role_id === 2) { // Seller-Check
                 navbarLinks.forEach(link => {
                     if (link !== wishlistLink && link !== cartLink) {
@@ -32,6 +32,11 @@
                     }
                 });
                 if (sellerLink) sellerLink.style.display = 'inline-block';
+                // Hier Link anpassen:
+                const historyLink = navbar.querySelector('.history-link');
+                if (historyLink) {
+                    historyLink.setAttribute('href', '/seller-orders');
+                }
             } else {
                 navbarLinks.forEach(link => link.style.display = 'inline-block');
                 if (adminLink) adminLink.style.display = 'none';

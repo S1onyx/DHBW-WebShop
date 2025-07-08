@@ -130,9 +130,12 @@ async function fetchUsers() {
                         </td>
                         <td>${user.role}</td>
                         <td class="actions">
-                            <button class="details-btn"  onclick="showUserDetails(${user.id}, false)">Details</button>
-                            <button onclick="showUserDetails(${user.id}, true)">Edit</button>
-                            <button class="delete-btn" data-id="${user.id}"><i class="fa-solid fa-trash"></i></button>
+                        ${user.role === 'Admin'
+                                ? `<button class="details-btn" onclick="showUserDetails(${user.id}, false)">Details</button>`
+                                : `<button class="details-btn" onclick="showUserDetails(${user.id}, false)">Details</button>
+                             <button onclick="showUserDetails(${user.id}, true)">Edit</button>
+                             <button class="delete-btn" data-id="${user.id}"><i class="fa-solid fa-trash"></i></button>`
+                            }  
                         </td>
                     </tr>
                 `).join('')}
@@ -221,6 +224,7 @@ async function showUserDetails(id, editable = false) {
                 ? `<span>Admin</span>`
                 : (() => {
                     const roles = [
+                        { id: 1, label: 'Admin' },
                         { id: 2, label: 'Seller' },
                         { id: 3, label: 'Customer' }
                     ];

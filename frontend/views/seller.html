@@ -168,6 +168,17 @@
             transition: background-color 0.2s ease;
         }
 
+        .order-button {
+            background-color: #0d47a1 !important;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
         .delete-btn {
             background: #dc3545;
             border: none;
@@ -237,7 +248,11 @@
 </head>
 <body>
     <div id="header"></div>
-    <button onclick="history.back()" class="back-button">← Zurück</button>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+        <button onclick="history.back()" class="back-button">← Zurück</button>
+        <a href="/seller-orders/"><button class="order-button">Orders</button></a>
+    </div>
+
     <div class="seller-container">
         <h1>Seller Panel</h1>
         <section id="product-management">

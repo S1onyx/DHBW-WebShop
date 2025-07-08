@@ -74,6 +74,16 @@ router.get(
     }
 );
 
+router.get(
+    '/seller-orders/',
+    requireAuth,
+    requireStatus('validated'),
+    requireRole('Seller'),
+    (req, res) => {
+        renderPage('seller-orders.html', res);
+    }
+);
+
 
 router.get(
   '/admin',
