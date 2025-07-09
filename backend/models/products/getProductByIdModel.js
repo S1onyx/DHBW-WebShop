@@ -22,7 +22,7 @@ async function getProductByIdModel(id) {
 
   // Bilder
   const images = await db.query(
-    `SELECT url FROM product_images WHERE product_id = $1`,
+    `SELECT url, alt_text, is_primary FROM product_images WHERE product_id = $1`,
     [id]
   );
 
