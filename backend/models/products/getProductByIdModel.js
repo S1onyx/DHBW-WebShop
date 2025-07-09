@@ -3,7 +3,7 @@ const db = require('../../db/database');
 async function getProductByIdModel(id) {
   // Produktinformationen
   const productQuery = await db.query(
-    `SELECT p.name, u.username AS seller_name, p.description, p.stock, p.price
+    `SELECT p.name, u.username AS seller_name, p.description, p.stock, p.price, p.category_id
      FROM products p
      JOIN users u ON u.id = p.seller_id
      WHERE p.id = $1`,
