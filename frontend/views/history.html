@@ -1,45 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <script src="/env.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Login</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
-    <link rel="stylesheet" href="/css/history.css" type="text/css">
-    <script src="/js/history.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Login</title>
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/history.css" type="text/css">
+  <script type="module" src="/js/history.js" defer></script>
 </head>
+
 <body>
-    <div id="header"></div>
-    <main>
-        <div id="history-container" class="container">
-        <div id="history-top" class="history-top">
-          <h1 id="history-title">History</h1>
-          <p id="info" class="info" hidden>No history yet</p>
-        </div>
-        <ul id="history-list" class="history-list"></ul>
+  <div id="header"></div>
+  <main>
+    <div id="history-container" class="container">
+      <div id="history-top" class="history-top">
+        <h1 id="history-title">History</h1>
+        <p id="info" class="info" hidden>No history yet</p>
+        <p id="server-error" class="server-error" hidden>Server Error</p>
       </div>
-    </main>
-    <div id="footer"></div>
-    <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    async function loadFragment(id, url, scriptUrl) {
-      const res = await fetch(url);
-      if (res.ok) {
-        document.getElementById(id).innerHTML = await res.text();
-        if (scriptUrl) {
-          const script = document.createElement('script');
-          script.src = scriptUrl;
-          script.defer = true;
-          document.body.appendChild(script);
+
+      <label for="status">Show only orders with status:</label>
+      <select id="status" class="status-dropdown">
+        <option class="status-option" value="0" selected>All</option>
+        <option class="status-option" value="1">Pending</option>
+        <option class="status-option" value="2">Processing</option>
+        <option class="status-option" value="3">Shipped</option>
+        <option class="status-option" value="4">Delivered</option>
+        <option class="status-option" value="5">Cancelled</option>
+      </select>
+
+
+      <ul id="history-list" class="history-list"></ul>
+    </div>
+  </main>
+  <div id="footer"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      async function loadFragment(id, url, scriptUrl) {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById(id).innerHTML = await res.text();
+          if (scriptUrl) {
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.defer = true;
+            document.body.appendChild(script);
+          }
         }
       }
-    }
 
-    loadFragment('header', '/header-footer/header.html', '/js/header.js');
-    loadFragment('footer', '/header-footer/footer.html');
-  });
-</script>
+      loadFragment('header', '/header-footer/header.html', '/js/header.js');
+      loadFragment('footer', '/header-footer/footer.html');
+    });
+  </script>
 </body>
 
 

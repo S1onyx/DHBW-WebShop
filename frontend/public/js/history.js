@@ -1,14 +1,33 @@
+import { showPopupMessage } from "/js/utils.js";
+
 const info = document.getElementById('info')
 
-window.onload = () => loadHistory();
+window.onload = () => loadHistory("0");
 
-async function loadHistory() {
+async function loadHistory(statusId) {
     try {
-        const res = await fetch(`http://localhost:3000/api/orders`, {
+        let url = `http://localhost:3000/api/orders`;
+        if (statusId !== "0") {
+            url += `?status=${statusId}`;
+        }
+
+        const res = await fetch(url, {
             credentials: 'include'
         });
 
-        if (!res.ok) throw new Error("History couldn't be loaded.");
+        if (res.status === 404) {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+
+            const errorInfo = document.createElement('p');
+            errorInfo.classList.add('error-info');
+            errorInfo.textContent = 'No orders with this status';
+
+            list.appendChild(errorInfo);
+            return
+        } else if(!res.ok) {
+            throw new Error("History couldn't be loaded.");
+        }
 
         const result = await res.json();
         const history = result.data;
@@ -24,11 +43,7 @@ async function loadHistory() {
             const resMe = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
             const json = await resMe.json();
             if (json.success) {
-                if (json.data && json.data.role_id === 2) { // Seller-Check
-                    // seller history
-                } else {
-                    await loadHistoryCustomer(history);
-                }
+                await loadHistoryCustomer(history);
             } else {
 
             }
@@ -46,6 +61,7 @@ async function loadHistory() {
 
 async function loadHistoryCustomer(history) {
     const historyElement = document.getElementById('history-list');
+    historyElement.innerHTML = '';
     history.forEach(async order => {
         const orderElement = document.createElement('div');
         orderElement.classList.add('order');
@@ -116,14 +132,9 @@ async function productsFromOrder(order, list) {
         cartButton.textContent = "Add to Cart";
         cartButton.addEventListener('click', async (event) => {
             event.preventDefault();
-            const id = getProductIdFromPath();
+            const id = element.product_id;
 
-            const amount = amountInput.value.trim();
-            if (isPositiveInteger(amount) && amount <= maxAmount) {
-                amountInput.value = amount;
-            } else {
-                amountInput.value = 1;
-            }
+            const amount = 1;
 
             try {
                 const body = { productId: id, quantity: amount };
@@ -132,12 +143,14 @@ async function productsFromOrder(order, list) {
                     method: 'POST',
                     body: JSON.stringify(body)
                 });
+                console.log(res);
                 if (res.status === 401) {
                     window.location.href = '/login';
                     return;
                 }
             } catch (err) {
-                const serverError = document.getElementById('review-server-error');
+                const serverError = document.getElementById('server-error');
+                serverError.textContent = "Server Error";
                 serverError.hidden = false;
             }
             showPopupMessage('Product was added to your cart', 1500);
@@ -178,3 +191,16 @@ async function productsFromOrder(order, list) {
     });
 
 }
+
+const statusDropdown = document.getElementById("status");
+
+statusDropdown.addEventListener("change", (event) => {
+  const statusID = event.target.value;
+
+  loadHistory(statusID)
+});
+
+const fetchOptionsWithCredentials = {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' }
+};
