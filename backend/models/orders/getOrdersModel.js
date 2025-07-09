@@ -55,6 +55,7 @@ async function getOrdersModel({ userId, roleId, productId, status }) {
       SELECT p.id AS product_id, p.name,
              json_agg(json_build_object(
                'order_date', o.order_date,
+               'order_id', o.id,
                'quantity', oi.quantity,
                'unit_price', oi.unit_price,
                'status', s.name
