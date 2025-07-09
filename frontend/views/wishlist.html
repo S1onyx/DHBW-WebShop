@@ -1,34 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <script src="/env.js"></script>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8" />
+  <title>Wishlists</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <script type="module" src="/js/wishlist.js" defer></script>
+  <link rel="stylesheet" href="/css/wishlist.css" />
 </head>
+
+<div id="wishlist-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Create Wishlist</h2>
+    <form id="wishlist-form" novalidate>
+      <label for="wishlist-name" hidden>Wishlist Name</label>
+      <input type="text" id="wishlist-name" name="wishlistName" class="modal-input" placeholder="Wishlist Name" required>
+      <div class="error-message" id="wishlist-name-error"></div>
+
+      <div class="modal-buttons">
+        <button type="submit" class="button" id="create-btn">Create</button>
+        <button type="button" class="button" id="cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <body>
-<div id="header"></div>
+  <div id="header"></div>
 
-  WISHLIST PAGE
+  <main>
+    <div id="wishlists-container">
+      <div id="wishlist-top" class="wishlist-top">
+        <h1 id="wishlist-title">Wishlists</h1>
+        <button id="add-wishlist-btn" class="add-wishlist-btn button">
+        Create Wishlist
+      </button>
+        <p id="info" class="info" hidden>No history yet</p>
+        <p id="server-error" class="server-error" hidden>Server Error</p>
+      </div>
 
-<div id="footer"></div>
+      <div class="wishlist-section">
+        <button class="toggle-button" data-target="perm-0">My Wishlists</button>
+        <div id="perm-0" class="wishlist-list hidden"></div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    async function loadFragment(id, url, scriptUrl) {
-      const res = await fetch(url);
-      if (res.ok) {
-        document.getElementById(id).innerHTML = await res.text();
-        if (scriptUrl) {
-          const script = document.createElement('script');
-          script.src = scriptUrl;
-          script.defer = true;
-          document.body.appendChild(script);
+        <button class="toggle-button" data-target="perm-1">Wishlists with read and write Permission</button>
+        <div id="perm-1" class="wishlist-list hidden"></div>
+
+        <button class="toggle-button" data-target="perm-2">Wishlist with read Permission</button>
+        <div id="perm-2" class="wishlist-list hidden"></div>
+      </div>
+
+
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      async function loadFragment(id, url, scriptUrl) {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById(id).innerHTML = await res.text();
+          if (scriptUrl) {
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.defer = true;
+            document.body.appendChild(script);
+          }
         }
       }
-    }
-    loadFragment('header', '/header-footer/header.html', '/js/header.js');
-    loadFragment('footer', '/header-footer/footer.html');
-  });
-</script>
+      loadFragment('header', '/header-footer/header.html', '/js/header.js');
+      loadFragment('footer', '/header-footer/footer.html');
+    });
+  </script>
 </body>
+
 </html>
