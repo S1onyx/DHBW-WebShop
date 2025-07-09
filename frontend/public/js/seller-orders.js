@@ -1,12 +1,21 @@
 const statusLabels = {
-    1: 'Open',
+    1: 'Pending',
     2: 'Processing',
-    3: 'Completed'
+    3: 'Shipped',
+    4: 'Delivered',
+    5: 'Cancelled',
 };
 
 async function fetchOrders() {
-    const status = document.getElementById('order-status-filter').value;
-    const url = `http://localhost:3000/api/orders${status ? '?status=' + status : ''}`;
+    const status = document.getElementById('order-status-filter')?.value;
+    const productFilter = document.getElementById('product-filter');
+    const productId = productFilter ? productFilter.value : '';
+    let url = 'http://localhost:3000/api/orders';
+    const params = [];
+    if (status) params.push(`status=${status}`);
+    if (productId) params.push(`product_id=${productId}`);
+    if (params.length > 0) url += '?' + params.join('&');
+
     const res = await fetch(url, { credentials: 'include' });
     const { data } = await res.json();
     renderOrders(data || []);
@@ -15,15 +24,13 @@ async function fetchOrders() {
 function renderOrders(products) {
     const tbody = document.querySelector('#orders-table tbody');
     tbody.innerHTML = products.map(product => {
-        // Produktüberschrift mit Häufigkeit
         const headerRow = `
             <tr class="product-header">
                 <td colspan="6" style="font-weight:bold;">
-                    ${product.name} &ndash; Verkäufe: ${product.sales.length}
+                  ${product.product_id}:  ${product.name} &ndash; Verkäufe: ${product.sales.length}
                 </td>
             </tr>
         `;
-        // Einzelne Bestellungen
         const salesRows = product.sales.map(sale => {
             const date = new Date(sale.order_date);
             const formattedDate = date.toLocaleString('de-DE', {
@@ -43,17 +50,17 @@ function renderOrders(products) {
             }
             return `
                 <tr>
-                    <td>${product.product_id}</td>
+                    <td>${sale.order_id}</td>
                     <td>${sale.customer_name || '-'}</td>
                     <td>${sale.quantity}</td>
                     <td>${formattedDate}</td>
                     <td>
-                        <select data-id="${product.product_id}" class="order-status-select">
+                        <select data-id="${sale.order_id}" class="order-status-select">
                             ${statusOptions.join('')}
                         </select>
                     </td>
                     <td>
-                        <button class="save-status-btn" data-id="${product.product_id}">Save</button>
+                        <button class="save-status-btn" data-id="${sale.order_id}">Save</button>
                     </td>
                 </tr>
             `;
@@ -78,6 +85,37 @@ function addStatusListeners() {
             fetchOrders();
         };
     });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const userRes = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
+    const user = await userRes.json();
+
+    if (user.data && user.data.role_id === 1) {
+        // Admin: Produkt-Dropdown anzeigen und nach Produkt filtern
+        await loadProductsDropdown();
+        document.getElementById('order-status-filter').onchange = fetchOrders;
+        document.getElementById('product-filter').onchange = fetchOrders;
+        fetchOrders();
+    } else {
+        // Seller: wie bisher, nur nach Status filtern
+        document.getElementById('order-status-filter').onchange = fetchOrders;
+        fetchOrders();
+    }
+});
+
+// Produkt-Dropdown für Admins
+async function loadProductsDropdown() {
+    const res = await fetch('http://localhost:3000/api/products', { credentials: 'include' });
+    const { data: products } = await res.json();
+    let dropdown = document.getElementById('product-filter');
+    if (!dropdown) {
+        dropdown = document.createElement('select');
+        dropdown.id = 'product-filter';
+        dropdown.innerHTML = `<option value="">All products</option>` +
+            products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        document.getElementById('order-status-filter').after(dropdown);
+    }
 }
 
 document.getElementById('order-status-filter').onchange = fetchOrders;

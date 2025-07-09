@@ -96,15 +96,17 @@
 <body>
     <div id="header"></div>
     <div style="margin: 3rem">
-    <button class="back-button" onclick="window.location.href='/seller'">Back to Seller Dashboard</button>
+    <button class="back-button" onclick="window.location.href='/seller'">← Back</button>
 
     <h1>My Orders</h1>
     <label for="order-status-filter">Filter by status:</label>
     <select id="order-status-filter">
         <option value="">All statuses</option>
-        <option value="1">Open</option>
+        <option value="1">Pending</option>
         <option value="2">Processing</option>
-        <option value="3">Completed</option>
+        <option value="3">Shipped</option>
+        <option value="4">Delivered</option>
+        <option value="5">Cancelled</option>
     </select>
     <table id="orders-table">
         <thead>
