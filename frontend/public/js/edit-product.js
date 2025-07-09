@@ -9,7 +9,22 @@ const productId = getProductIdFromPath(); // Oder dynamisch aus URL holen
 async function loadProduct() {
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}`);
     const product = await res.json();
-    await loadCategoriesDropdown(product.data.category_id);
+
+    const catRes = await fetch('http://localhost:3000/api/categories');
+    const { data: categories } = await catRes.json();
+
+    // ID zur Kategorie finden
+    let selectedCategoryId = '';
+    categories.forEach(cat => {
+        if (cat.name === product.data.category) selectedCategoryId = cat.id;
+        if (cat.children) {
+            cat.children.forEach(child => {
+                if (child.name === product.data.category) selectedCategoryId = child.id;
+            });
+        }
+    });
+
+    await loadCategoriesDropdown(selectedCategoryId);
 
     document.querySelector('[name="name"]').value = product.data.name;
     document.querySelector('[name="description"]').value = product.data.description;
@@ -67,7 +82,7 @@ async function renderImages(images) {
         wrapper.style.margin = '4px';
         wrapper.innerHTML = `
             <img src="http://${window.ROOT_URL}:3000${img.url}" alt="${img.alt_text}" width="80" style="border:${img.is_primary ? '2px solid green' : '1px solid #ccc'};display:block;">
-            <input type="text" value="${img.alt_text}" placeholder="Alt text" style="width:80px;margin:2px 0;">
+            <input type="text" value="${img.alt_text}" placeholder="Alt text" style="width:80px;margin:2px 0;" data-id="${img.id}">
             <button type="button" class="set-primary" ${img.is_primary ? 'disabled' : ''}>Primary</button>
             <button type="button" class="delete-img">Delete</button>
         `;
@@ -99,11 +114,22 @@ async function renderImages(images) {
             await uploadImage(fileInput.files[0]);
         }
     });
+    addDiv.innerHTML = `
+    <input type="file" accept="image/*" style="width:80px;">
+    <input type="text" placeholder="Alt text" style="width:80px;margin:2px 0;">
+    <button type="button" class="add-img">Add</button>
+`;
+    addDiv.querySelector('.add-img').addEventListener('click', async () => {
+        const fileInput = addDiv.querySelector('input[type="file"]');
+        const altInput = addDiv.querySelector('input[type="text"]');
+        if (fileInput.files.length) {
+            await uploadImage(fileInput.files[0], altInput.value);
+        }
+    });
     imagesDiv.appendChild(addDiv);
 }
-
 async function updateImage(imageId, data) {
-    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}/images/${imageId}`, {
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/images/${imageId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -117,8 +143,9 @@ async function updateImage(imageId, data) {
     }
 }
 
+// Delete image
 async function deleteImage(imageId) {
-    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}/images/${imageId}`, {
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/images/${imageId}`, {
         method: 'DELETE',
         credentials: 'include'
     });
@@ -130,9 +157,11 @@ async function deleteImage(imageId) {
     }
 }
 
-async function uploadImage(file) {
+// Upload image with alt text
+async function uploadImage(file, altText) {
     const formData = new FormData();
     formData.append('image', file);
+    formData.append('alt_text', altText || '');
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}/images`, {
         method: 'POST',
         body: formData,
@@ -145,6 +174,7 @@ async function uploadImage(file) {
         showPopupMessage('Error uploading image', 2000);
     }
 }
+
 
 async function loadCategoriesDropdown(selectedCategoryId) {
     const res = await fetch('http://localhost:3000/api/categories');

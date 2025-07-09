@@ -14,9 +14,17 @@ async function fetchOrders() {
 
 function renderOrders(products) {
     const tbody = document.querySelector('#orders-table tbody');
-    tbody.innerHTML = products.map(product =>
-        product.sales.map(sale => {
-            // Datum formatieren
+    tbody.innerHTML = products.map(product => {
+        // Produktüberschrift mit Häufigkeit
+        const headerRow = `
+            <tr class="product-header">
+                <td colspan="6" style="font-weight:bold;">
+                    ${product.name} &ndash; Verkäufe: ${product.sales.length}
+                </td>
+            </tr>
+        `;
+        // Einzelne Bestellungen
+        const salesRows = product.sales.map(sale => {
             const date = new Date(sale.order_date);
             const formattedDate = date.toLocaleString('de-DE', {
                 year: 'numeric',
@@ -25,7 +33,6 @@ function renderOrders(products) {
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            // Status-Optionen
             const statusOptions = Object.entries(statusLabels).map(([id, label]) =>
                 `<option value="${id}" ${sale.status == label ? 'selected' : ''}>${label}</option>`
             );
@@ -38,7 +45,7 @@ function renderOrders(products) {
                 <tr>
                     <td>${product.product_id}</td>
                     <td>${sale.customer_name || '-'}</td>
-                    <td>${product.name} (${sale.quantity})</td>
+                    <td>${sale.quantity}</td>
                     <td>${formattedDate}</td>
                     <td>
                         <select data-id="${product.product_id}" class="order-status-select">
@@ -50,8 +57,9 @@ function renderOrders(products) {
                     </td>
                 </tr>
             `;
-        }).join('')
-    ).join('');
+        }).join('');
+        return headerRow + salesRows;
+    }).join('');
     addStatusListeners();
 }
 
