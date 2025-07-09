@@ -5,7 +5,15 @@ const crypto = require('crypto');
 const sendMail = require('../../utils/mailer');
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const isSecurePassword = (pw) => typeof pw === 'string' && pw.length >= 8;
+
+// Neue sichere Passwort-Validierung
+const isSecurePassword = (password) =>
+  typeof password === 'string' &&
+  password.length >= 8 &&
+  /[A-Z]/.test(password) &&
+  /[a-z]/.test(password) &&
+  /[0-9]/.test(password) &&
+  /[^A-Za-z0-9]/.test(password);
 
 async function registerAdmin(req, res) {
   let body = '';
@@ -38,7 +46,11 @@ async function registerAdmin(req, res) {
 
     if (!isSecurePassword(password)) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Password must be at least 8 characters', code: 400 }));
+      return res.end(JSON.stringify({
+        success: false,
+        error: 'Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character',
+        code: 400
+      }));
     }
 
     const parsedRole = parseInt(role_id, 10);
@@ -82,21 +94,21 @@ async function registerAdmin(req, res) {
       const verifyUrl = `http://${process.env.ROOT_URL || 'localhost'}:1337/verify?token=${verificationToken}`;
       const roleLabel = { 1: 'Admin', 2: 'Seller', 3: 'Customer' }[parsedRole] || 'Unbekannt';
 
-    const html = `
-    <div style="font-family:sans-serif; text-align:center">
-        <h2>Willkommen im DHBW WebShop, ${first_name}! 🎉</h2>
-        <p>Dein Account mit der Rolle <strong>${roleLabel}</strong> wurde erfolgreich erstellt.</p>
-        <p>Klicke auf den Button, um deine E-Mail-Adresse zu bestätigen:</p>
-        <a href="${verifyUrl}" style="display:inline-block;margin-top:16px;padding:12px 24px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:8px;font-size:16px">
-        E-Mail bestätigen
-        </a>
-        <p style="margin-top:24px;font-size:12px;color:#666">
-        Falls der Button nicht funktioniert, nutze diesen Link:<br/>
-        <a href="${verifyUrl}" style="color:#4CAF50">${verifyUrl}</a>
-        </p>
-        <p style="margin-top:32px">Vielen Dank und viel Spaß beim Shoppen!</p>
-    </div>
-    `;
+      const html = `
+      <div style="font-family:sans-serif; text-align:center">
+          <h2>Willkommen im DHBW WebShop, ${first_name}! 🎉</h2>
+          <p>Dein Account mit der Rolle <strong>${roleLabel}</strong> wurde erfolgreich erstellt.</p>
+          <p>Klicke auf den Button, um deine E-Mail-Adresse zu bestätigen:</p>
+          <a href="${verifyUrl}" style="display:inline-block;margin-top:16px;padding:12px 24px;background-color:#4CAF50;color:white;text-decoration:none;border-radius:8px;font-size:16px">
+          E-Mail bestätigen
+          </a>
+          <p style="margin-top:24px;font-size:12px;color:#666">
+          Falls der Button nicht funktioniert, nutze diesen Link:<br/>
+          <a href="${verifyUrl}" style="color:#4CAF50">${verifyUrl}</a>
+          </p>
+          <p style="margin-top:32px">Vielen Dank und viel Spaß beim Shoppen!</p>
+      </div>
+      `;
 
       await sendMail({
         to: email,

@@ -23,6 +23,7 @@ const requestLoginCode = require('../apis/auth/requestLoginCode');
 const checkEmail = require('../apis/auth/checkEmail');
 const checkUsername = require('../apis/auth/checkUsername');
 const registerAdmin = require('../apis/auth/registerAdmin');
+const changePassword = require('../apis/auth/changePassword');
 
 // Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
@@ -118,6 +119,13 @@ const routes = [
     requireRole(1)(
       registerAdmin
     )
+  )
+},
+{
+  method: 'PUT',
+  path: /^\/api\/auth\/change-password$/,
+  handler: withAuth(
+    requireValidatedUser(changePassword)
   )
 },
 
