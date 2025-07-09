@@ -1,0 +1,27 @@
+meta {
+  name: registerAdmin
+  type: http
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/api/admin/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "first_name": "Anna",
+      "last_name": "Schneider",
+      "username": "TestAdmin",
+      "email": "testadmin@example.com",
+      "password": "Admin123!",
+      "street": "Beispielweg",
+      "house_number": "7",
+      "postal_code": "12345",
+      "city": "Musterstadt",
+      "country": "Deutschland",
+      "role_id": 1
+    }
+}

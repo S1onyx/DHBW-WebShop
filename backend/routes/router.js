@@ -22,6 +22,7 @@ const loginWithCode = require('../apis/auth/loginWithCode');
 const requestLoginCode = require('../apis/auth/requestLoginCode');
 const checkEmail = require('../apis/auth/checkEmail');
 const checkUsername = require('../apis/auth/checkUsername');
+const registerAdmin = require('../apis/auth/registerAdmin');
 
 // Category APIs
 const getCategoryWithChildren = require('../apis/categories/getCategoryWithChildren');
@@ -109,6 +110,16 @@ const routes = [
   { method: 'POST', path: /^\/api\/auth\/login-with-code$/, handler: loginWithCode },
   { method: 'GET', path: /^\/api\/auth\/check-email$/, handler: checkEmail },
   { method: 'GET', path: /^\/api\/auth\/check-username$/, handler: checkUsername },
+
+  {
+  method: 'POST',
+  path: /^\/api\/admin\/register$/,
+  handler: withAuth(
+    requireRole(1)(
+      registerAdmin
+    )
+  )
+},
 
 {
   method: 'GET',
