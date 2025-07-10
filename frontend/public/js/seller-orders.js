@@ -1,3 +1,5 @@
+import {showPopupMessage} from "/js/utils.js";
+
 const statusLabels = {
     1: 'Pending',
     2: 'Processing',
@@ -5,6 +7,31 @@ const statusLabels = {
     4: 'Delivered',
     5: 'Cancelled',
 };
+
+function groupOrdersByProduct(rawOrders) {
+    const grouped = {};
+
+    for (const order of rawOrders) {
+        for (const item of order.items) {
+            if (!grouped[item.product_id]) {
+                grouped[item.product_id] = {
+                    product_id: item.product_id,
+                    name: item.name,
+                    sales: []
+                };
+            }
+            grouped[item.product_id].sales.push({
+                order_id: order.order_id,
+                customer_name: order.customer_name,
+                quantity: item.quantity,
+                order_date: order.order_date,
+                status: order.status
+            });
+        }
+    }
+
+    return Object.values(grouped);
+}
 
 async function fetchOrders() {
     const status = document.getElementById('order-status-filter')?.value;
@@ -18,8 +45,13 @@ async function fetchOrders() {
 
     const res = await fetch(url, { credentials: 'include' });
     const { data } = await res.json();
-    renderOrders(data || []);
+
+    // Wenn alle Produkte angezeigt werden sollen, gruppieren wir sie
+    const finalData = productId === "" ? groupOrdersByProduct(data || []) : data;
+
+    renderOrders(finalData);
 }
+
 
 function renderOrders(products) {
     const tbody = document.querySelector('#orders-table tbody');
@@ -82,6 +114,7 @@ function addStatusListeners() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status_id: Number(status) })
             });
+            showPopupMessage("Status updated!", 1200);
             fetchOrders();
         };
     });
