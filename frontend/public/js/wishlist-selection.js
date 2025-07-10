@@ -34,7 +34,7 @@ export async function showWishlistSelectModal(productId, amount) {
 
     const submitBtn = document.createElement('button');
     submitBtn.textContent = 'Add to Selected';
-    submitBtn.classList.add('wishlist-modal-button', 'button');
+    submitBtn.classList.add('wishlist-modal-button', 'wishlist-selection-button');
     submitBtn.addEventListener('click', async () => {
         const selected = modal.querySelectorAll('input[type="checkbox"]:checked');
         if (selected.length === 0) {
