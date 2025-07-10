@@ -1,4 +1,5 @@
 import { showPopupMessage } from "/js/utils.js";
+import { showWishlistSelectModal } from '/js/wishlist-selection.js';
 
 const info = document.getElementById('info')
 
@@ -124,7 +125,7 @@ async function productsFromOrder(order, list) {
         wishlistButton.classList.add('button', 'wishlist-button');
         wishlistButton.textContent = "Add to Wishlist";
         wishlistButton.addEventListener('click', () => {
-            /* Todo: Wishlist Action */
+            showWishlistSelectModal(element.product_id, 1);
         })
 
         const cartButton = document.createElement('button');

@@ -1,4 +1,5 @@
 import { showPopupMessage } from "/js/utils.js";
+import { showWishlistSelectModal } from '/js/wishlist-selection.js';
 
 const title = document.getElementById('title');
 const seller = document.getElementById('seller');
@@ -787,4 +788,8 @@ const fetchOptionsWithCredentials = {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
 };
+
+document.getElementById('add-to-wishlist').addEventListener('click', (event) => {
+    showWishlistSelectModal(getProductIdFromPath(), parseInt(amountInput.value) || 1);
+})
 

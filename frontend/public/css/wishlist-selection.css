@@ -1,0 +1,191 @@
+:root {
+    --font-family: Arial, Helvetica, sans-serif;
+    --font-color: #000000;
+
+    --dark-blue: #002c6d;
+
+    --cart-button-color: #0077B6;
+    --cart-button-hover-color: #005F94;
+    --button-font-color: #FFFFFF;
+
+    --button-border-color: rgba(255, 255, 255, 0.1);
+
+    --wishlist-button-font-color: #FFFFFF;
+    --cart-button-font-color: #FFFFFF;
+
+    --wishlist-button-color: #860a0a;
+    --wishlist-button-hover-color: #940f0f;
+
+    --error-color: #b61313;
+    --success-color: #001d4a;
+
+    --order-id-color: #001d4a;
+
+    --status-option-background: #ffffff;
+    --status-dropdown-background: #001d4a;
+}
+
+/* button */
+
+.button {
+    min-width: 150px;
+    width: 100%;
+    max-width: 230px;
+    height: 60px;
+
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+    font-weight: 900;
+    font-size: 1.2rem;
+
+    border: 3px solid var(--button-border-color);
+    border-radius: 30px;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.wishlist-modal-button {
+    color: var(--wishlist-button-font-color);
+    background-color: var(--wishlist-button-color);
+    margin-top: 1.5rem;
+}
+
+.wishlist-modal-button:hover {
+    background-color: var(--wishlist-button-hover-color);
+}
+
+/* wishlistModal.css */
+
+/* Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal Box */
+.modal {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Headline */
+.modal h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--font-color);
+  margin-bottom: 1rem;
+}
+
+/* Close Button */
+.modal-close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+}
+
+.modal-close-button:hover {
+  color: #444;
+}
+
+/* Container for all sections */
+.wishlist-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Section (Details Tag) */
+.wishlist-section summary {
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+/* List inside each section */
+.wishlist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1rem;
+  margin: 0;
+}
+
+/* Wishlist Entry */
+.wishlist-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.wishlist-entry:hover {
+  background-color: #eef3ff;
+}
+
+.wishlist-entry input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--blue-color);
+  cursor: pointer;
+}
+
+.wishlist-selection-name {
+    font-weight: bold;
+}
+
+
+@media (max-width: 1400px) {
+    .data-container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 850px) {
+    .order-product {
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    .action-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
