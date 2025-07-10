@@ -47,7 +47,7 @@ async function addProduct(e) {
 document.getElementById('add-product-form').addEventListener('submit', addProduct);
 
 async function loadCategoriesDropdown() {
-    const res = await fetch('http://localhost:3000/api/categories');
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
     const { data } = await res.json();
     const select = document.querySelector('select[name="category_id"]');
     select.innerHTML = '<option value="">Please select:</option>';
@@ -110,7 +110,7 @@ function renderProducts(products) {
 }
 
 async function fetchMyProducts() {
-    const res = await fetch('http://localhost:3000/api/products/mine', { credentials: 'include' });
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/mine`, { credentials: 'include' });
     const json = await res.json();
     const products = Array.isArray(json) ? json : json.data;
     renderProducts(products || []);
@@ -118,7 +118,7 @@ async function fetchMyProducts() {
 
 async function deleteProduct(id) {
     // API request to delete
-    await fetch(`http://localhost:3000/api/products/${id}`, {
+    await fetch(`http://${window.ROOT_URL}:3000/api/products/${id}`, {
         method: 'DELETE',
         credentials: 'include'
     });

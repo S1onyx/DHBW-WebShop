@@ -10,7 +10,7 @@ async function loadProduct() {
     const res = await fetch(`http://${window.ROOT_URL}:3000/api/products/${productId}`);
     const product = await res.json();
 
-    const catRes = await fetch('http://localhost:3000/api/categories');
+    const catRes = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
     const { data: categories } = await catRes.json();
 
     // ID zur Kategorie finden
@@ -177,7 +177,7 @@ async function uploadImage(file, altText) {
 
 
 async function loadCategoriesDropdown(selectedCategoryId) {
-    const res = await fetch('http://localhost:3000/api/categories');
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/categories`);
     const { data } = await res.json();
     const select = document.querySelector('select[name="category_id"]');
     select.innerHTML = '<option value="">Please select:</option>';

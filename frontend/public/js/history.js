@@ -6,7 +6,7 @@ window.onload = () => loadHistory("0");
 
 async function loadHistory(statusId) {
     try {
-        let url = `http://localhost:3000/api/orders`;
+        let url = `http://${window.ROOT_URL}:3000/api/orders`;
         if (statusId !== "0") {
             url += `?status=${statusId}`;
         }

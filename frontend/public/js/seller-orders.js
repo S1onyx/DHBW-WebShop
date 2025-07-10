@@ -41,7 +41,7 @@ async function fetchOrders() {
     const productFilter = document.getElementById('product-filter');
     const productId = productFilter ? productFilter.value : '';
 
-    let url = 'http://localhost:3000/api/orders';
+    let url = `http://${window.ROOT_URL}:3000/api/orders`;
     const params = [];
     if (status) params.push(`status=${status}`);
     if (currentUser?.role_id === 1 && productId) {
@@ -116,7 +116,7 @@ function addStatusListeners() {
             const id = btn.getAttribute('data-id');
             const select = document.querySelector(`.order-status-select[data-id="${id}"]`);
             const status = select.value;
-            await fetch(`http://localhost:3000/api/orders/${id}`, {
+            await fetch(`http://${window.ROOT_URL}:3000/api/orders/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -129,7 +129,7 @@ function addStatusListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const userRes = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
+    const userRes = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
     const user = await userRes.json();
     currentUser = user.data;
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Produkt-Dropdown für Admins
 async function loadProductsDropdown() {
-    const res = await fetch('http://localhost:3000/api/products', { credentials: 'include' });
+    const res = await fetch(`http://${window.ROOT_URL}:3000/api/products`, { credentials: 'include' });
     const { data: products } = await res.json();
     let dropdown = document.getElementById('product-filter');
     if (!dropdown) {
