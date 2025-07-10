@@ -338,13 +338,13 @@ async function loadPermissions(wishlistId) {
             select.addEventListener('change', async () => {
                 const newPermission = parseInt(select.value);
                 try {
-                    const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${wishlistId}/permissions/user/${user.user_id}`, {
+                    const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${wishlistId}/permissions`, {
                         method: 'PUT',
                         credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ permission_id: newPermission })
+                        body: JSON.stringify({ permission_id: newPermission, user_id: user.user_id })
                     });
 
                     if (res.ok) {
