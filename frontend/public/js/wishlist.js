@@ -37,8 +37,8 @@ async function loadWishlists() {
         const wishlists = await res.json();
 
         const permission0 = wishlists.filter(w => w.permission_id === 0);
-        const permission1 = wishlists.filter(w => w.permission_id === 1);
-        const permission2 = wishlists.filter(w => w.permission_id === 2);
+        const permission2 = wishlists.filter(w => w.permission_id === 1);
+        const permission1 = wishlists.filter(w => w.permission_id === 2);
 
         renderWishlists(permission0, 'perm-0');
         renderWishlists(permission1, 'perm-1');
@@ -146,7 +146,7 @@ function renderWishlists(list, containerId) {
         item.append(contentDiv, actionsDiv);
 
         item.addEventListener('click', () => {
-            window.location.href = `/wishlist/${w.wishlist_id}`;
+            window.location.href = `/wishlist-view?${w.wishlist_id}`;
         });
 
         container.appendChild(item);

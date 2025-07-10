@@ -1,0 +1,341 @@
+:root {
+    --font-family: Arial, Helvetica, sans-serif;
+    --font-color: #000000;
+
+    --dark-blue: #002c6d;
+
+    --cart-button-color: #0077B6;
+    --cart-button-hover-color: #005F94;
+    --button-font-color: #FFFFFF;
+
+      --return-button-color: #d3cdcd;
+  --return-button-font-color: #000000;
+  --return-button-hover-color: #a3a0a0;
+
+    --button-border-color: rgba(255, 255, 255, 0.1);
+
+    --wishlist-button-font-color: #FFFFFF;
+    --cart-button-font-color: #FFFFFF;
+
+    --wishlist-button-color: #860a0a;
+    --wishlist-button-hover-color: #940f0f;
+
+    --error-color: #b61313;
+    --success-color: #001d4a;
+
+  --error-hover: #800d0d;
+  --success-color: #001d4a;
+
+    --order-id-color: #001d4a;
+
+    --status-option-background: #ffffff;
+    --status-dropdown-background: #001d4a;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: var(--font-family);
+    color: var(--font-color);
+    background-color: #f8f9fa;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 2rem;
+    text-align: center;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+}
+
+.container {
+    background-color: white;
+    padding: 4vh 4vw;
+    border-radius: 1rem;
+    box-shadow: 0 0.5vh 1vw rgba(0, 0, 0, 0.05);
+    max-width: 60vw;
+    min-width: 400px;
+    margin: 0 auto 20px;
+}
+
+.wishlist-info h1 {
+    font-size: xxx-large;
+    margin-bottom: 10px;
+}
+
+.wishlist-meta p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+}
+
+.products-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wishlist-product {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.wishlist-product:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.data-container {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.price-amount-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    margin: 10px 0;
+    font-size: large;
+    gap: 20px;
+    white-space: nowrap;
+}
+
+.product-title-history {
+    margin: 0 0 5px 0;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.picture {
+    width: 150px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.product-thumb {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.button {
+    min-width: 150px;
+    max-width: 230px;
+    height: 50px;
+    padding: 5px 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 3px solid var(--button-border-color);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.cart-button {
+    background-color: var(--cart-button-color);
+    color: var(--cart-button-font-color);
+}
+
+.cart-button:hover {
+    background-color: var(--cart-button-hover-color);
+}
+
+.delete-btn {
+    background-color: var(--wishlist-button-color);
+    color: var(--wishlist-button-font-color);
+    border: none;
+    border-radius: 30px;
+    height: 50px;
+    padding: 0 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-btn:hover {
+    background-color: var(--wishlist-button-hover-color);
+}
+
+.action-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: nowrap;
+}
+
+.server-error {
+    color: var(--error-color);
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.delete-hover {
+  background-color: #ffe5e5;
+  transition: background-color 0.2s ease;
+}
+
+#error-info,
+.error-info {
+    color: #004085;
+    font-weight: bold;
+    padding: 1rem;
+    text-align: center;
+    background-color: #cce5ff;
+    border: 1px solid #004085;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.arrow-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    margin: 10px;
+}
+
+.arrow {
+    font-size: xx-large;
+    padding: 0 10px;
+}
+
+/* Amount */
+#amount-input {
+    border: black 3px solid;
+    padding: 5px 15px;
+    margin: 0;
+    border-radius: 20px;
+    height: max-content;
+
+    font-family: var(--font-family);
+    font-size: large;
+
+    width: 40px;
+    text-align: center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal verstecken */
+.modal.hidden {
+  display: none;
+}
+
+/* Modal Inhalt */
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: var(--dark-blue);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin-top: 30px;
+}
+
+.do-button {
+    color: var(--button-font-color);
+    background-color: var(--blue-color);
+}
+
+.do-button:hover {
+    background-color: var(--blue-color-hover);
+}
+
+.cancel-button {
+    background-color: var(--return-button-color);
+    color: var(--return-button-font-color);
+}
+
+.cancel-button:hover {
+    background-color: var(--return-button-hover-color);
+}
+
+#delete-btn {
+  background-color: var(--error-color);
+}
+
+#delete-btn:hover {
+  background-color: var(--error-hover);
+}
+
+@media (max-width: 1200px) {
+    .data-container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 850px) {
+    .wishlist-product {
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
+

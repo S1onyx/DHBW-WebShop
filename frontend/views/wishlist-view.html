@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="/env.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist View</title>
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/wishlist-view.css" type="text/css">
+  <script type="module" src="/js/wishlist-view.js" defer></script>
+</head>
+
+<div id="delete-wishlist-modal" class="modal hidden">
+  <div class="modal-content">
+    <p id="wishlist-delete-text">Are you sure you want to delete the wishlist?</p>
+    <div class="modal-buttons">
+      <button type="button" class="button do-button" id="delete-btn">Delete</button>
+      <button type="button" class="button cancel-button" id="delete-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<body>
+  <div id="header"></div>
+  <main>
+    <div id="wishlist-container" class="container">
+      <div class="wishlist-info">
+        <h1 class="wishlist-name" id="wishlist-name"></h1>
+        <div class="wishlist-meta">
+          <p><strong>Owner: </strong> <span id="wishlist-owner"></span></p>
+          <p><strong>Access: </strong> <span id="wishlist-access"></span></p>
+          <p><strong>Total Price: </strong> <span id="wishlist-total"></span></p>
+        </div>
+      </div>
+
+
+
+      <ul id="products-list" class="products-list"></ul>
+    </div>
+  </main>
+  <div id="footer"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      async function loadFragment(id, url, scriptUrl) {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById(id).innerHTML = await res.text();
+          if (scriptUrl) {
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.defer = true;
+            document.body.appendChild(script);
+          }
+        }
+      }
+
+      loadFragment('header', '/header-footer/header.html', '/js/header.js');
+      loadFragment('footer', '/header-footer/footer.html');
+    });
+  </script>
+</body>
+
+
+</html>

@@ -40,6 +40,13 @@ router.get('/wishlist', requireAuth, async (req, res) => {
   renderPage('wishlist.html', res);
 });
 
+router.get('/wishlist-view', requireAuth, async (req, res) => {
+  const user = await getUserFromCookie(req);
+  if (!user) return res.redirect('/login');
+
+  renderPage('wishlist-view.html', res);
+});
+
 router.get('/cart', requireAuth, async (req, res) => {
   const user = await getUserFromCookie(req);
   if (!user) return res.redirect('/login');
