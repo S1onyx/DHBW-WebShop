@@ -1,4 +1,5 @@
 import {showPopupMessage} from "/js/utils.js";
+import {getCurrentUser} from "./utils.js";
 
 const statusLabels = {
     1: 'Pending',
@@ -33,25 +34,32 @@ function groupOrdersByProduct(rawOrders) {
     return Object.values(grouped);
 }
 
+let currentUser = null;
+
 async function fetchOrders() {
     const status = document.getElementById('order-status-filter')?.value;
     const productFilter = document.getElementById('product-filter');
     const productId = productFilter ? productFilter.value : '';
+
     let url = 'http://localhost:3000/api/orders';
     const params = [];
     if (status) params.push(`status=${status}`);
-    if (productId) params.push(`product_id=${productId}`);
+    if (currentUser?.role_id === 1 && productId) {
+        params.push(`product_id=${productId}`);
+    }
+
     if (params.length > 0) url += '?' + params.join('&');
 
     const res = await fetch(url, { credentials: 'include' });
     const { data } = await res.json();
 
-    // Wenn alle Produkte angezeigt werden sollen, gruppieren wir sie
-    const finalData = productId === "" ? groupOrdersByProduct(data || []) : data;
-
-    renderOrders(finalData);
+    if (currentUser && currentUser.role_id === 2) {
+        renderOrders(data || []);
+    } else if (currentUser && currentUser.role_id === 1) {
+        const finalData = productId === "" ? groupOrdersByProduct(data || []) : data;
+        renderOrders(finalData);
+    }
 }
-
 
 function renderOrders(products) {
     const tbody = document.querySelector('#orders-table tbody');
@@ -123,6 +131,7 @@ function addStatusListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
     const userRes = await fetch('http://localhost:3000/api/users/me', { credentials: 'include' });
     const user = await userRes.json();
+    currentUser = user.data;
 
     if (user.data && user.data.role_id === 1) {
         // Admin: Produkt-Dropdown anzeigen und nach Produkt filtern
