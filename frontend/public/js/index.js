@@ -203,6 +203,9 @@ products.forEach(product => {
     if (res.status === 401) {
       window.location.href = '/login';
       return;
+    } else if (res.status === 403) {
+      showPopupMessage('Only customers can buy products!<br>Please log in as a customer.', 2000);
+        return;
     }
     showPopupMessage('Product was added to your cart', 1500);
   });

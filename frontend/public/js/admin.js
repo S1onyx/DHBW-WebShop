@@ -54,21 +54,21 @@ async function loadCategoriesDropdown() {
     select.innerHTML = '<option value="">Please select:</option>';
 
     data.forEach(cat => {
+        // Elternkategorie als fette Option
+        const parentOption = document.createElement('option');
+        parentOption.value = cat.id;
+        parentOption.textContent = cat.name;
+        parentOption.style.fontWeight = 'bold';
+        select.appendChild(parentOption);
+
+        // Kinderkategorien als normale Optionen
         if (cat.children && cat.children.length > 0) {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = cat.name;
             cat.children.forEach(child => {
                 const option = document.createElement('option');
                 option.value = child.id;
-                option.textContent = child.name;
-                optgroup.appendChild(option);
+                option.textContent = '↳ ' + child.name;
+                select.appendChild(option);
             });
-            select.appendChild(optgroup);
-        } else {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            select.appendChild(option);
         }
     });
 }
@@ -130,9 +130,12 @@ async function fetchUsers() {
                         </td>
                         <td>${user.role}</td>
                         <td class="actions">
-                            <button class="details-btn"  onclick="showUserDetails(${user.id}, false)">Details</button>
-                            <button onclick="showUserDetails(${user.id}, true)">Edit</button>
-                            <button class="delete-btn" data-id="${user.id}"><i class="fa-solid fa-trash"></i></button>
+                        ${user.role === 'Admin'
+                                ? `<button class="details-btn" onclick="showUserDetails(${user.id}, false)">Details</button>`
+                                : `<button class="details-btn" onclick="showUserDetails(${user.id}, false)">Details</button>
+                             <button onclick="showUserDetails(${user.id}, true)">Edit</button>
+                             <button class="delete-btn" data-id="${user.id}"><i class="fa-solid fa-trash"></i></button>`
+                            }  
                         </td>
                     </tr>
                 `).join('')}
@@ -221,6 +224,7 @@ async function showUserDetails(id, editable = false) {
                 ? `<span>Admin</span>`
                 : (() => {
                     const roles = [
+                        { id: 1, label: 'Admin' },
                         { id: 2, label: 'Seller' },
                         { id: 3, label: 'Customer' }
                     ];

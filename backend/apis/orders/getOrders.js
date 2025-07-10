@@ -13,10 +13,10 @@ async function getOrders(req, res) {
       return res.end(JSON.stringify({ success: false, error: 'Invalid status ID', code: 400 }));
     }
 
-    if (roleId === 1 && !productId) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify({ success: false, error: 'Missing product_id for admin request', code: 400 }));
-    }
+    // if (roleId === 1 && !productId) {
+    //   res.writeHead(400, { 'Content-Type': 'application/json' });
+    //   return res.end(JSON.stringify({ success: false, error: 'Missing product_id for admin request', code: 400 }));
+    // }
 
     const result = await getOrdersModel({ userId, roleId, productId, status });
 
