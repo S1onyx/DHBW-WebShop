@@ -57,23 +57,29 @@
 
 <div id="access-modal" class="modal hidden">
   <div class="modal-content" id="access-modal-content">
+    <div class="close-access-rights">
+      <i class="fa-regular fa-circle-xmark xmark" id="xmark"></i>
+    </div>
     <h2>Edit Access Rights</h2>
     <form id="new-permission-form" novalidate>
 
       <div class="permission-input">
-      <label for="new-permission-user" hidden>New User Permission</label>
-      <input type="text" id="new-permission-user" name="new-permission-user" class="modal-input" placeholder="Username"
-        required>
-      <div class="error-message" id="new-permission-user-error"></div>
+        <div class="user-permission-input">
+          <label for="new-permission-user" hidden>New User Permission</label>
+          <input type="text" id="new-permission-user" name="new-permission-user" class="modal-input"
+            placeholder="Username/ E-Mail" required>
+          <div class="error-message" id="new-permission-user-error"></div>
+        </div>
 
-      <select id="create-permission-select" class="user-permission-select">
-        <option value="1">Read and Write</option>
-        <option value="2">Read Only</option>
-      </select>
+        <select id="create-permission-select" class="user-permission-select">
+          <option value="1">Read Only</option>
+
+          <option value="2">Read and Write</option>
+        </select>
       </div>
 
       <div class="permission-btn-div">
-          <button type="submit" class="button do-button" id="add-permission-btn">Add Permission</button>
+        <button type="submit" class="button do-button" id="add-permission-btn">Add Permission</button>
 
       </div>
     </form>

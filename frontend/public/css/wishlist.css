@@ -402,8 +402,23 @@ main {
 }
 
 .no-wishlist-info {
-  padding-left: 10px;
+  padding-left: 20px;
   font-weight: bold;
   font-size: large;
 }
 
+.user-permission-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.close-access-rights {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.xmark {
+  color: var(--dark-blue);
+  font-size: 30px ;
+}

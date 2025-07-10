@@ -134,6 +134,7 @@ function renderWishlists(list, containerId) {
             accessBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
 
+                selectedWishlistId = w.wishlist_id;
                 selectedAccessWishlistId = w.wishlist_id;
                 accessModal.classList.remove('hidden');
                 loadPermissions(selectedAccessWishlistId);
@@ -412,8 +413,67 @@ accessModal.addEventListener('click', (e) => {
     }
 });
 
+
+/* new User Permission */
 document.getElementById('new-permission-form').addEventListener('submit', async (event) => {
     event.preventDefault();
+    const identifierElement = document.getElementById('new-permission-user');
+    let identifier = identifierElement.value.trim();
 
+    if (!identifier) {
+        const nameError = document.getElementById('new-permission-user-error');
+        identifierElement.classList.add('input-error')
+        nameError.textContent = "Please enter a username or E-Mail";
+        return;
+    }
+
+    const selectElement = document.getElementById('create-permission-select');
+    const selectedValue = Number(selectElement.value);
+
+
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${selectedAccessWishlistId}/permissions`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ identifier: identifier, permission_id: selectedValue })
+        });
+
+        const result = await res.json();
+        console.log(result);
+
+        if (res.ok) {
+            showPopupMessage('Permission created');
+            loadPermissions(selectedAccessWishlistId);
+        } else if (result.code === 404) {
+            const nameError = document.getElementById('new-permission-user-error');
+            identifierElement.classList.add('input-error')
+            nameError.textContent = "User doesn't exist";
+        } else if(result.code === 409) {
+            const nameError = document.getElementById('new-permission-user-error');
+            identifierElement.classList.add('input-error')
+            nameError.textContent = "User already has a permission";
+        } else {
+            showPopupMessage('Failed to create permission');
+        }
+    } catch {
+        alert('Server error');
+    }
 
 })
+
+document.getElementById('xmark').addEventListener('click', (e) => {
+        accessModal.classList.add('hidden');
+
+});
+
+accessModal.addEventListener('click', (e) => {
+    const nameInput = document.getElementById('new-permission-user');
+    const nameError = document.getElementById('new-permission-user-error');
+
+    nameInput.classList.remove('input-error');
+    nameError.textContent = '';
+
+});
