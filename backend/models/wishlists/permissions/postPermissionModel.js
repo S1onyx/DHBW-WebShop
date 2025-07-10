@@ -1,29 +1,40 @@
-// backend/models/wishlists/permissions/postPermissionModel.js
 const db = require('../../../db/database');
 
-async function postPermissionToWishlist(wishlistId, userId, permissionId) {
+async function postPermissionToWishlist(wishlistId, identifier, permissionId) {
   try {
     const wid = parseInt(wishlistId, 10);
-    const uid = parseInt(userId, 10);
     const pid = parseInt(permissionId, 10);
 
-    if (isNaN(wid) || isNaN(uid) || isNaN(pid)) {
-      return { error: 'Invalid input values', code: 400 };
+    if (isNaN(wid) || isNaN(pid)) {
+      return { error: 'Invalid wishlist or permission ID', code: 400 };
     }
 
-    // Prüfe, ob User existiert
-    const userCheck = await db.query('SELECT id FROM users WHERE id = $1', [uid]);
-    if (userCheck.rowCount === 0) {
+    // User finden anhand von id, username oder email
+    let userResult;
+    if (!isNaN(parseInt(identifier))) {
+      // numerisch → ID
+      userResult = await db.query('SELECT id FROM users WHERE id = $1', [parseInt(identifier, 10)]);
+    } else if (identifier.includes('@')) {
+      // email
+      userResult = await db.query('SELECT id FROM users WHERE email = $1', [identifier]);
+    } else {
+      // username
+      userResult = await db.query('SELECT id FROM users WHERE username = $1', [identifier]);
+    }
+
+    if (userResult.rowCount === 0) {
       return { error: 'User not found', code: 404 };
     }
 
-    // Prüfe, ob Permission existiert
+    const uid = userResult.rows[0].id;
+
+    // Permission prüfen
     const permissionCheck = await db.query('SELECT id FROM permission WHERE id = $1', [pid]);
     if (permissionCheck.rowCount === 0) {
       return { error: 'Permission not found', code: 404 };
     }
 
-    // Prüfe, ob Wishlist existiert und ob user_id der Owner ist
+    // Wishlist und Owner prüfen
     const ownerCheck = await db.query('SELECT customer_id FROM wishlists WHERE id = $1', [wid]);
     if (ownerCheck.rowCount === 0) {
       return { error: 'Wishlist not found', code: 404 };
@@ -35,7 +46,7 @@ async function postPermissionToWishlist(wishlistId, userId, permissionId) {
       };
     }
 
-    // Prüfe, ob Eintrag bereits existiert
+    // Duplikat prüfen
     const existsCheck = await db.query(
       'SELECT 1 FROM wishlist_permission WHERE wishlist_id = $1 AND user_id = $2',
       [wid, uid]
