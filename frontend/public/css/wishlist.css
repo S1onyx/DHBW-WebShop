@@ -24,6 +24,7 @@
   --wishlist-button-hover-color: #940f0f;
 
   --error-color: #b61313;
+  --error-hover: #800d0d;
   --success-color: #001d4a;
 
   --dark-blue: #001d4a;
@@ -298,24 +299,31 @@ main {
   margin-top: 30px;
 }
 
-#create-btn {
+.do-button {
     color: var(--button-font-color);
     background-color: var(--blue-color);
 }
 
-#create-btn:hover {
+.do-button:hover {
     background-color: var(--blue-color-hover);
 }
 
-#cancel-btn {
+.cancel-button {
     background-color: var(--return-button-color);
     color: var(--return-button-font-color);
 }
 
-#cancel-btn:hover {
+.cancel-button:hover {
     background-color: var(--return-button-hover-color);
 }
 
+#delete-btn {
+  background-color: var(--error-color);
+}
+
+#delete-btn:hover {
+  background-color: var(--error-hover);
+}
 
 
 

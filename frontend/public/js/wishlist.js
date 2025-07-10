@@ -1,5 +1,14 @@
 import { showPopupMessage } from "/js/utils.js";
 
+const deleteModal = document.getElementById('delete-wishlist-modal');
+const addBtn = document.querySelector('.add-wishlist-btn');
+const wishlistModal = document.getElementById('wishlist-modal');
+const cancelBtn = document.getElementById('wishlist-cancel-btn');
+const form = document.getElementById('wishlist-form');
+
+let selectedWishlistId = null;
+
+
 window.onload = () => loadWishlists();
 
 async function loadWishlists() {
@@ -80,18 +89,11 @@ function renderWishlists(list, containerId) {
 
             deleteBtn.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                const confirmed = confirm(`Delete "${w.wishlist_name}"?`);
-                if (!confirmed) return;
-                try {
-                    const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${w.wishlist_id}`, {
-                        method: 'DELETE',
-                        credentials: 'include'
-                    });
-                    if (res.ok) item.remove();
-                    else alert('Error deleting wishlist.');
-                } catch {
-                    alert('Server error.');
-                }
+
+                selectedWishlistId = w.wishlist_id;
+                deleteModal.classList.remove('hidden');
+
+
             });
 
             // Delete-Hover-Effekt für Hintergrund
@@ -145,25 +147,22 @@ document.querySelectorAll('.toggle-button').forEach(btn => {
     });
 });
 
-const addBtn = document.querySelector('.add-wishlist-btn');
-const modal = document.getElementById('wishlist-modal');
-const cancelBtn = document.getElementById('cancel-btn');
-const form = document.getElementById('wishlist-form');
+/* Add Wishlist */
 
 addBtn.addEventListener('click', () => {
-    modal.classList.remove('hidden');
+    wishlistModal.classList.remove('hidden');
 });
 
 
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.classList.add('hidden');
+wishlistModal.addEventListener('click', (e) => {
+    if (e.target === wishlistModal) {
+        wishlistModal.classList.add('hidden');
     }
 });
 
 
 cancelBtn.addEventListener('click', () => {
-    modal.classList.add('hidden');
+    wishlistModal.classList.add('hidden');
 });
 
 form.addEventListener('submit', async (e) => {
@@ -187,7 +186,7 @@ form.addEventListener('submit', async (e) => {
         });
 
         if (res.ok) {
-            modal.classList.add('hidden');
+            wishlistModal.classList.add('hidden');
             showPopupMessage('Created Wishlist')
             window.location.reload();
         } else {
@@ -198,13 +197,44 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-modal.addEventListener('click', (e) => {
-        const nameInput = document.getElementById('wishlist-name');
-        const nameError = document.getElementById('wishlist-name-error');
+wishlistModal.addEventListener('click', (e) => {
+    const nameInput = document.getElementById('wishlist-name');
+    const nameError = document.getElementById('wishlist-name-error');
 
-        nameInput.classList.remove('input-error');
-        nameError.textContent = '';
-    
+    nameInput.classList.remove('input-error');
+    nameError.textContent = '';
+
 });
+
+/* delete Button */
+deleteModal.addEventListener('click', (e) => {
+    if (e.target === deleteModal) {
+        deleteModal.classList.add('hidden');
+    }
+});
+
+document.getElementById('delete-cancel-btn').addEventListener('click', () => {
+    deleteModal.classList.add('hidden');
+});
+
+document.getElementById('delete-btn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/wishlist/${selectedWishlistId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (res.ok) {
+            deleteModal.classList.add('hidden');
+            showPopupMessage("Deleted Wishlist");
+            window.location.reload();
+        } else {
+            showPopupMessage('Error deleting Wishlist')
+        }
+    } catch {
+        alert('Server error.');
+    } 
+});
+
 
 
