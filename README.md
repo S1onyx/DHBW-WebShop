@@ -15,16 +15,8 @@ cd DHBW-WebShop
 ./start.sh
 ```
 
-### Windows (CMD)
-
-```cmd
-git clone https://github.com/your-username/DHBW-WebShop.git
-cd DHBW-WebShop
-start.bat
-```
 
 - Access frontend at: [http://localhost:1337](http://localhost:1337)
-- API via proxy: [http://localhost:1337/api/products](http://localhost:1337/api/products)
 - API (direct backend): [http://localhost:3000/api/products](http://localhost:3000/api/products)
 
 ---
@@ -33,7 +25,7 @@ start.bat
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- Bash shell (macOS/Linux) or CMD/PowerShell (Windows)
+- Bash shell (macOS/Linux) or GitBash (Windows)
 - (for dev mode) Node.js and npm
 
 ---
@@ -44,7 +36,6 @@ start.bat
 
 ```bash
 ./start.sh           # macOS/Linux
-start.bat            # Windows
 ```
 
 This will:
@@ -58,13 +49,12 @@ Reset and reinitialize the database with demo data.
 
 ```bash
 ./start.sh --resetDB         # macOS/Linux
-start.bat --resetDB          # Windows
 ```
 
 > ⚠️ This deletes **all data** and recreates the database schema from `init.sql`.
 
 #### `--dev`
-Run frontend with `vite` and backend with `nodemon` (hot reload), while keeping the DB in Docker.
+Run frontend with `nodemon` and backend with `nodemon` (hot reload), while keeping the DB in Docker.
 
 ```bash
 ./start.sh --dev             # macOS/Linux
@@ -89,7 +79,7 @@ You can combine both:
 | `backend/db/init.sql`       | DB schema and seed products          |
 | `docker/`                   | Dockerfiles and nginx config         |
 | `docker-compose.yml`        | Full container orchestration         |
-| `start.sh` / `start.bat`    | Local startup scripts for all OS     |
+| `start.sh`    | Local startup scripts for all OS     |
 
 ---
 
@@ -114,7 +104,6 @@ You can combine both:
 - **No frontend frameworks** – only plain HTML/CSS/JS
 - **Single repo** – All components live together
 - **Docker-first** – Fully orchestrated via Docker Compose
-- **Proxy setup** – Nginx proxies `/api/` to backend
 
 ---
 
@@ -122,7 +111,7 @@ You can combine both:
 
 ```bash
 # Start normally
-./start.sh | start.bat
+./start.sh
 
 # Reset DB
 ./start.sh --resetDB | start.bat --resetDB
@@ -148,7 +137,6 @@ docker compose logs -f
 - PostgreSQL
 - Docker + Docker Compose
 - Vanilla HTML, CSS, JavaScript
-- Nginx
 
 ---
 
