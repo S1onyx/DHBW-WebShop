@@ -8,15 +8,15 @@ const cancelBtn = document.getElementById('wishlist-cancel-btn');
 const form = document.getElementById('wishlist-form');
 
 const accessModal = document.getElementById('access-modal');
-const accessForm = document.getElementById('access-form');
-const accessSelect = document.getElementById('access-select');
-const accessError = document.getElementById('access-error');
-const accessCancelBtn = document.getElementById('access-cancel-btn');
 
 let selectedWishlistId = null;
 let selectedAccessWishlistId = null;
 
 window.onload = () => loadWishlists();
+
+const pathParts = window.location.pathname.split('/');
+const wishlistId = pathParts[2];
+
 
 async function loadWishlists() {
     try {
