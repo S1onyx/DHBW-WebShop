@@ -28,6 +28,23 @@
   </div>
 </div>
 
+<div id="edit-wishlist-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Create Wishlist</h2>
+    <form id="edit-wishlist-form" novalidate>
+      <label for="new-wishlist-name" hidden>New Wishlist Name</label>
+      <input type="text" id="new-wishlist-name" name="newWishlistName" class="modal-input" placeholder="New Wishlist Name"
+        required>
+      <div class="error-message" id="new-wishlist-name-error"></div>
+
+      <div class="modal-buttons">
+        <button type="submit" class="button do-button" id="change-btn">Change Name</button>
+        <button type="button" class="button cancel-button" id="edit-cancel-btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div id="delete-wishlist-modal" class="modal hidden">
   <div class="modal-content">
   <p id="wishlist-delete-text">Are you sure you want to delete the wishlist?</p>

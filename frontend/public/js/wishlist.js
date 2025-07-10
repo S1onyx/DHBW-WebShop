@@ -3,6 +3,7 @@ import { showPopupMessage } from "/js/utils.js";
 const deleteModal = document.getElementById('delete-wishlist-modal');
 const addBtn = document.querySelector('.add-wishlist-btn');
 const wishlistModal = document.getElementById('wishlist-modal');
+const changeWishlistModal = document.getElementById('edit-wishlist-modal')
 const cancelBtn = document.getElementById('wishlist-cancel-btn');
 const form = document.getElementById('wishlist-form');
 
@@ -112,7 +113,8 @@ function renderWishlists(list, containerId) {
             editBtn.title = "Edit wishlist";
             editBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `/wishlist/edit/${w.wishlist_id}`;
+                selectedWishlistId = w.wishlist_id;
+                changeWishlistModal.classList.remove('hidden');
             });
 
             // Access Button
@@ -236,5 +238,57 @@ document.getElementById('delete-btn').addEventListener('click', async (e) => {
     } 
 });
 
+/* Change Wishlist Name */ 
 
+changeWishlistModal.addEventListener('click', (e) => {
+    if (e.target === changeWishlistModal) {
+        changeWishlistModal.classList.add('hidden');
+    }
+});
+
+
+document.getElementById('edit-cancel-btn').addEventListener('click', () => {
+    changeWishlistModal.classList.add('hidden');
+});
+
+document.getElementById('edit-wishlist-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('new-wishlist-name').value.trim();
+    if (!name) {
+        const nameError = document.getElementById('new-wishlist-name-error');
+        document.getElementById('new-wishlist-name').classList.add('input-error')
+        nameError.textContent = "Please enter a new name for the wishlist";
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/wishlist/${selectedWishlistId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name })
+        });
+
+        if (res.ok) {
+            changeWishlistModal.classList.add('hidden');
+            showPopupMessage('Changed Wishlist Name')
+            window.location.reload();
+        } else {
+            showPopupMessage('Failed to change Wishlist Name')
+        }
+    } catch {
+        alert('Server error');
+    }
+});
+
+changeWishlistModal.addEventListener('click', (e) => {
+    const nameInput = document.getElementById('new-wishlist-name');
+    const nameError = document.getElementById('new-wishlist-name-error');
+
+    nameInput.classList.remove('input-error');
+    nameError.textContent = '';
+
+});
 
