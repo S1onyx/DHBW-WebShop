@@ -401,3 +401,9 @@ main {
   justify-content: flex-end;
 }
 
+.no-wishlist-info {
+  padding-left: 10px;
+  font-weight: bold;
+  font-size: large;
+}
+

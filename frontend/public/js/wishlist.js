@@ -66,7 +66,10 @@ function renderWishlists(list, containerId) {
     container.innerHTML = '';
 
     if (list.length === 0) {
-        container.textContent = 'No wishlists of this type';
+        const noWishlistInfo = document.createElement('p');
+        noWishlistInfo.textContent = 'No wishlists of this type';
+        noWishlistInfo.classList.add('no-wishlist-info')
+        container.appendChild(noWishlistInfo);
         return;
     }
 
