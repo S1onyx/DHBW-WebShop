@@ -358,6 +358,40 @@ async function loadPermissions(wishlistId) {
                 }
             });
 
+            // Delete Button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+            deleteBtn.title = "Delete Permission";
+
+            deleteBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+
+                try {
+                    const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${wishlistId}/permissions`, {
+                        method: 'DELETE',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ user_id: user.user_id })
+                    });
+
+                    if (res.ok) {
+                        showPopupMessage('Permission deleted');
+                        loadPermissions(wishlistId);
+                    } else {
+                        showPopupMessage('Failed to delete permission');
+                    }
+                } catch {
+                    alert('Server error');
+                }
+
+
+            });
+
+            userDiv.appendChild(deleteBtn);
+
             container.appendChild(userDiv);
         };
 
