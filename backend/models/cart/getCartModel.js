@@ -20,11 +20,18 @@ async function getCartModel(userId) {
     [cartId]
   );
 
-  // Hole cartItems inkl. Lagerbestand (stock)
+  // Hole cartItems inkl. Lagerbestand und Bild-URL
   const cartItemsQuery = await db.query(
-    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock
+    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock,
+            pi.url AS image_url
      FROM cart_items ci
      JOIN products p ON ci.product_id = p.id
+     LEFT JOIN LATERAL (
+       SELECT url
+       FROM product_images
+       WHERE product_id = p.id AND is_primary = true
+       LIMIT 1
+     ) pi ON true
      WHERE ci.cart_id = $1`,
     [cartId]
   );
@@ -51,9 +58,16 @@ async function byUserId(userId) {
   const cartId = cartDetailsQuery.rows[0].id;
 
   const cartItemsQuery = await db.query(
-    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock
+    `SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity, p.stock,
+            pi.url AS image_url
      FROM cart_items ci
      JOIN products p ON ci.product_id = p.id
+     LEFT JOIN LATERAL (
+       SELECT url
+       FROM product_images
+       WHERE product_id = p.id AND is_primary = true
+       LIMIT 1
+     ) pi ON true
      WHERE ci.cart_id = $1`,
     [cartId]
   );

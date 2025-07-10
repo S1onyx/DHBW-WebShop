@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+    <link rel="stylesheet" href="/css/header-footer.css">
+    <script src="/env.js"></script>
+    <style>
+        .back-button{
+            background-color: #e0e0e0 !important;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #1a1a1a;
+            transition: background-color 0.2s ease;
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn, .btn-secondary, .order-button, .back-button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #1a1a1a;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .btn-secondary, .back-button {
+            background-color: #bdbdbd;
+        }
+
+        .btn:hover, .btn-secondary:hover, .order-button:hover, .back-button:hover {
+            background-color: #d5d5d5;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        select {
+            padding: 0.3rem 0.7rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .save-status-btn {
+            background-color: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .save-status-btn:hover {
+            background-color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div id="header"></div>
+    <div style="margin: 3rem; min-height: 90vh;">
+    <button class="back-button" onclick="window.location.href='/seller'">← Back</button>
+
+    <h1>My Orders</h1>
+    <label for="order-status-filter">Filter by status:</label>
+    <select id="order-status-filter">
+        <option value="">All statuses</option>
+        <option value="1">Pending</option>
+        <option value="2">Processing</option>
+        <option value="3">Shipped</option>
+        <option value="4">Delivered</option>
+        <option value="5">Cancelled</option>
+    </select>
+    <table id="orders-table">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Products</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+    <div id="footer"></div>
+    <script type="module" src="/js/seller-orders.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                async function loadFragment(id, url, scriptUrl) {
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        document.getElementById(id).innerHTML = await res.text();
+                        if (scriptUrl) {
+                            const script = document.createElement('script');
+                            script.src = scriptUrl;
+                            script.defer = true;
+                            document.body.appendChild(script);
+                        }
+                    }
+                }
+                loadFragment('header', '/header-footer/header.html', '/js/header.js');
+                loadFragment('footer', '/header-footer/footer.html');
+            });
+        </script>
+</body>
+</html>

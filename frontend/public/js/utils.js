@@ -1,7 +1,7 @@
 // Funktion zum Anzeigen des Pop-up-Nachricht
 export function showPopupMessage(message, duration = 1500) {
     const popup = document.createElement('div');
-    popup.textContent = message;
+    popup.innerHTML = message;
     popup.style.position = 'fixed';
     popup.style.top = '50%';
     popup.style.left = '50%';

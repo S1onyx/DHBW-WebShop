@@ -63,6 +63,17 @@ ul#product-list li {
 }
 
 /* Produktkarte */
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  text-decoration: none;
+  color: inherit; /* Erbt die Farbe von der übergeordneten Ebene */
+}
+
+/* Produktliste */
 ul#product-list {
   list-style: none;
   padding: 0;
@@ -76,6 +87,22 @@ ul#product-list {
 ul#product-list li {
   position: relative;
   /* ... */
+}
+
+@media screen and (max-width: 1024px) {
+  ul#product-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media screen and (max-width: 768px) {
+  ul#product-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 480px) {
+  ul#product-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .product-info {
