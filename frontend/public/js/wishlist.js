@@ -7,8 +7,14 @@ const changeWishlistModal = document.getElementById('edit-wishlist-modal')
 const cancelBtn = document.getElementById('wishlist-cancel-btn');
 const form = document.getElementById('wishlist-form');
 
-let selectedWishlistId = null;
+const accessModal = document.getElementById('access-modal');
+const accessForm = document.getElementById('access-form');
+const accessSelect = document.getElementById('access-select');
+const accessError = document.getElementById('access-error');
+const accessCancelBtn = document.getElementById('access-cancel-btn');
 
+let selectedWishlistId = null;
+let selectedAccessWishlistId = null;
 
 window.onload = () => loadWishlists();
 
@@ -124,7 +130,10 @@ function renderWishlists(list, containerId) {
             accessBtn.title = "Change access permissions";
             accessBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                window.location.href = `/wishlist/access/${w.wishlist_id}`;
+
+                selectedAccessWishlistId = w.wishlist_id;
+                accessModal.classList.remove('hidden');
+                loadPermissions(selectedAccessWishlistId);
             });
 
             actionsDiv.append(accessBtn, editBtn, deleteBtn);
@@ -235,10 +244,10 @@ document.getElementById('delete-btn').addEventListener('click', async (e) => {
         }
     } catch {
         alert('Server error.');
-    } 
+    }
 });
 
-/* Change Wishlist Name */ 
+/* Change Wishlist Name */
 
 changeWishlistModal.addEventListener('click', (e) => {
     if (e.target === changeWishlistModal) {
@@ -292,3 +301,82 @@ changeWishlistModal.addEventListener('click', (e) => {
 
 });
 
+/* Access Rights */
+
+async function loadPermissions(wishlistId) {
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${wishlistId}/permissions`, {
+            credentials: 'include'
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch permissions');
+        }
+
+        const { data } = await res.json();
+        const { writer, readOnly } = data.permissions;
+
+        const writerList = document.getElementById('writer-list');
+        const readonlyList = document.getElementById('readonly-list');
+
+        writerList.innerHTML = '<h4>Can Read & Write</h4>';
+        readonlyList.innerHTML = '<h4>Read Only</h4>';
+
+        const renderUser = (user, container) => {
+            const userDiv = document.createElement('div');
+            userDiv.classList.add('user-permission');
+
+            userDiv.innerHTML = `
+                <span>${user.username}</span>
+                <select data-user-id="${user.user_id}" class="user-permission-select">
+                    <option value="1" ${user.permission === 1 ? 'selected' : ''}>Read only</option>
+                    <option value="2" ${user.permission === 2 ? 'selected' : ''}>Read and Write</option>
+                </select>
+            `;
+
+            const select = userDiv.querySelector('select');
+            select.addEventListener('change', async () => {
+                const newPermission = parseInt(select.value);
+                try {
+                    const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/${wishlistId}/permissions/user/${user.user_id}`, {
+                        method: 'PUT',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ permission_id: newPermission })
+                    });
+
+                    if (res.ok) {
+                        showPopupMessage('Permission updated');
+                        loadPermissions(wishlistId);
+                    } else {
+                        showPopupMessage('Failed to update permission');
+                    }
+                } catch {
+                    alert('Server error');
+                }
+            });
+
+            container.appendChild(userDiv);
+        };
+
+        writer.forEach(user => renderUser(user, writerList));
+        readOnly.forEach(user => renderUser(user, readonlyList));
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+accessModal.addEventListener('click', (e) => {
+    if (e.target === accessModal) {
+        accessModal.classList.add('hidden');
+    }
+});
+
+document.getElementById('new-permission-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+
+})

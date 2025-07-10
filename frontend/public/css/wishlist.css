@@ -325,5 +325,79 @@ main {
   background-color: var(--error-hover);
 }
 
+.user-list-section {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+}
 
+.user-permission {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.user-permission-select {
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  color: #1f2937;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='none' stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+}
+
+.user-permission-select:focus {
+  border-color: #3b82f6; /* Blau */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.user-permission:last-child {
+    border-bottom: none;
+}
+
+.user-permission span {
+    font-weight: 500;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.permission-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+#access-modal-content {
+  min-width: 450px;
+  max-width: 600px;
+}
+
+#new-permission-user {
+  margin: 0;
+}
+
+#add-permission-btn {
+  margin-top: 10px;
+}
+
+.permission-btn-div {
+  display: flex;
+  justify-content: flex-end;
+}
 
