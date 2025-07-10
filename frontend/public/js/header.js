@@ -54,3 +54,7 @@
         if (adminLink) adminLink.style.display = 'none';
     }
 })();
+
+document.getElementById('burger-menu').onclick = function() {
+    document.querySelector('.nav').classList.toggle('nav-active');
+}

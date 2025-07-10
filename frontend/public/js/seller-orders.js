@@ -27,7 +27,7 @@ function renderOrders(products) {
         const headerRow = `
             <tr class="product-header">
                 <td colspan="6" style="font-weight:bold;">
-                  ${product.product_id}:  ${product.name} &ndash; Verkäufe: ${product.sales.length}
+                  ${product.product_id} - ${product.name} &ndash; Verkäufe: ${product.sales.length}
                 </td>
             </tr>
         `;
