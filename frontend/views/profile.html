@@ -5,100 +5,183 @@
     <meta charset="UTF-8" />
     <title>Profil</title>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        #root {
+            min-height: 90vh;
+        }
 
         .profile-container {
-            max-width: 400px;
+            max-width: 500px;
             margin: 4rem auto;
-            background: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 2rem;
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem 2rem;
+            animation: fadeIn 0.5s ease-in;
         }
+
         .profile-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
+
         .profile-header h2 {
             margin: 0;
+            font-size: 2rem;
             color: #007BFF;
         }
+
+        .profile-header p {
+            font-size: 1rem;
+            color: #444;
+            margin-top: 0.3rem;
+        }
+
         .profile-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .profile-list li {
             display: flex;
             justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #eee;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid #e6e6e6;
+            font-size: 1rem;
         }
-        .profile-list li:last-child {
-            border-bottom: none;
-        }
+
         .profile-label {
             color: #555;
-            font-weight: bold;
+            font-weight: 600;
+            flex: 1;
         }
-        .profile-value {
-            color: #222;
+
+        .profile-value,
+        .profile-input {
+            flex: 1;
             text-align: right;
+            color: #222;
+            word-break: break-word;
             max-width: 60%;
-            word-break: break-all;
         }
+
+        .profile-input {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 0.4rem 0.6rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .profile-input:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        .back-button:hover {
+            color: #0056b3;
+        }
+
+        .edit-profile-btn,
+        #logout-btn {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-profile-btn:hover,
+        #logout-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #logout-btn {
+            width: 100%;
+            margin-top: 2rem;
+            background-color: #dc3545;
+        }
+
+        #logout-btn:hover {
+            background-color: #b02a37;
+        }
+
         .error-message {
             color: #c00;
             text-align: center;
             margin-top: 2rem;
+            font-weight: bold;
         }
-        .back-button {
-            background-color: #e0e0e0;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 540px) {
+            .profile-container {
+                margin: 2rem 1rem;
+                padding: 2rem 1.5rem;
+            }
+
+            .edit-profile-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            #save-profile-btn {
+                width: 100%;
+            }
+        }
+        .back-button{
+            background-color: #e0e0e0 !important;
             border: none;
             padding: 0.5rem 1rem;
             margin: 2rem;
             font-size: 1rem;
             cursor: pointer;
             border-radius: 6px;
+            color: #1a1a1a;
             transition: background-color 0.2s ease;
-        }
-        .edit-profile-btn {
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 0.7rem 1.2rem;
-            font-size: 1rem;
-            cursor: pointer;
-            margin: 0.5rem 0.2rem;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-        }
-
-        .edit-profile-btn:hover,
-        .edit-profile-btn:focus {
-            background-color: #0056b3;
-            outline: none;
         }
     </style>
 </head>
 <body>
 <div id="header"></div>
+<div id="root">
+    <button onclick="history.back()" class="back-button">← Back</button>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h2>Profile</h2>
+            <p id="profile-username"></p>
+        </div>
+        <ul class="profile-list" id="profile-list">
+            <!-- Profile data will be inserted here -->
+        </ul>
+        <div class="error-message" id="error-message" style="display:none;"></div>
 
-<button onclick="history.back()" class="back-button">← Back</button>
-<div class="profile-container">
-    <div class="profile-header">
-        <h2>Profil</h2>
-        <p id="profile-username"></p>
+        <div style="display: flex; justify-content: space-between; gap: 4%;">
+            <button id="edit-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;">Edit</button>
+            <a href="/change-password" ><button id="change-password-btn" class="edit-profile-btn" style="margin-top:1rem;">Change Password</button></a>
+        </div>
+
+        <button id="save-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:100%;display:none;">Save</button>
+        <button id="logout-btn" class="loginLink" style="margin-top:2rem;width:100%;color: white">Logout</button>
     </div>
-    <ul class="profile-list" id="profile-list">
-        <!-- Profildaten werden hier eingefügt -->
-    </ul>
-    <div class="error-message" id="error-message" style="display:none;"></div>
-    <button id="edit-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;">Bearbeiten</button>
-    <button id="save-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;display:none;">Speichern</button>
-    <button id="logout-btn" class="loginLink" style="margin-top:2rem;width:100%;color: white">Logout</button>
 </div>
-
 <div id="footer"></div>
 
 <script>

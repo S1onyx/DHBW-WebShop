@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Admin</title>
+  <link rel="stylesheet" href="/css/header-footer.css" />
+  <script src="/env.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #125aab;
+    }
+
+    .success-message, .error-message {
+      margin-top: 1rem;
+      padding: 0.7rem;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+<div id="header"></div>
+<div style="min-height: 85vh;">
+  <div class="container">
+    <h1>Create Admin</h1>
+
+    <form id="adminForm">
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" name="first_name" required />
+
+      <label for="last_name">Last Name</label>
+      <input type="text" id="last_name" name="last_name" required />
+
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="street">Street</label>
+      <input type="text" id="street" name="street" required />
+
+      <label for="house_number">House Number</label>
+      <input type="text" id="house_number" name="house_number" required />
+
+      <label for="postal_code">Postal Code</label>
+      <input type="text" id="postal_code" name="postal_code" required />
+
+      <label for="city">City</label>
+      <input type="text" id="city" name="city" required />
+
+      <label for="country">Country</label>
+      <input type="text" id="country" name="country" required />
+
+      <label for="role_id">Role</label>
+      <select id="role_id" name="role_id" required>
+        <option value="1">Admin</option>
+        <option value="2">Seller</option>
+        <option value="3">Customer</option>
+      </select>
+
+      <button type="submit">Create Admin</button>
+
+    </form>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script type="module">
+  import {showPopupMessage} from "/js/utils.js";
+  // Load header and footer
+  document.addEventListener('DOMContentLoaded', () => {
+    async function loadFragment(id, url, scriptUrl) {
+      const res = await fetch(url);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+        if (scriptUrl) {
+          const script = document.createElement('script');
+          script.src = scriptUrl;
+          script.defer = true;
+          document.body.appendChild(script);
+        }
+      }
+    }
+
+    loadFragment('header', '/header-footer/header.html', '/js/header.js');
+    loadFragment('footer', '/header-footer/footer.html');
+  });
+
+  // Handle form submission
+  document.getElementById('adminForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = {
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      username: form.username.value,
+      email: form.email.value,
+      password: form.password.value,
+      street: form.street.value,
+      house_number: form.house_number.value,
+      postal_code: form.postal_code.value,
+      city: form.city.value,
+      country: form.country.value,
+      role_id: parseInt(form.role_id.value)
+    };
+
+    const successMsg = document.getElementById('successMessage');
+    const errorMsg = document.getElementById('errorMessage');
+
+    successMsg.style.display = 'none';
+    errorMsg.style.display = 'none';
+
+    try {
+      const res = await fetch('http://localhost:3000/api/admin/register', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        showPopupMessage('Admin created successfully!', 2000);
+        form.reset();
+        setTimeout(() => window.location.href = '/profile', 2000); // Redirect after 2s
+      } else {
+        const err = await res.json();
+        showPopupMessage("Error: " + (err.message || 'Something went wrong.'), 3000);
+      }
+    } catch (err) {
+      errorMsg.textContent = 'Server unreachable or network error.';
+      errorMsg.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>
