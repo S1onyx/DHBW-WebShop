@@ -1,4 +1,5 @@
 import { showPopupMessage } from "/js/utils.js";
+import { showWishlistSelectModal } from '/js/wishlist-selection.js';
 
 const info = document.getElementById('info')
 
@@ -63,26 +64,30 @@ async function loadHistoryCustomer(history) {
     const historyElement = document.getElementById('history-list');
     historyElement.innerHTML = '';
     history.forEach(async order => {
-        const orderElement = document.createElement('div');
-        orderElement.classList.add('order');
+        const details = document.createElement('details');
+        details.classList.add('order');
+
+        const summary = document.createElement('summary');
+        summary.classList.add('order-summary');
+
+        summary.innerHTML = `
+            <h2 class="order-id">Order Id #${order.order_id}</h2>
+            <p><strong>Order Date:</strong> ${new Date(order.order_date).toLocaleString()}</p>
+            <p><strong>Order Total:</strong> ${order.total_price} €</p>
+            <p><strong>Status:</strong> ${order.status}</p>
+        `;
 
         const orderList = document.createElement('ul');
         orderList.classList.add('order-list');
         productsFromOrder(order, orderList);
 
-        orderElement.innerHTML = `
-            <h2 class="order-id">Order Id #${order.order_id}</h2>
-            <p><strong>Order Date:</strong> ${new Date(order.order_date).toLocaleString()}</p>
-            <p><strong>Order Total:</strong> ${order.total_price} €</p>
-            <p><strong>Status:</strong> ${order.status}</p>
-            `;
-
-
-        orderElement.appendChild(orderList);
-        historyElement.appendChild(orderElement);
-
-    })
+        details.appendChild(summary);
+        details.appendChild(orderList);
+        historyElement.appendChild(details);
+    });
 }
+
+
 
 async function productsFromOrder(order, list) {
     order.items.forEach(async element => {
@@ -124,7 +129,7 @@ async function productsFromOrder(order, list) {
         wishlistButton.classList.add('button', 'wishlist-button');
         wishlistButton.textContent = "Add to Wishlist";
         wishlistButton.addEventListener('click', () => {
-            /* Todo: Wishlist Action */
+            showWishlistSelectModal(element.product_id, 1);
         })
 
         const cartButton = document.createElement('button');

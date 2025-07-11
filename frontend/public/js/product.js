@@ -1,4 +1,5 @@
 import { showPopupMessage } from "/js/utils.js";
+import { showWishlistSelectModal } from '/js/wishlist-selection.js';
 
 const title = document.getElementById('title');
 const seller = document.getElementById('seller');
@@ -46,8 +47,12 @@ cartButton.addEventListener('click', async function (event) {
             method: 'POST',
             body: JSON.stringify(body)
         });
-        if (res.status === 401) {
-            window.location.href = '/login';
+        if (!res.ok) {
+            showPopupMessage('Please log in to access your cart')
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+
             return;
         }
     } catch (err) {
@@ -146,7 +151,7 @@ document.getElementById('new-review-form').addEventListener('submit', async (eve
                 setTimeout(() => {
                     window.location.href = 'login';
                 }, 1000);
-            } else if(json.code === 409) {
+            } else if (json.code === 409) {
                 const conflictError = document.getElementById('review-conflict-error');
                 conflictError.hidden = false;
             }
@@ -292,11 +297,11 @@ async function loadProduct() {
 
 function loadPictureDots(pictureAmount) {
     const dotsContainer = document.getElementById('picture-index-dots');
-    for(let i = 0; i < pictureAmount; i++) {
+    for (let i = 0; i < pictureAmount; i++) {
         const dot = document.createElement('i');
         dot.classList.add('fa-circle-dot', 'picture-index-dot');
-        dot.id= `picture-dot-${i}`;
-        if(i == 0) {
+        dot.id = `picture-dot-${i}`;
+        if (i == 0) {
             dot.classList.add('fa-solid');
         } else {
             dot.classList.add('fa-regular')
@@ -444,7 +449,7 @@ async function renderReviews(reviews, averageRating) {
                     const cleanedRatingText = ratingTextRaw.replace(/[()]/g, '');
                     const oldRating = parseFloat(cleanedRatingText);
 
-                    const originalLi = li.cloneNode(true); 
+                    const originalLi = li.cloneNode(true);
 
 
                     const form = document.createElement('form');
@@ -555,24 +560,24 @@ async function renderReviews(reviews, averageRating) {
                     event.preventDefault();
 
                     try {
-                            const res = await fetch(`http://${window.ROOT_URL}:3000/api/reviews/${review.id}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                credentials: 'include'
-                            });
+                        const res = await fetch(`http://${window.ROOT_URL}:3000/api/reviews/${review.id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: 'include'
+                        });
 
-                            const json = await res.json();
-                            if (!json.success) {
+                        const json = await res.json();
+                        if (!json.success) {
 
-                            } else {
-                                window.location.reload();
-                            }
-                        } catch (err) {
-                            const serverError = document.getElementById('review-server-error');
-                            serverError.hidden = false;
+                        } else {
+                            window.location.reload();
                         }
+                    } catch (err) {
+                        const serverError = document.getElementById('review-server-error');
+                        serverError.hidden = false;
+                    }
                 })
 
                 const buttonContainer = document.createElement('div');
@@ -787,4 +792,27 @@ const fetchOptionsWithCredentials = {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
 };
+
+document.getElementById('add-to-wishlist').addEventListener('click', async (event) => {
+    try {
+        const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+
+        if (!res.ok) {
+            showPopupMessage('Please log in to access your cart')
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+
+            return;
+        }
+    } catch {
+
+    }
+
+    showWishlistSelectModal(getProductIdFromPath(), parseInt(amountInput.value) || 1);
+})
 
