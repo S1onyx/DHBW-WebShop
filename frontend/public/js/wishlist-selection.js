@@ -2,7 +2,7 @@ import { showPopupMessage } from "/js/utils.js";
 
 
 export async function showWishlistSelectModal(productId, amount) {
-    removeWishlistModal(); // bereits vorhandenes Modal entfernen
+    removeWishlistModal(); 
 
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'wishlist-modal-overlay';
@@ -70,7 +70,7 @@ export async function showWishlistSelectModal(productId, amount) {
         }
     });
 
-    modal.appendChild(submitBtn); // wichtig!
+    modal.appendChild(submitBtn);
     modalOverlay.appendChild(modal);
     document.body.appendChild(modalOverlay);
 }
@@ -87,8 +87,16 @@ async function loadWishlistsForSelection() {
 
     const wishlists = await res.json();
 
+    if (!Array.isArray(wishlists)) {
+        showPopupMessage(`You don't have any wishlists yet. Create one first.`);
+        setTimeout(() => {
+                window.location.href = '/wishlist';
+            }, 2000);
+        return;
+    }
+
     const ownWishlists = wishlists.filter(w => w.permission_id === 0);
-    const sharedWishlists = wishlists.filter(w => w.permission_id === 2); // nur Schreibrechte
+    const sharedWishlists = wishlists.filter(w => w.permission_id === 2); 
 
     return { ownWishlists, sharedWishlists };
 }
