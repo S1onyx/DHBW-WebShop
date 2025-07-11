@@ -168,11 +168,6 @@
       role_id: parseInt(form.role_id.value)
     };
 
-    const successMsg = document.getElementById('successMessage');
-    const errorMsg = document.getElementById('errorMessage');
-
-    successMsg.style.display = 'none';
-    errorMsg.style.display = 'none';
 
     try {
       const res = await fetch('http://localhost:3000/api/admin/register', {
@@ -193,8 +188,7 @@
         showPopupMessage("Error: " + (err.message || 'Something went wrong.'), 3000);
       }
     } catch (err) {
-      errorMsg.textContent = 'Server unreachable or network error.';
-      errorMsg.style.display = 'block';
+      showPopupMessage("'Server unreachable or network error.'", 3000);
     }
   });
 </script>
