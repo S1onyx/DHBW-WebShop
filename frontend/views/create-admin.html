@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <title>Create Admin</title>
   <link rel="stylesheet" href="/css/header-footer.css" />
+    <link rel="stylesheet" href="/css/style.css" />
   <script src="/env.js"></script>
+  <script src="/js/auth_util.js" defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -41,7 +43,7 @@
       border-radius: 4px;
     }
 
-    button {
+    .submit {
       margin-top: 2rem;
       width: 100%;
       padding: 0.7rem;
@@ -54,8 +56,32 @@
       transition: background-color 0.2s ease;
     }
 
-    button:hover {
+    .submit:hover {
       background-color: #125aab;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-input {
+      width: 100%;
+      padding-right: 4rem; /* space for the button inside */
+      box-sizing: border-box;
+    }
+
+    .toggle-password-button {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #1976d2;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 0 0.5rem;
+      height: 100%;
     }
 
     .success-message, .error-message {
@@ -96,7 +122,10 @@
       <input type="email" id="email" name="email" required />
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" required />
+      <div class="password-wrapper auth-input" id="password-wrapper">
+        <input type="password" id="password" name="password" placeholder="Password" class="password-input" required>
+        <button type="button" id="toggle-password" class="toggle-password-button">Show</button>
+      </div>
 
       <label for="street">Street</label>
       <input type="text" id="street" name="street" required />
@@ -120,7 +149,7 @@
         <option value="3">Customer</option>
       </select>
 
-      <button type="submit">Create Admin</button>
+      <button class="submit" type="submit">Create Admin</button>
 
     </form>
   </div>
@@ -149,6 +178,13 @@
     loadFragment('footer', '/header-footer/footer.html');
   });
 
+  const password = new inputObject("password", "password-wrapper", "Please enter password!", "password-error", isElementNotEmpty);
+  document.getElementById("toggle-password").addEventListener("click", function (event) {
+    const passwordInput = password.getElement();
+    const toggleButton = document.getElementById("toggle-password");
+
+    togglePassword(toggleButton, passwordInput);
+  })
   // Handle form submission
   document.getElementById('adminForm').addEventListener('submit', async (e) => {
     e.preventDefault();
