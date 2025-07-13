@@ -91,6 +91,15 @@ router.get(
     }
 );
 
+router.get(
+    '/create-admin',
+    requireAuth,
+    requireStatus('validated'),
+    requireRole('Admin'),
+    (req, res) => {
+        renderPage('create-admin.html', res);
+    }
+);
 
 router.get(
   '/admin',
@@ -116,6 +125,10 @@ router.get('/signup', (req, res) => {
 
 router.get('/reset-password', (req, res) => {
   renderPage('reset-password.html', res);
+});
+
+router.get('/change-password', (req, res) => {
+    renderPage('change-password.html', res);
 });
 
 router.get('/code-login', (req, res) => {

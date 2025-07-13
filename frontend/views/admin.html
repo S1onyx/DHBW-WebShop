@@ -236,7 +236,10 @@
 </head>
 <body>
 <div id="header"></div>
-<button onclick="history.back()" class="back-button">← Back</button>
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+  <button onclick="history.back()" class="back-button">← Back</button>
+  <a href="/create-admin" style="padding: 2rem"><button class="order-button">Create Admin</button></a>
+</div>
 <div class="admin-container">
   <h1>Admin Panel</h1>
   <section id="product-management">
