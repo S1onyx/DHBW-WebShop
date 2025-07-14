@@ -1,0 +1,58 @@
+#signup-container {
+    width: 630px;
+    margin: 0 auto;
+}
+
+/* Schrift überall etwas kleiner (außer Titel) */
+#signup-container .auth-input,
+#signup-container .password-input,
+#signup-container .toggle-password-button,
+#signup-container .error-message,
+#signup-container .auth-error,
+#signup-container .auth-success,
+#signup-container .line-number,
+#signup-container .forgot-password-link {
+    font-size: 0.9rem;
+}
+
+/* Text und Placeholder in den Feldern noch kleiner */
+#signup-container .auth-input,
+#signup-container .password-input {
+    font-size: 0.8rem;
+}
+
+#signup-container .auth-input::placeholder,
+#signup-container .password-input::placeholder {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    #signup-container {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+    }
+    #signup-container .auth-form {
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+    #signup-container .password-wrapper,
+    #signup-container .auth-button {
+        width: 100%;
+    }
+    #signup-container .password-wrapper {
+        position: relative;
+        box-sizing: border-box;
+        padding-left: 10px;
+        padding-right: 50px;
+        display: flex;
+        align-items: center;
+    }
+    #signup-container .password-wrapper .toggle-password-button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        margin: 0;
+    }
+}
