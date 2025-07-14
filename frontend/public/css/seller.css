@@ -1,0 +1,352 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 2rem;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+}
+
+form {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+input, select, button {
+    padding: 0.5rem;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #0d47a1;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0.5rem 0.2rem;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+
+button:hover {
+    background-color: rgb(64, 61, 61);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th {
+    background: #e3e3e3;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+.actions button {
+    margin-right: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: #fff;
+}
+
+.delete-btn:hover {
+    background: #a71d2a;
+}
+
+.details-btn {
+    background: #bfbcbc;
+    color: #000;
+    text-decoration: none;
+}
+
+.details-btn:hover {
+    background: #999;
+}
+
+#modal.active {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#modal > div {
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px 28px 24px 28px;
+    min-width: 340px;
+    max-width: 95vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#modal h2 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    font-size: 1.4em;
+    color: #2a2a2a;
+}
+
+#modal label {
+    display: block;
+    margin-bottom: 14px;
+    font-weight: 500;
+    color: #444;
+}
+
+#modal input, #modal select, #modal span {
+    margin-top: 4px;
+    font-size: 1em;
+    padding: 6px 8px;
+    border-radius: 5px;
+    border: 1px solid #d0d0d0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#modal span {
+    background: #f7f7f7;
+    border: none;
+    display: inline-block;
+    min-height: 32px;
+    padding: 6px 8px;
+}
+
+#modal button {
+    margin-top: 18px;
+    margin-right: 10px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 5px;
+    background: #1976d2;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#modal button[type="button"] {
+    background: #aaa;
+}
+
+#modal button:hover {
+    background: #125ea2;
+}
+
+#modal button[type="button"]:hover {
+    background: #888;
+}
+
+.back-button {
+    background-color: #e0e0e0 !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #1a1a1a;
+    transition: background-color 0.2s ease;
+}
+
+.order-button {
+    background-color: #0d47a1 !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.seller-container {
+    min-height: 80vh;
+    padding: 3rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    body {
+        padding: 1rem;
+    }
+    form {
+        flex-direction: column;
+    }
+    form > * {
+        width: 100% !important;
+    }
+    .back-button, .order-button {
+        width: auto;
+        margin: 1rem 0;
+    }
+    .seller-container {
+        padding: 1.5rem 1rem;
+    }
+    table {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        padding: 1rem;
+        font-size: 1rem; /* Schrift etwas größer */
+    }
+    form {
+        flex-direction: column;
+    }
+    form > * {
+        width: 100% !important;
+        font-size: 1rem;
+    }
+    .back-button, .order-button {
+        width: auto;
+        margin: 1rem 0;
+        font-size: 1rem;
+    }
+    .seller-container {
+        padding: 1.5rem 1rem;
+        font-size: 1rem;
+    }
+    table {
+        font-size: 1rem;
+    }
+}
+
+/* Für sehr kleine Bildschirme */
+
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+
+    .seller-container {
+        padding: 1rem;
+    }
+
+    form#add-product-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-width: 100%;
+        padding: 1rem 0;
+    }
+
+    form#add-product-form > input,
+    form#add-product-form > select {
+        min-width: 180px;
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+        box-sizing: border-box;
+        border-radius: 5px;
+        border: 1px solid #bcdff1;
+        background: #fff;
+        transition: border 0.2s;
+    }
+
+    form#add-product-form > input:focus,
+    form#add-product-form > select:focus {
+        border: 1.5px solid #1976d2;
+        outline: none;
+    }
+
+    form#add-product-form > button[type="submit"] {
+        width: 100%;
+        padding: 0.7rem 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 6px;
+        background-color: #0d47a1;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+        border: none;
+    }
+
+    form#add-product-form > button[type="submit"]:hover {
+        background-color: #0a3a85;
+    }
+
+    /* Optional: Tabelle responsive machen */
+    #products-list {
+        overflow-x: auto;
+    }
+
+    #products-list table {
+        width: 100%;
+        min-width: 600px; /* sorgt für horizontales Scrollen bei kleinen Bildschirmen */
+        border-collapse: collapse;
+    }
+
+    #products-list th,
+    #products-list td {
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+        border: 1px solid #ddd;
+        white-space: nowrap;
+    }
+
+    #products-list th {
+        background-color: #e3e3e3;
+        font-weight: bold;
+    }
+}
+
+/* Tabelle immer scrollbar */
+
+#products-list {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#products-list table {
+    min-width: 700px;
+    border-collapse: collapse;
+    width: 100%;
+}
