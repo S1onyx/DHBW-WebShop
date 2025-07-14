@@ -232,7 +232,117 @@
       border: 1.5px solid #1976d2;
       outline: none;
     }
-  </style>
+    /* Tablets & kleinere Laptops */
+@media (max-width: 1024px) {
+  body {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  #add-product-form {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  input, select, button {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  .admin-container {
+    padding: 1rem;
+  }
+
+  table {
+    font-size: 0.95rem;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+
+  th, td {
+    padding: 0.6rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 1rem;
+    width: 100%;
+  }
+}
+
+/* Smartphones & kleine Tablets */
+@media (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+
+  h1, h2 {
+    font-size: 1.5rem;
+  }
+
+  #modal > div {
+    padding: 1rem;
+    width: 95vw;
+  }
+
+  #modal input,
+  #modal select,
+  #modal span {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+
+  #modal button {
+    padding: 1rem;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .back-button {
+    padding: 1rem;
+    font-size: 1rem;
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
+/* Kleine Smartphones */
+@media (max-width: 480px) {
+  h1, h2 {
+    font-size: 1.3rem;
+  }
+
+  #add-product-form {
+    padding: 1rem;
+  }
+
+  .back-button {
+    font-size: 1rem;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  input, select, button {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  button {
+    font-size: 1rem;
+    width: 100%;
+  }
+}
+</style>
 </head>
 <body>
 <div id="header"></div>
