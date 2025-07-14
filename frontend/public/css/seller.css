@@ -208,7 +208,7 @@ tr:nth-child(even) {
     padding: 3rem;
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
     body {
         padding: 1rem;
@@ -234,7 +234,7 @@ tr:nth-child(even) {
 @media (max-width: 900px) {
     body {
         padding: 1rem;
-        font-size: 1rem; /* Schrift etwas größer */
+        font-size: 1rem;
     }
     form {
         flex-direction: column;
@@ -257,7 +257,7 @@ tr:nth-child(even) {
     }
 }
 
-/* Für sehr kleine Bildschirme */
+
 
 @media (max-width: 600px) {
     body {
@@ -313,14 +313,14 @@ tr:nth-child(even) {
         background-color: #0a3a85;
     }
 
-    /* Optional: Tabelle responsive machen */
+
     #products-list {
         overflow-x: auto;
     }
 
     #products-list table {
         width: 100%;
-        min-width: 600px; /* sorgt für horizontales Scrollen bei kleinen Bildschirmen */
+        min-width: 600px;
         border-collapse: collapse;
     }
 
@@ -338,7 +338,7 @@ tr:nth-child(even) {
     }
 }
 
-/* Tabelle immer scrollbar */
+
 
 #products-list {
     overflow-x: auto;
