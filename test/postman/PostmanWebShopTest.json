@@ -1,0 +1,1942 @@
+{
+  "info": {
+    "name": "WebShopTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "changePassword",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/change-password",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "change-password"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_password\": \"Admin12d3!\",\n  \"new_password\": \"Admin123!\",\n  \"confirm_password\": \"Admin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "checkEmail",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/auth/check-email\n\n**Description**  \nChecks whether the given email address is already registered.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/auth/check-email`\n- **Authentication:** Not required\n\n---\n\n### Query parameters\n\n| Parameter | Type   | Required | Description                  |\n|-----------|--------|----------|------------------------------|\n| `email`   | string | ✔        | Email address to check       |\n\n---\n\n### Successful response\n\n| Status | Description                  |\n|--------|------------------------------|\n| 200    | Email checked successfully   |\n\n```json\n{\n  \"success\": true,\n  \"exists\": true\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                    | Condition                        |\n|--------|----------------------------|----------------------------------|\n| 400    | `Valid email required`     | Email missing or invalid format |\n| 500    | `Server error...`          | DB or internal error            |\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/check-email?email=user1@example.com",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "check-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user1@example.com"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "checkUsername",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/auth/check-username\n\n**Description**  \nChecks whether the given username is already taken.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/auth/check-username`\n- **Authentication:** Not required\n\n---\n\n### Query parameters\n\n| Parameter   | Type   | Required | Description             |\n|-------------|--------|----------|-------------------------|\n| `username`  | string | ✔        | Username to check       |\n\n---\n\n### Successful response\n\n| Status | Description                     |\n|--------|---------------------------------|\n| 200    | Username checked successfully   |\n\n```json\n{\n  \"success\": true,\n  \"exists\": false\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                       | Condition                       |\n|--------|-------------------------------|---------------------------------|\n| 400    | `Valid username required`     | Username missing or too short  |\n| 500    | `Server error...`             | DB or internal error           |\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/check-username?username=user1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "check-username"
+              ],
+              "query": [
+                {
+                  "key": "username",
+                  "value": "user1"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "login",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/login\n\n**Description**  \nAuthenticates a user with email or username and password.  \nOn success, sets a secure `accessToken` cookie and returns basic user info.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/login`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\n```json\n{\n  \"email\": \"alice@example.com\",\n  \"password\": \"PixelPass123!\"\n}\n```\n\nor\n\n```json\n{\n  \"username\": \"alice123\",\n  \"password\": \"PixelPass123!\"\n}\n```\n\n| Field      | Type   | Required | Description               |\n|------------|--------|----------|---------------------------|\n| `email`    | string | ✔ (or username) | User email                |\n| `username` | string | ✔ (or email)    | Username                  |\n| `password` | string | ✔        | Account password          |\n\n---\n\n### Successful response\n\n| Status | Description     |\n|--------|-----------------|\n| 200    | Login successful. `accessToken` cookie set. |\n\n```json\n{\n  \"success\": true,\n  \"user\": {\n    \"id\": 42,\n    \"username\": \"alice123\",\n    \"role_id\": 2\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                              | Condition                                      |\n|--------|--------------------------------------|------------------------------------------------|\n| 400    | `Missing fields` or `Invalid JSON`   | Missing required fields or malformed body     |\n| 401    | `Invalid credentials`                | Email/username or password is incorrect       |\n| 403    | `Email not verified`, `retryVerification: true` | Account exists but is not verified |\n| 413    | `Payload too large`                  | Request body exceeds 1 MB                     |\n| 500    | `Server error`                       | Internal database or server issue             |\n\n---\n\n### Notes\n\n- Returns a `Set-Cookie` header with the access token (`HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=3600`)\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "  {\n   \"email\": \"customer1@example.com\",\n   \"password\": \"Customer123!\"\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "loginWithCode",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/login-with-code\n\n**Description**  \nLogs a user in using a previously emailed 6-digit login code.  \nThis is the second step of the passwordless authentication flow.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/login-code`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\n```json\n{\n  \"email\": \"luna@pixelart.com\",\n  \"code\": \"294681\"\n}\n```\n```json\n{\n  \"username\": \"luna\",\n  \"code\": \"294681\"\n}\n```\n\n| Field   | Type   | Required | Description                             |\n|---------|--------|----------|-----------------------------------------|\n| `email`    | string | ✔ (or username) | User email                |\n| `username` | string | ✔ (or email)    | Username                  |\n| `code`  | string | Yes      | 6-digit code sent via `request-login-code` |\n\n---\n\n### Successful response\n\n| Status | Description         |\n|--------|---------------------|\n| 200    | Login successful    |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Login successful\"\n}\n```\n\n- A secure `accessToken` cookie is set for authentication (HTTP-only).\n\n---\n\n### Error responses\n\n| Status | Message                        | Condition                                      |\n|--------|--------------------------------|------------------------------------------------|\n| 400    | `Missing email or code`        | One or both fields are missing                 |\n| 400    | `Invalid code format`          | Code is not exactly 6 digits                   |\n| 401    | `Invalid login code`           | Code does not match or has expired             |\n| 403    | `Email not verified`           | Email exists but has not been verified         |\n| 404    | `User not found`               | Email address does not match any user          |\n| 500    | `Login failed`                 | Unexpected DB or logic failure                 |\n\n---\n\n### Notes\n\n- The code is one-time use and expires after a short duration.\n- This endpoint sets the session cookie — it does **not** return the token in the response body.\n- It is the final step in the \"magic link\" or passwordless login process.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login-with-code",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login-with-code"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user4@example.com\",\n  \"code\": \"130334\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "logout",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/auth/logout\n\n**Description**  \nLogs out the currently authenticated user by clearing the session cookie.  \nThis is done by setting the `accessToken` cookie to expire immediately.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/auth/logout`\n- **Authentication:** Not required  \n  *(even without a valid session, the endpoint returns success)*\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | Session ended          |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Logged out successfully\"\n}\n```\n\nThe response also sets the `accessToken` cookie to an empty value with `Max-Age=0` to remove it from the client.\n\n---\n\n### Notes\n\n- This endpoint is idempotent — calling it multiple times has the same effect.\n- This endpoint **does not** require a valid token or user session.\n- Useful for both manual logout buttons and session expiration handling on the client.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/logout",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "register",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/register\n\n**Description**  \nRegisters a new user account.  \nSends a verification email after successful registration.  \nThe user cannot log in until the email is verified.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/register`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\nAll fields are required:\n\n```json\n{\n  \"email\": \"luna@pixelart.com\",\n  \"first_name\": \"Luna\",\n  \"last_name\": \"Pixel\",\n  \"password\": \"securePassword123\",\n  \"role_id\": 2\n}\n```\n\n| Field       | Type     | Required | Description                     |\n|-------------|----------|----------|---------------------------------|\n| `email`     | string   | Yes      | Must be a valid, unique email   |\n| `first_name`| string   | Yes      | User's first name               |\n| `last_name` | string   | Yes      | User's last name                |\n| `password`  | string   | Yes      | Minimum 6 characters            |\n| `role_id`   | number   | Yes      | User role (e.g., 2 = Seller, 3 = Customer) |\n\n---\n\n### Successful response\n\n| Status | Description               |\n|--------|---------------------------|\n| 200    | User created, email sent  |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Registration successful. Please check your email to verify your account.\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                                 | Condition                                |\n|--------|------------------------------------------|------------------------------------------|\n| 400    | `Missing required fields`               | One or more fields are missing           |\n| 400    | `Invalid email`                         | Email is not valid                       |\n| 400    | `Password must be at least 6 characters`| Password too short                       |\n| 409    | `Email already registered`              | Duplicate email in database              |\n| 500    | `Error during registration`             | Database or mail server error            |\n\n---\n\n### Notes\n\n- New accounts are created with `verified: false`\n- Verification email includes a link to `GET /api/verify?token=...`\n- Users cannot log in until they confirm their email\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Colin\",\n  \"last_name\": \"Vierheller\",\n  \"username\": \"colin\",\n  \"email\": \"colin@example.com\",\n  \"password\": \"DHbw123asdf!\",\n  \"street\": \"Hauptstr\",\n  \"house_number\": \"1\",\n  \"postal_code\": \"70173\",\n  \"city\": \"Stuttgart\",\n  \"country\": \"Deutschland\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "registerAdmin",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "http://localhost:3000/api/admin/register",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "register"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"Anna\",\n    \"last_name\": \"Schneider\",\n    \"username\": \"TestAdmin\",\n    \"email\": \"testadmin@example.com\",\n    \"password\": \"Admin123!\",\n    \"street\": \"Beispielweg\",\n    \"house_number\": \"7\",\n    \"postal_code\": \"12345\",\n    \"city\": \"Musterstadt\",\n    \"country\": \"Deutschland\",\n    \"role_id\": 1\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "requestLoginCode",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/request-login-code\n\n**Description**  \nInitiates a passwordless login process by generating and emailing a 6-digit login code.  \nThe code is later used in `POST /api/auth/login-code` to complete the login.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/request-login-code`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\n```json\n{\n  \"email\": \"luna@pixelart.com\"\n}\n```\n\n```josn\n{\n  \"username\": \"luna\"\n}\n```\n\n| Field   | Type   | Required | Description                    |\n|---------|--------|----------|--------------------------------|\n| `email`    | string | ✔ (or username) | User email                |\n| `username` | string | ✔ (or email)    | Username                  |\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Code sent by email    |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Login code sent to your email\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                        | Condition                                |\n|--------|--------------------------------|-------------------------------------------|\n| 400    | `Missing email`               | Email was not provided in the body        |\n| 404    | `Email not found`             | No user account matches the given email   |\n| 403    | `Email not verified`          | User exists but hasn't verified email     |\n| 500    | `Error sending login code`    | Mail server or DB error                   |\n\n---\n\n### Notes\n\n- The generated code is exactly 6 digits and is stored temporarily.\n- Codes expire after a short time and can only be used once.\n- You must use `POST /api/auth/login-code` to log in with the code sent by this endpoint.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/request-login-code",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "request-login-code"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user5@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "resendVerification",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/resend-verification\n\n**Description**  \nResends a verification email to users who have not yet verified their accounts.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/resend-verification`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\n```json\n{\n  \"email\": \"luna@pixelart.com\"\n}\n```\n\n| Field   | Type   | Required | Description                 |\n|---------|--------|----------|-----------------------------|\n| `email` | string | Yes      | The registered user email   |\n\n---\n\n### Successful response\n\n| Status | Description             |\n|--------|-------------------------|\n| 200    | Email sent successfully |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Verification email resent\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                              |\n|--------|----------------------------------|-----------------------------------------|\n| 400    | `Missing email`                 | No email was provided in the request    |\n| 404    | `User not found`                | No user exists with the given email     |\n| 400    | `Email is already verified`     | User is already verified                |\n| 500    | `Error resending verification`  | Mail or DB failure                      |\n\n---\n\n### Notes\n\n- Users who are already verified will receive a 400 response.\n- The token sent is valid for a limited time.\n- This endpoint does not require a valid session.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/resend-verification",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "resend-verification"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": " {\n   \"email\": \"simon@example.com\"\n }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "resetPassword",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/reset-password\n\n**Description**  \nResets a user's password using a valid password reset token.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/reset-password?token=...`\n- **Authentication:** Not required\n\n---\n\n### URL parameters\n\n| Parameter | Type   | Required | Description                  |\n|-----------|--------|----------|------------------------------|\n| `token`   | string | ✔        | Password reset token         |\n\n---\n\n### Request body\n\n```json\n{\n  \"newPassword\": \"MySecure123!\"\n}\n```\n\n| Field          | Type   | Required | Description                  |\n|----------------|--------|----------|------------------------------|\n| `newPassword`  | string | ✔        | New password to set          |\n\n---\n\n### Password Requirements\n\n- Minimum 8 characters\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number\n- At least one special character\n\n---\n\n### Successful response\n\n| Status | Description              |\n|--------|--------------------------|\n| 200    | Password reset successful |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Password reset successful\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                            | Condition                            |\n|--------|------------------------------------|---------------------------------------|\n| 400    | `Missing token` or `Invalid input` | Token missing, malformed JSON, or body empty |\n| 400    | `Invalid password format`          | Password does not meet requirements  |\n| 409    | `Reset token expired or invalid`   | Token is expired or already used     |\n| 413    | `Payload too large`                | Request body exceeds 1 MB            |\n| 500    | `Error resetting password`         | Internal server or DB error          |\n\n---\n\n### Notes\n\n- After a successful reset, the token is invalidated.\n- This endpoint does not return or refresh any session token.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/reset?token=6dac8c6833cbe0ecc2d2c34cc8fad88cf513c0e1d43cabd1b734972de2cf259b",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "6dac8c6833cbe0ecc2d2c34cc8fad88cf513c0e1d43cabd1b734972de2cf259b"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"DHbw123asdf!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "validate",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/auth/verify\n\n**Description**  \nVerifies a user account using a token received via email.  \nThis endpoint is typically called when the user clicks on the verification link in their inbox.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/verify`\n- **Authentication:** Not required\n\n---\n\n### Query parameters\n\n| Parameter | Type   | Required | Description                 |\n|-----------|--------|----------|-----------------------------|\n| `token`   | string | Yes      | Verification token from email |\n\nExample:\n```\nGET /api/verify?token=abcdef123456\n```\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | HTML success message  |\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head><title>Verification</title></head>\n  <body>\n    <h1>Account verified successfully</h1>\n  </body>\n</html>\n```\n\n---\n\n### Error responses\n\n| Status | Message                                  | Condition                          |\n|--------|-------------------------------------------|-------------------------------------|\n| 400    | `Verification token missing` (HTML)       | `token` query parameter is missing |\n| 400    | `Invalid or expired token` (HTML)         | Token is not in DB or expired      |\n| 404    | `User not found` (HTML)                   | Token exists, but user ID does nicht |\n| 500    | `Verification failed due to server error` | DB/Server Fehler beim Update       |\n\n---\n\n### Notes\n\n- This endpoint returns an **HTML page**, not a JSON response.\n- The verification token is single-use and time-limited.\n- After success, the user can log in normally via `POST /api/login`.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/verify?token=ed0600a7fa7f7bf853d2e63fd13d0c0e48409a44a1f801da2ad24d9e6ce61c78",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "ed0600a7fa7f7bf853d2e63fd13d0c0e48409a44a1f801da2ad24d9e6ce61c78"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "request-reset-password",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/auth/request-login-code\n\n**Description**  \nInitiates a passwordless login flow by sending a 6-digit login code to the user’s email.  \nThe code is required in the subsequent `POST /api/auth/login-code` call.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/auth/request-login-code`\n- **Authentication:** Not required\n\n---\n\n### Request body\n\n```json\n{\n  \"email\": \"luna@pixelart.com\"\n}\n```\n```json\n{\n  \"username\": \"luna\"\n}\n```\n\n| Field   | Type   | Required | Description                 |\n|---------|--------|----------|-----------------------------|\n| `email`    | string | ✔ (or username) | User email                |\n| `username` | string | ✔ (or email)    | Username                  |\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | Code sent successfully |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Login code sent to your email\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                        | Condition                                      |\n|--------|--------------------------------|------------------------------------------------|\n| 400    | `Missing email`               | No `email` field in request                    |\n| 404    | `Email not found`             | No user with this email in DB                 |\n| 403    | `Email not verified`          | Email exists, but user is not yet verified     |\n| 500    | `Error sending login code`    | Mail server or DB error                        |\n\n---\n\n### Notes\n\n- The login code is stored temporarily and expires after a short period (config-dependent).\n- This is the first step in the \"magic link / code login\" flow.\n- You must call `POST /api/auth/login-code` with the exact same email and code to complete login.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/auth/request-reset",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "request-reset"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cart",
+      "item": [
+        {
+          "name": "deleteCart",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## DELETE /api/carts\n\n**Description**  \nDeletes the entire cart for the currently authenticated user, including all associated items.  \nIf no cart exists, a 404 error is returned.\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/carts`\n- **Authentication:** Required  \n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role | Access |\n|------|--------|\n| User (role 3) | Allowed |\n| Seller / Admin | Forbidden → 403 |\n\n### Request body\n\n_None_ — no body parameters required.\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Cart deleted          |\n\n```json\n{\n  \"message\": \"Cart deleted successfully\"\n}\n```\n\n### Error responses\n\n| Status | Message                          | Condition                                   |\n|--------|----------------------------------|---------------------------------------------|\n| 403    | `Forbidden`                      | Authenticated user is not role 3            |\n| 404    | `Cart not found`                 | No cart exists for the user                 |\n| 500    | `Server error while deleting cart` | Unhandled internal error during deletion   |\n\n### Notes\n\n- This operation deletes both the cart itself and all cart items from the database.\n- The cart is permanently removed — this action cannot be undone.\n- If the user does not have a cart, the response is `404 Not Found`.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "deleteCartItem",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## DELETE /api/carts/items\n\n**Description**  \nRemoves a specific product from the current user's cart.  \nThe product ID is passed in the request body (not the URL).\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/carts/items`\n- **Authentication:** Required  \n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role | Access |\n|------|--------|\n| User (role 3) | Allowed |\n| Seller / Admin | Forbidden → 403 |\n\n### Request body (JSON)\n\n```json\n{\n  \"productId\": 42\n}\n```\n\n- `productId` is required and must reference a product currently in the cart.\n\n### Successful response\n\n| Status | Description             |\n|--------|-------------------------|\n| 200    | Product removed from cart |\n\n```json\n{\n  \"message\": \"Product removed from cart\"\n}\n```\n\n### Error responses\n\n| Status | Message                              | Condition                              |\n|--------|--------------------------------------|----------------------------------------|\n| 400    | `Invalid request body`               | Body not parsable or productId missing |\n| 403    | `Forbidden`                          | Authenticated user is not role 3       |\n| 404    | `Cart not found`                     | No cart exists for current user        |\n| 404    | `Product not found in cart`          | Product is not part of the cart        |\n| 500    | `Server error`                       | Unhandled internal error               |\n\n### Notes\n\n- If the cart exists but does not contain the given product, a 404 is returned.\n- The `productId` is provided via JSON body, not in the URL.\n- This endpoint will not create or reset a cart; it only operates on an existing one.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts/items",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "items"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"itemId\": 134 }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "getCart",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/carts\n\n**Description**  \nReturns the current user’s cart, including all items and the calculated total price.\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/carts`\n- **Authentication:** Required\n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission  |\n|--------|-------------|\n| User   | Allowed     |\n| Seller | Forbidden   |\n| Admin  | Forbidden   |\n\n### Successful response\n\n| Status | Description                 |\n|--------|-----------------------------|\n| 200    | Cart returned successfully  |\n\n**Example 1 — cart with items**\n\n```json\n{\n  \"cartDetails\": {\n    \"id\": 14,\n    \"created_at\": \"2025-06-26T08:00:00Z\"\n  },\n  \"items\": [\n    {\n      \"itemId\": 137,\n      \"productId\": 59,\n      \"name\": \"Pixelart Dragon\",\n      \"price\": 15.00,\n      \"quantity\": 2\n    }\n  ],\n  \"totalPrice\": 30.00\n}\n```\n\n**Example 2 — empty cart**\n\n```json\n{\n  \"cartDetails\": {\n    \"id\": 14,\n    \"created_at\": \"2025-06-26T08:00:00Z\"\n  },\n  \"items\": [],\n  \"totalPrice\": 0,\n  \"message\": \"The cart is empty\"\n}\n```\n\n### Error responses\n\n| Status | Message                                 | Trigger                                         |\n|--------|-----------------------------------------|-------------------------------------------------|\n| 401    | `Unauthorized`                          | User not logged in                              |\n| 403    | `Forbidden`                             | Logged-in user does not have the **user** role  |\n| 404    | `No cart found for this user`           | User has no cart                                |\n| 500    | `Server error`                          | Internal server failure                         |\n\n### Notes\n\n- `totalPrice` is calculated as the sum of `price × quantity` for all items.\n- If the cart exists but contains no items, the response still\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "postCart",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/cart\n\n**Description**  \nCreates a new, empty cart for the currently authenticated user.  \nIf a cart already exists, the request fails with a conflict.\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/cart`\n- **Authentication:** Required\n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission                    |\n|--------|-------------------------------|\n| Admin  | Not allowed (returns 404)     |\n| Seller | Not allowed (returns 404)     |\n| User   | Allowed                     |\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 201    | Cart created          |\n\n```json\n{\n  \"message\": \"Cart created successfully\",\n  \"cartId\": 42\n}\n```\n\n### Error responses\n\n| Status | Message                                | Trigger                                     |\n|--------|----------------------------------------|---------------------------------------------|\n| 404    | `User not found`                       | User ID not found in DB                     |\n| 409    | `Cart already exists for this user`    | Cart already exists                         |\n| 500    | `Server error`                         | Unexpected internal failure                 |\n\n### Notes\n\n- Only users (not admins/sellers) can create carts.\n- If a cart already exists, the response includes the existing `cartId`:\n\n```json\n{\n  \"error\": \"Cart already exists for this user\",\n  \"cartId\": 42\n}\n```\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "postCartItem",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/carts/items\n\n**Description**  \nAdds a product to the authenticated user’s cart.  \nIf no cart exists yet, the backend creates one automatically.  \nIf the product is already present, its quantity is increased.\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/carts/items`\n- **Authentication:** Required  \n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role | Access |\n|------|--------|\n| User (role 3) | Allowed |\n| Seller / Admin | Forbidden → 403 |\n\n### Request body (JSON)\n\n| Field       | Type    | Required | Constraints                    |\n|-------------|---------|----------|--------------------------------|\n| `productId` | number  | Yes      | Must reference an existing product |\n| `quantity`  | number  | Yes      | Positive integer (`> 0`)          |\n\n```json\n{\n  \"productId\": 42,\n  \"quantity\": 2\n}\n```\n\n### Successful responses\n\n| Status | When returned | Example body |\n|--------|---------------|--------------|\n| **201** | Product was **not** in the cart (new item) | ```json { \"message\": \"Item added to cart successfully\", \"itemId\": 135, \"newQuantity\": 2 } ``` |\n| **200** | Product already in cart → quantity updated | ```json { \"message\": \"Quantity updated\", \"itemId\": 135, \"newQuantity\": 4 } ``` |\n\n### Error responses\n\n| Status | Message (exact)                         | Condition in code                              |\n|--------|-----------------------------------------|-----------------------------------------------|\n| 400    | `Invalid input`                         | `productId` or `quantity` missing / wrong type |\n| 400    | `Quantity must be greater than zero`    | `quantity <= 0`                                |\n| 400    | `Invalid JSON in request body`          | Body cannot be parsed                          |\n| 403    | `Forbidden`                             | Authenticated but **not** role 3 (user)        |\n| 404    | `Product not found`                     | Product-ID unbekannt                           |\n| 404    | `Cart not found` *(rare)*               | Model meldet fehlenden Cart                    |\n| 404    | `Quantity must be positive`             | (Model-Level Plausibilitäts­fehler)            |\n| 500    | `Server error`                          | Any other unhandled exception                  |\n\n### Notes\n\n- If the user has **no cart**, the handler creates one internally via `postCartModel`; the operation then proceeds.\n- Quantity updates are idempotent: repeating the same request increases the stored quantity additively.\n- All validation and ownership checks occur **before** database writes.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts/items",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "items"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 59,\n  \"quantity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "putQuantity",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## PUT /api/carts/items\n\n**Description**  \nUpdates the quantity of a specific cart item belonging to the authenticated user.  \nThe item must already exist in the user's cart.\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/carts/items`\n- **Authentication:** Required  \n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role         | Access   |\n|--------------|----------|\n| User (role 3) | Allowed  |\n| Seller / Admin | Forbidden → 403 |\n\n### Request body (JSON)\n\nThe request body must include the ID of the cart item and the new quantity:\n\n| Field     | Type    | Required | Description                             |\n|-----------|---------|----------|-----------------------------------------|\n| `itemId`  | number  | Yes      | ID of the cart item to update           |\n| `quantity`| number  | Yes      | New quantity (> 0)                      |\n\n#### Example\n\n```json\n{\n  \"itemId\": 135,\n  \"quantity\": 3\n}\n```\n\n### Successful response\n\n| Status | Description                  |\n|--------|------------------------------|\n| 200    | Quantity updated successfully |\n\n```json\n{\n  \"message\": \"Cart item quantity updated\",\n  \"item\": {\n    \"itemId\": 135,\n    \"quantity\": 3\n  }\n}\n```\n\n### Error responses\n\n| Status | Message                                | Condition                                 |\n|--------|----------------------------------------|-------------------------------------------|\n| 400    | `Invalid input`                        | Missing or malformed JSON / wrong types   |\n| 400    | `Quantity must be greater than zero`   | Quantity is `<= 0`                        |\n| 403    | `Forbidden`                            | Authenticated user is not role 3          |\n| 404    | `Cart not found`                       | No cart exists for current user           |\n| 404    | `Item not found in cart`               | `itemId` not found in user's cart         |\n| 500    | `Server error while updating cart`     | Any other unhandled internal error        |\n\n### Notes\n\n- This endpoint **does not** accept a product ID – only a cart `itemId`.\n- If the item does not exist in the user's cart, a `404` is returned.\n- The quantity is replaced with the new value.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/carts/items",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "carts",
+                "items"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \n  \"itemId\": 137, \n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "item": [
+        {
+          "name": "getCategoriesWithChildren",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/categories/:id/with-children\n\n**Description**  \nRetrieves a single category by ID including its direct child categories.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/categories/:id/with-children`\n- **Authentication:** Not required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description           |\n|-----------|------|----------|-----------------------|\n| `id`      | int  | Yes      | ID of the parent category |\n\n---\n\n### Request body\n\n_None_\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Category with children retrieved |\n\n```json\n{\n  \"success\": true,\n  \"code\": 200,\n  \"data\": {\n    \"id\": 3,\n    \"name\": \"Pixel Shirts\",\n    \"children\": [\n      {\n        \"id\": 5,\n        \"name\": \"Unisex\"\n      },\n      {\n        \"id\": 6,\n        \"name\": \"Limited Edition\"\n      }\n    ]\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                      | Condition                        |\n|--------|------------------------------|-----------------------------------|\n| 400    | `Invalid category ID`        | ID is missing or malformed       |\n| 404    | `Category not found`         | No category exists with that ID  |\n| 500    | `Server error`               | Internal server or DB failure    |\n\n---\n\n### Notes\n\n- This endpoint is useful for constructing category trees (e.g. for filters or navigation).\n",
+            "url": {
+              "raw": "http://localhost:3000/api/categories/3/with-children",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "3",
+                "with-children"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "evaluator",
+      "item": [
+        {
+          "name": "checkPermission",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/evaluator/check-permission\n\n**Description**  \nEvaluates whether a given user has permission to access or modify a resource (`product`, `wishlist`, or `user`).\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/evaluator/check-permission`\n- **Authentication:** Not required (user ID is passed as query param)\n\n---\n\n### Query Parameters\n\n| Parameter       | Type   | Required | Description                                                         |\n|-----------------|--------|----------|---------------------------------------------------------------------|\n| `user_id`       | number | ✔        | ID of the user to evaluate                                          |\n| `resource_type` | string | ✔        | One of `product`, `wishlist`, or `user`                             |\n| `resource_id`   | number | ✔        | ID of the target resource                                           |\n| `access`        | string | Optional | For `wishlist` only: either `read` or `write`                       |\n\n---\n\n### Access Logic\n\n- **Admin shortcut**  \n  If `user_id` is `1`, permission is **always granted**, regardless of resource type or ownership.\n\n- **resource_type = `product`**  \n  - User must be the **seller** of the product.\n\n- **resource_type = `wishlist`**  \n  - User must either:\n    - Be the **owner** of the wishlist, or  \n    - Have an entry in `wishlist_permission` table for the given `wishlist_id`.\n  - `access=read` → permission level `1` (read) or `2` (write)  \n  - `access=write` → permission level must be `2`\n\n- **resource_type = `user`**  \n  - Allowed if:\n    - `user_id` matches `resource_id`, or  \n    - The user has role ID `1` (admin)\n\n---\n\n### Successful Response\n\n| Status | Description               |\n|--------|---------------------------|\n| 200    | Evaluation completed      |\n\n```json\n{\n  \"success\": true,\n  \"allowed\": true\n}\n```\n\nor\n\n```json\n{\n  \"success\": true,\n  \"allowed\": false\n}\n```\n\n---\n\n### Error Responses\n\n| Status | Message                                     | Condition                                      |\n|--------|---------------------------------------------|------------------------------------------------|\n| 400    | `Missing or invalid parameters`             | Required query parameters are missing or invalid |\n| 400    | `Missing or invalid access type`            | If `access` is not `read` or `write` (for wishlist) |\n| 400    | `Unknown resource type`                     | `resource_type` is not one of the allowed values |\n| 500    | `Server error during permission evaluation` | Internal database or server error             |\n\n---\n\n### Notes\n\n- This endpoint does **not** require authentication or cookies — it relies solely on the query parameters.\n- For security, this should only be used internally or server-side to prevent user ID spoofing.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/evaluator?user_id=3&resource_type=user&resource_id=12&access=read",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "evaluator"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "3"
+                },
+                {
+                  "key": "resource_type",
+                  "value": "user"
+                },
+                {
+                  "key": "resource_id",
+                  "value": "12"
+                },
+                {
+                  "key": "access",
+                  "value": "read"
+                }
+              ],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "item": [
+        {
+          "name": "postOrders",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/orders\n\n**Description**  \nCreates a new order for the currently authenticated and verified user.  \nThe order will be created using the current contents of their cart.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/orders`\n- **Authentication:** Required (via accessToken cookie)\n\n---\n\n### Request body\n\n_No request body is required._\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 201    | Order created          |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Order created successfully\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                            | Condition                                      |\n|--------|------------------------------------|------------------------------------------------|\n| 401    | `Authentication required`          | Missing or invalid accessToken cookie          |\n| 403    | `Email not verified`               | User is not email-verified                     |\n| 400    | `Cart is empty`                    | No items found in the user's cart              |\n| 500    | `Error creating order`             | Internal database or logic error               |\n\n---\n\n### Notes\n\n- Orders are created directly from the current cart content.\n- The cart will likely be cleared or frozen after the order is placed.\n- Only **verified users** can place orders.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "putOrders",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## PUT /api/orders/:id\n\n**Description**  \nUpdates the status of a specific order.  \nOnly admins are allowed to change the order status.\n\n---\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/orders/:id`\n- **Authentication:** Required (admin role only)\n\n---\n\n### URL parameters\n\n| Parameter | Type   | Required | Description         |\n|-----------|--------|----------|---------------------|\n| `id`      | int    | Yes      | The ID of the order |\n\n---\n\n### Request body\n\n```json\n{\n  \"status\": \"shipped\"\n}\n```\n\n| Field    | Type   | Required | Description                         |\n|----------|--------|----------|-------------------------------------|\n| `status` | string | Yes      | New status of the order (e.g. \"shipped\", \"cancelled\") |\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Order status updated  |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Order status updated\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                                    |\n|--------|----------------------------------|-----------------------------------------------|\n| 401    | `Authentication required`       | No or invalid accessToken cookie              |\n| 403    | `Access denied`                 | User is not an admin                          |\n| 404    | `Order not found`               | No order with that ID exists                  |\n| 400    | `Missing or invalid status`     | Status field is missing or malformed          |\n| 500    | `Error updating order`          | Internal server or DB error                   |\n\n---\n\n### Notes\n\n- Only admins (`role_id = 1`) may update order statuses.\n- Allowed status values should match your internal business logic.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/orders/1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "getOrders",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/orders\n\n**Description**  \nReturns all orders for the currently authenticated user.  \nAdmins receive **all orders**, regular users only their own.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/orders`\n- **Authentication:** Required (via accessToken cookie)\n\n---\n\n### Permissions\n\n| Role       | Access type             |\n|------------|--------------------------|\n| Admin      | All orders               |\n| Registered | Only own orders          |\n\n---\n\n### Successful response\n\n| Status | Description         |\n|--------|---------------------|\n| 200    | Orders returned     |\n\n```json\n{\n  \"success\": true,\n  \"orders\": [\n    {\n      \"id\": 12,\n      \"user_id\": 3,\n      \"items\": [\n        {\n          \"product_id\": 7,\n          \"quantity\": 2,\n          \"price\": 29.99\n        }\n      ],\n      \"status\": \"pending\",\n      \"created_at\": \"2025-06-26T09:32:45.000Z\"\n    }\n  ]\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                          | Condition                                 |\n|--------|----------------------------------|--------------------------------------------|\n| 401    | `Authentication required`        | No or invalid accessToken cookie           |\n| 403    | `Email not verified`             | Logged-in user has not verified email      |\n| 500    | `Error fetching orders`          | Internal DB or server failure              |\n\n---\n\n### Notes\n\n- The list is filtered automatically depending on the user's role.\n- This endpoint requires the user to be verified (`is_verified = true`).\n- Orders include full product and quantity breakdown.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/orders?status=1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "1"
+                },
+                {
+                  "key": "product_id",
+                  "value": "2"
+                }
+              ],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "item": [
+        {
+          "name": "deleteProduct",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## DELETE /api/products/{id}\n\n**Description:**  \nPermanently deletes a specific product by its unique ID. Only the product owner (seller) or an admin can perform this operation. Email verification is required.\n\n### Request\n\n- Method: `DELETE`\n- Endpoint: `/api/products/{id}`\n- Example: `/api/products/57`\n- Authentication: Required\n- Email verification required: Yes\n\n### Access Control\n\n| Role   | Permission                        |\n|--------|------------------------------------|\n| Admin  | Can delete any product             |\n| Seller | Can delete only their own products |\n| User   | Not allowed                        |\n\n### Request Body\n\nNo request body is required.\n\n### Successful Responses\n\n| Status | Description                   |\n|--------|-------------------------------|\n| 200    | Product deleted successfully. Response includes deleted product ID. |\n\n**Example Response (200 OK):**\n```json\n{\n  \"success\": true,\n  \"deletedId\": 57\n}\n```\n\n### Error Responses\n\n| Status | Description                   | Cause                                  |\n|--------|-------------------------------|----------------------------------------|\n| 400    | Invalid product ID            | ID is not a valid integer              |\n| 403    | Forbidden                     | Triggered by authentication or ownership checks before handler execution |\n| 404    | Product not found             | No product exists with the given ID    |\n| 500    | Internal server error         | Unexpected server-side failure         |\n\n### Notes\n\n- The product ID must be included in the URL path.\n- Email verification is enforced for all roles.\n- Authorization and role checks are handled before the route logic executes.\n- Linked data (e.g. reviews, images) may persist depending on backend logic.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/57",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "57"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getAllProducts with params",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/products (with filters and pagination)\n\n**Description:**  \nFetches a filtered and paginated list of products. Supports sorting, price ranges, category restriction, name search, and stock filtering.\n\n### Request\n\n- Method: `GET`\n- Endpoint: `/api/products`\n- Authentication: Not required\n\n### Example Request\n\n```http\nGET /api/products?minPrice=100&maxPrice=300&name=t&inStock=true&sort=price&order=asc&category=3&limit=16&offset=12\n```\n\n### Query Parameters\n\n| Parameter    | Type     | Description                                                             |\n|--------------|----------|-------------------------------------------------------------------------|\n| `minPrice`   | number   | Minimum price (inclusive)                                               |\n| `maxPrice`   | number   | Maximum price (inclusive)                                               |\n| `name`       | string   | Partial product name (case-insensitive)                                 |\n| `inStock`    | boolean  | If `true`, only include products with stock > 0                         |\n| `sort`       | string   | Field to sort by: `price`, `name`, `rating`                             |\n| `order`      | string   | Sort direction: `asc` (default) or `desc`                               |\n| `category`   | integer  | Category ID; also includes all child categories                         |\n| `limit`      | integer  | Max number of results to return (default: 16)                           |\n| `offset`     | integer  | Number of results to skip (for pagination) (default: 0)                 |\n\n### Successful Response\n\n| Status | Description                   |\n|--------|-------------------------------|\n| 200    | Filtered products returned successfully |\n\n**Example Response:**\n```json\n{\n  \"success\": true,\n  \"data\": [ /* filtered products */ ],\n  \"total\": 42,\n  \"category\": {\n    \"id\": 3,\n    \"name\": \"Shirts\",\n    \"children\": [ /* subcategories */ ]\n  }\n}\n```\n\n### Error Responses\n\n| Status | Error message           | Cause                                               |\n|--------|-------------------------|------------------------------------------------------|\n| 400    | `Invalid category ID`   | Category ID is not a valid integer                  |\n| 404    | `Category not found`    | The specified category ID does not exist            |\n| 500    | `Server error`          | An internal error occurred during the request       |\n\n### Notes\n\n- You can combine multiple filters in a single request.\n- Category filter automatically includes all child categories.\n- `limit` and `offset` support full pagination handling.\n- Sorting works only on predefined fields (`price`, `name`, `rating`).\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products?minPrice=100&maxPrice=300&name=t&inStock=true&sort=price&order=asc&category=3&limit=16&offset=12",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "minPrice",
+                  "value": "100"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "300"
+                },
+                {
+                  "key": "name",
+                  "value": "t"
+                },
+                {
+                  "key": "inStock",
+                  "value": "true"
+                },
+                {
+                  "key": "sort",
+                  "value": "price"
+                },
+                {
+                  "key": "order",
+                  "value": "asc"
+                },
+                {
+                  "key": "category",
+                  "value": "3"
+                },
+                {
+                  "key": "limit",
+                  "value": "16"
+                },
+                {
+                  "key": "offset",
+                  "value": "12"
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getAllProducts",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/products (unfiltered)\n\n**Description:**  \nReturns a default list of all products without any filters, sorting, or category restrictions. This is the base version of the product listing endpoint.\n\n### Request\n\n- Method: `GET`\n- Endpoint: `/api/products`\n- Authentication: Not required\n\n### Query Parameters\n\nNone required. The default behavior is:\n\n- `limit = 16`\n- `offset = 0`\n- No price filter\n- No category filter\n- No stock restriction\n- No name filtering\n- No explicit sorting\n\n### Successful Response\n\n| Status | Description                   |\n|--------|-------------------------------|\n| 200    | Products returned successfully |\n\n**Example Response:**\n```json\n{\n  \"success\": true,\n  \"data\": [ /* default product list */ ],\n  \"total\": 124\n}\n```\n\n### Error Responses\n\n| Status | Error message           | Cause                                        |\n|--------|-------------------------|----------------------------------------------|\n| 500    | `Server error`          | An internal error occurred during execution  |\n\n### Notes\n\n- If no query parameters are specified, the endpoint returns the first 16 products.\n- Default sort order is undefined unless explicitly specified.\n- Pagination can still be applied via `limit` and `offset` if desired.\n- If category filters are to be applied, use the version with query parameters.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getProductsById",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/products/{id}\n\n**Description:**  \nRetrieves a single product by its unique ID. The endpoint is publicly accessible and does not require authentication.\n\n### Request\n\n- Method: `GET`\n- Endpoint: `/api/products/{id}`\n- Example: `/api/products/54`\n- Authentication: Not required\n\n### Path Parameters\n\n| Parameter | Type   | Description                        |\n|-----------|--------|------------------------------------|\n| `id`      | number | Unique identifier of the product   |\n\n### Successful Response\n\n| Status | Description                |\n|--------|----------------------------|\n| 200    | Product returned successfully |\n\n**Example Response:**\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 54,\n    \"name\": \"Pixel Art Shirt\",\n    \"price\": 19.99,\n    \"stock\": 12,\n    \"description\": \"Sample product\",\n    ...\n  }\n}\n```\n\n### Error Responses\n\n| Status | Error message         | Cause                                  |\n|--------|-----------------------|----------------------------------------|\n| 404    | `Product not found`   | No product exists with the given ID    |\n| 500    | `Server error`        | Internal error during retrieval        |\n\n### Notes\n\n- If the ID is malformed (e.g. `/api/products/abc`), the backend **does not** return a `400` – it will likely throw a `500`.\n- No authentication or email verification is required.\n- If the product exists, the full object is returned in the `data` field.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getMyProducts",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/products/mine\n\n**Description**  \nReturns all products created by the authenticated seller.\n\n### Request\n\n- Method: `GET`\n- Endpoint: `/api/products/mine`\n- Authentication: Required\n- Email verification required: Yes\n- Allowed role: **seller** (`role_id = 2`)\n\n### Successful response\n\n| Status | Description          |\n|--------|----------------------|\n| 200    | Seller’s products    |\n\n```json\n{\n  \"success\": true,\n  \"data\": [ /* seller's products */ ]\n}\n```\n\n### Error responses\n\n| Status | Error message                                    | Trigger                                              |\n|--------|--------------------------------------------------|------------------------------------------------------|\n| 401    | `Unauthorized` *(middleware)*                    | Not logged in                                        |\n| 403    | `Forbidden`  *(middleware)*                      | Logged in but not role `seller`                      |\n| 500    | `Server error while fetching seller products`    | Internal server/database failure                     |\n\n### Notes\n\n- Admins and regular users cannot access this endpoint (403).\n- If the seller has no products, `data` is an empty array.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/mine",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "mine"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "putProduct",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## PUT /api/products/{id}\n\n**Description**  \nUpdates one or more editable attributes (`name`, `description`, `price`, `stock`) of an existing product.  \nOnly the product owner (seller) or an admin can perform this operation. Email verification is required.\n\n### Request\n\n- **Method:** `PUT`  \n- **Endpoint:** `/api/products/{id}`  \n- **Example:** `/api/products/2`  \n- **Authentication:** Required (Bearer token or cookie)  \n- **Email verification required:** Yes  \n\n#### Roles and permissions\n\n| Role   | Permission                                    |\n|--------|-----------------------------------------------|\n| Admin  | May update any product                        |\n| Seller | May update only products they own             |\n| User   | Not allowed                                   |\n\n### Request body (JSON)\n\nOnly the fields listed below are processed; any others are ignored.\n\n| Field        | Type    | Rules                           |\n|--------------|---------|---------------------------------|\n| `name`       | string  | Optional, non-empty             |\n| `description`| string  | Optional, non-empty             |\n| `price`      | number  | Optional, `≥ 0`                 |\n| `stock`      | integer | Optional, `≥ 0`                 |\n\n**Example body**\n\n```json\n{\n  \"name\": \"Pixelart Magic Wand\",\n  \"price\": 12.50,\n  \"stock\": 25,\n  \"randomField\": \"ignored\"\n}\n```\n\n### Successful response\n\n| Status | Description                                                                           |\n|--------|---------------------------------------------------------------------------------------|\n| 200    | Product updated successfully (or partially, if some fields were ignored).             |\n\n**Example 200 OK**\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Product partially updated. Some fields were ignored.\",\n  \"updatedFields\": [\"name\", \"price\", \"stock\"],\n  \"ignoredFields\": [\"randomField\"]\n}\n```\n\n### Error responses\n\n| Status | Error message                              | Trigger                                                                                 |\n|--------|--------------------------------------------|-----------------------------------------------------------------------------------------|\n| 400    | `Request body is empty`                    | Body present but empty                                                                  |\n| 400    | `Invalid JSON format`                      | Body is not valid JSON                                                                  |\n| 400    | `No valid fields provided for update`      | None of the allowed fields (`name`, `description`, `price`, `stock`) were present       |\n| 400    | `Price must be >= 0`                       | `price` supplied but negative                                                           |\n| 400    | `Stock must be >= 0`                       | `stock` supplied but negative                                                           |\n| 403    | `Forbidden` *(middleware)*                 | Authenticated user is neither admin nor owner                                           |\n| 404    | `Product not found`                        | No product with the given `id`                                                          |\n| 413    | `Payload too large`                        | Request body exceeds ~1 MB                                                              |\n| 500    | `Server error`                             | Unhandled exception in the handler or database layer                                    |\n\n### Notes\n\n- Fields other than `name`, `description`, `price`, and `stock` are ignored and returned in `ignoredFields`.\n- If all supplied fields are invalid or ignored, the handler returns a `400` error.\n- The request body size is capped at **1 MB**. Larger payloads are rejected with **413 Payload Too Large**.\n- All validation and ownership checks happen before any database update is attempted.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/2",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "2"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Simon PixelNFT #6\",\n  \"price\": 443.16,\n  \"stock\": 12, \n  \"description\": \"Section could nature interest wear. Morning as police often. Place myself his itself find add sing.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "postProduct",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## POST /api/products\n\n**Description**  \nCreates a new product. Only users with the `seller` or `admin` role can create products. The user's email must be verified.\n\n### Request\n\n- **Method:** `POST`  \n- **Endpoint:** `/api/products`  \n- **Authentication:** Required  \n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission                         |\n|--------|------------------------------------|\n| Admin  | Can create products                |\n| Seller | Can create products                |\n| User   | Not allowed (403 Forbidden)        |\n\n### Request body (JSON)\n\n| Field        | Type     | Required | Rules                    |\n|--------------|----------|----------|---------------------------|\n| `name`       | string   | Yes      | Minimum 3 characters      |\n| `description`| string   | Yes      | Non-empty                 |\n| `price`      | number   | Yes      | Must be ≥ 0               |\n| `stock`      | integer  | Yes      | Must be ≥ 0               |\n| `categoryId` | integer  | Yes      | Must refer to existing ID |\n\n**Example request**\n\n```json\n{\n  \"name\": \"Pixelart Fireball\",\n  \"description\": \"A glowing pixelated fireball animation\",\n  \"price\": 8.90,\n  \"stock\": 120,\n  \"categoryId\": 3\n}\n```\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 201    | Product created        |\n\n**Example 201 Created**\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Product created\",\n  \"productId\": 57\n}\n```\n\n### Error responses\n\n| Status | Error message                            | Trigger                                                 |\n|--------|------------------------------------------|---------------------------------------------------------|\n| 400    | `Missing required fields`                | One or more fields are missing                          |\n| 400    | `Name must be at least 3 characters`     | `name.length < 3`                                       |\n| 400    | `Price must be >= 0`                     | `price < 0`                                             |\n| 400    | `Stock must be >= 0`                     | `stock < 0`                                             |\n| 400    | `Invalid category ID`                    | `categoryId` not a number or invalid format             |\n| 404    | `Category not found`                     | No category with the given ID exists                    |\n| 403    | `Forbidden` *(middleware)*               | Authenticated user is not `seller` or `admin`           |\n| 413    | `Payload too large`                      | Request body exceeds ~1 MB                              |\n| 500    | `Server error`                           | Internal server/database error                          |\n\n### Notes\n\n- The maximum allowed request body size is **1 MB**.\n- User must be authenticated and have the `admin` or `seller` role.\n- Email verification is required and enforced via middleware.\n- Categories must exist in the database. Use `GET /api/categories` to fetch them.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Pixelart turtle",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "description",
+                  "value": "Test",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "price",
+                  "value": "999.99",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "stock",
+                  "value": "12",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "category_id",
+                  "value": "2",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "seller_id",
+                  "value": "9",
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "image",
+                  "value": [
+                    "/Users/simonriedinger/Downloads/Pixelart-Schildkroete.png"
+                  ],
+                  "disabled": false,
+                  "type": "default"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "images",
+          "item": [
+            {
+              "name": "deleteProductImage",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## DELETE /api/products/images/{imageId}\n\n**Description**  \nDeletes a product image by its ID.  \nOnly the product owner (seller) or an admin may delete an image.\nEach product must have at least one image. The last remaining image cannot be deleted.\n\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/products/images/{imageId}`\n- **Authentication:** Required\n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission                                       |\n|--------|--------------------------------------------------|\n| Admin  | May delete any image                             |\n| Seller | May delete images of their own products          |\n| User   | Not allowed (403 Forbidden)                      |\n\n### Successful response\n\n| Status | Description        |\n|--------|--------------------|\n| 200    | Image deleted      |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Image deleted\"\n}\n```\n\n### Error responses\n\n| Status | Message                            | Trigger                                              |\n|--------|------------------------------------|------------------------------------------------------|\n| 400    | `Cannot delete last image of a product` | You cant delete the last image of an product                |\n| 404    | `Image not found`                  | No image with given ID exists                        |\n| 403    | `Forbidden`          | User is not image owner and not admin                |\n| 500    | `Server error during image delete` | Internal server or filesystem failure                |\n\n\n### Notes\n\n- This operation deletes both the database record and the corresponding image file from disk.\n- Deletion is **permanent** and cannot be undone.\n- Admins can delete any image, regardless of ownership.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/products/images/3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "images",
+                    "3"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "postProductImage",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## POST /api/products/{productId}/images\n\n**Description**  \nUploads a new product image and creates an image entry for the given product. Only sellers (for their own products) and admins are allowed to use this endpoint.\nIf is_primary is set to true, all other images of the product will automatically be set to false. Only one primary image is allowed per product.\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/products/{productId}/images`\n- **Authentication:** Required\n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission                                  |\n|--------|---------------------------------------------|\n| Admin  | May upload image for any product            |\n| Seller | May upload image for their own products     |\n| User   | Not allowed (403 Forbidden)                 |\n\n### Request format\n\n- **Content-Type:** `multipart/form-data`\n- **Fields:**\n  - `image` (file, required): JPEG or PNG\n  - `alt_text` (string, optional)\n  - `is_primary` (boolean, optional)\n\n**Example using curl**\n\n```bash\ncurl -X POST /api/products/42/images \\\n  -H \"Authorization: Bearer <token>\" \\\n  -F \"image=@pixel_flower.png\" \\\n  -F \"alt_text=Pixel Flower\" \\\n  -F \"is_primary=true\"\n```\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 201    | Image uploaded         |\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 87,\n    \"product_id\": 42,\n    \"filename\": \"1719323552-837394828.png\",\n    \"alt_text\": \"Pixel Flower\",\n    \"is_primary\": true\n  }\n}\n```\n\n### Error responses\n\n| Status | Message                            | Trigger                                      |\n|--------|------------------------------------|----------------------------------------------|\n| 400    | `No image uploaded`                | No file provided                             |\n| 400    | `Only JPEG and PNG files allowed`  | Invalid file type                            |\n| 404    | `Product not found`                | Given productId does not exist               |\n| 403    | `Forbidden`                        | Not seller of product or not admin           |\n| 500    | `Server error during image upload` | Internal server or DB error during handling  |\n\n### Notes\n\n- If the product does not exist, the uploaded file is deleted again.\n- File size limits and storage path are defined by the backend config.\n- The uploaded file is renamed to a unique timestamp-based filename.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/products/2/images",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "2",
+                    "images"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "alt_text",
+                      "value": "Ein schönes Beispielbild",
+                      "disabled": false,
+                      "type": "default"
+                    },
+                    {
+                      "key": "is_primary",
+                      "value": "true",
+                      "disabled": false,
+                      "type": "default"
+                    },
+                    {
+                      "key": "image",
+                      "value": [
+                        "/Users/simonriedinger/Downloads/Pixelart-Schildkroete.png"
+                      ],
+                      "disabled": false,
+                      "type": "default"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "putProductImage",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## PUT /api/products/images/{imageId}\n\n**Description**  \nUpdates metadata or replaces the image file for an existing product image.  \nOnly the product owner (seller) or an admin may perform this operation.\nIf is_primary is set to true, all other images of the product will automatically be set to false. Only one primary image is allowed per product.\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/products/images/{imageId}`\n- **Authentication:** Required\n- **Email verification required:** Yes\n\n#### Roles and permissions\n\n| Role   | Permission                                       |\n|--------|--------------------------------------------------|\n| Admin  | May update any image                             |\n| Seller | May update images of their own products          |\n| User   | Not allowed (403 Forbidden)                      |\n\n### Request format\n\n- **Content-Type:** `multipart/form-data`\n- **Fields:**\n  - `image` (file, optional): JPEG or PNG to replace the existing image\n  - `alt_text` (string, optional): Text describing the image\n  - `is_primary` (boolean, optional): Marks image as primary\n\n**Example using curl**\n\n```bash\ncurl -X PUT /api/products/images/87 \\\n  -H \"Authorization: Bearer <token>\" \\\n  -F \"image=@new_pixel_sprite.png\" \\\n  -F \"alt_text=New pixel sprite\" \\\n  -F \"is_primary=true\"\n```\n\n### Successful response\n\n| Status | Description        |\n|--------|--------------------|\n| 200    | Image updated      |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Image updated\",\n  \"updatedFields\": [\"image\", \"alt_text\", \"is_primary\"]\n}\n```\n\n### Error responses\n\n| Status | Message                                  | Trigger                                               |\n|--------|------------------------------------------|-------------------------------------------------------|\n| 400    | `No update fields provided`              | Empty form, no `image`, `alt_text`, or `is_primary`   |\n| 400    | `Only JPEG and PNG files allowed`        | Uploaded file is not of accepted MIME type            |\n| 404    | `Image not found`                        | No image exists with given `imageId`                  |\n| 403    | `Forbidden`                              | Not image owner or not admin                          |\n| 500    | `Server error during image update`       | Internal server or DB error                           |\n\n### Notes\n\n- If a new image file is uploaded, the old one is deleted from disk.\n- All fields are optional, but at least one must be provided.\n- The response includes which fields were updated.\n- Validation and authorization happen before any file or DB operations.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/products/images/5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "images",
+                    "5"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"alt_text\": \"Neuer Alt-Text\",\n  \"is_primary\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "reviews",
+      "item": [
+        {
+          "name": "deleteReview",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "  # DELETE /api/reviews/:reviewId\n\n  **Description**\n  Deletes a specific product review.\n  Only the author of the review or the seller of the corresponding product is allowed to perform this action.\n\n  ---\n\n  ## Request\n\n  - **Method:** `DELETE`\n  - **Endpoint:** `/api/reviews/:reviewId`\n  - **Authentication:** Required\n\n  ### URL Parameters\n\n  | Name       | Type   | Description                    |\n  |------------|--------|--------------------------------|\n  | `reviewId` | number | ID of the review to be deleted |\n\n  ---\n\n  ## Successful Response\n\n  | Status | Description                  |\n  |--------|------------------------------|\n  | 200    | Review deleted successfully  |\n\n  ```json\n  {\n    \"success\": true,\n    \"message\": \"Review deleted\",\n    \"data\": {\n      \"id\": 12,\n      \"product_id\": 50,\n      \"user_id\": 3,\n      \"rating\": 4.5,\n      \"comment\": \"Really great product!\"\n    }\n  }\n  ```\n\n  ---\n\n  ## Error Responses\n\n  | Status | Description                        |\n  |--------|------------------------------------|\n  | 401    | Authentication required            |\n  | 403    | Not authorized to delete the review|\n  | 404    | Review not found                   |\n  | 500    | Internal server error              |\n\n  ---\n\n  ## Notes\n\n  - Customers can delete their own reviews.\n  - Sellers can delete reviews for products they own.\n  - Admins are not permitted to delete reviews by default\n",
+            "url": {
+              "raw": "http://localhost:3000/api/reviews/1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getProductReviews",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/products/:id/reviews\n\n**Description**  \nFetches all reviews for a specific product.  \nIf no reviews are present, a message will be included.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/products/:id/reviews`\n- **Authentication:** Not required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description            |\n|-----------|------|----------|------------------------|\n| `id`      | int  | Yes      | Product ID to fetch reviews for |\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Reviews retrieved     |\n\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 5,\n      \"user_id\": 3,\n      \"rating\": 4.5,\n      \"comment\": \"Beautiful pixel art, fast delivery!\",\n      \"created_at\": \"2025-06-26T10:55:42.000Z\"\n    }\n  ]\n}\n```\n\n- If there are no reviews, the response includes a `\"message\"`:\n```json\n{\n  \"success\": true,\n  \"data\": [],\n  \"message\": \"Noch keine Bewertungen vorhanden\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message               | Condition                         |\n|--------|------------------------|------------------------------------|\n| 404    | `Product not found`   | No product with given ID exists   |\n| 500    | `Server error during review retrieval` | Unexpected DB error |\n\n---\n\n### Notes\n\n- This endpoint is public – anyone can view reviews.\n- The backend ensures the product exists before fetching reviews.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/50/reviews",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "50",
+                "reviews"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "postProductReview",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "  # POST /api/products/:productId/reviews\n\n  **Description**\n  Allows an authenticated customer to submit a review for a specific product. Each customer can post only one review per product.\n\n  ---\n\n  ## Request\n\n  - **Method:** `POST`\n  - **Endpoint:** `/api/products/:productId/reviews`\n  - **Authentication:** Required\n\n  ### URL Parameters\n\n  | Name       | Type   | Required | Description                  |\n  |------------|--------|----------|------------------------------|\n  | productId  | number | Yes      | ID of the product to review  |\n\n  ### Request Body\n\n  ```json\n  {\n    \"rating\": 4.5,\n    \"comment\": \"Really great product!\"\n  }\n  ```\n\n  - `rating`: A number between 0 and 5 (e.g. 3.5)\n  - `comment`: Non-empty string\n\n  ---\n\n  ## Successful Response\n\n  | Status | Description               |\n  |--------|---------------------------|\n  | 201    | Review created successfully |\n\n  ```json\n  {\n    \"success\": true,\n    \"message\": \"Review created\",\n    \"data\": {\n      \"id\": 123,\n      \"user_id\": 42,\n      \"product_id\": 50,\n      \"rating\": 4.5,\n      \"comment\": \"Really great product!\"\n    }\n  }\n  ```\n\n  ---\n\n  ## Error Responses\n\n  | Status | Description                            |\n  |--------|----------------------------------------|\n  | 400    | Missing or invalid rating/comment       |\n  | 404    | Product not found                       |\n  | 409    | Review already exists for this user/product |\n  | 500    | Internal server error                   |\n\n  ---\n\n  ## Notes\n\n  - Only logged-in users with role **Customer** can create reviews.\n  - Sellers cannot leave reviews for their own products.\n  - One review per user per product is enforced.\n\n",
+            "url": {
+              "raw": "http://localhost:3000/api/products/1/reviews",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "products",
+                "1",
+                "reviews"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4.5,\n  \"comment\": \"Really great product!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "putReview",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "  # PUT /api/reviews/:id\n\n  **Description**\n  Update an existing product review.\n  Only the user who created the review is allowed to update it.\n  Only `rating` and `comment` fields are accepted for update.\n\n  ---\n\n  ## Request\n\n  - **Method:** `PUT`\n  - **Endpoint:** `/api/reviews/:id`\n  - **Authentication:** Required\n\n  ### URL Parameters\n\n  | Name | Type   | Description        |\n  |------|--------|--------------------|\n  | id   | number | ID of the review   |\n\n  ### Request Body\n\n  ```json\n  {\n    \"rating\": 4.5,\n    \"comment\": \"Updated review comment\"\n  }\n  ```\n\n  - `rating` must be between 0 and 5 in steps of 0.5\n  - `comment` must be a non-empty string\n\n  ---\n\n  ## Successful Response\n\n  | Status | Description         |\n  |--------|---------------------|\n  | 200    | Review updated      |\n\n  ```json\n  {\n    \"success\": true,\n    \"message\": \"Review updated\",\n    \"updatedFields\": [\"rating\", \"comment\"],\n    \"ignoredFields\": []\n  }\n  ```\n\n  ---\n\n  ## Error Responses\n\n  | Status | Description                  |\n  |--------|------------------------------|\n  | 400    | Invalid input                |\n  | 401    | Authentication required      |\n  | 404    | Review not found or denied   |\n  | 500    | Server error                 |\n\n  ```json\n  {\n    \"success\": false,\n    \"error\": \"No valid fields provided. Only \\\"rating\\\" and \\\"comment\\\" are allowed.\",\n    \"ignoredFields\": [\"extraField\"],\n    \"code\": 400\n  }\n  ```\n\n  ---\n\n  ## Notes\n\n  - Fields other than `rating` and `comment` will be ignored.\n  - If no valid fields are provided, the request will fail with a `400` error.\n  - Users can only update their own reviews. Admins or other roles cannot update reviews of others.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/reviews/1",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "reviews",
+                "1"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4.5,\n  \"comment\": \"Update: Sehr gutes Produkt!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "getAllUsers",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/users\n\n**Description**  \nReturns a list of all users in the system. Optionally, users can be filtered by their role (e.g., admin, seller, buyer).\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/users`\n- **Authentication:** Required (admin only)\n\n---\n\n### Query Parameters\n\n| Parameter | Type   | Required | Description                                           |\n|-----------|--------|----------|-------------------------------------------------------|\n| `role`    | number | Optional | Role ID to filter by: `1` (admin), `2` (seller), `3` (buyer) |\n\n---\n\n### Successful Response\n\n| Status | Description       |\n|--------|-------------------|\n| 200    | List of users     |\n\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": 7,\n      \"username\": \"pixeldude\",\n      \"email\": \"pixeldude@example.com\",\n      \"role_id\": 2,\n      \"verified\": true\n    }\n  ]\n}\n```\n\n---\n\n### Error Responses\n\n| Status | Message                                          | Condition                                   |\n|--------|--------------------------------------------------|---------------------------------------------|\n| 400    | `Invalid role filter. Allowed values: 1, 2, or 3.` | If `role` query param is provided but invalid |\n| 401    | `Authentication required`                        | No valid access token present                |\n| 403    | `Access denied`                                  | Authenticated user is not an admin           |\n| 500    | `Server error while fetching users`              | Internal database or server error            |\n\n---\n\n### Notes\n\n- If no `role` is provided, all users are returned.\n- Only admin users (`role_id = 1`) are allowed to access this endpoint.\n- This endpoint is protected via authentication middleware and role-checking.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/users?role",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": ""
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "deleteUser",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## DELETE /api/users/{id}\n\n**Description**  \nDeletes the user with the specified ID.  \nAccess is restricted to the user themselves or an administrator.  \nEmail verification is required in both cases.\n\n---\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/users/{id}`\n- **Authentication:** Required (`accessToken` cookie)\n- **Authorization:**\n  - Admins (`role_id = 1`) may delete any user\n  - Users may delete their own account only\n  - Email must be verified\n\n---\n\n### Path parameters\n\n| Parameter | Type   | Required | Description         |\n|-----------|--------|----------|---------------------|\n| `id`      | number | Yes      | ID of the user to delete |\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | User deleted successfully |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"User deleted successfully\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                   | Condition                                       |\n|--------|---------------------------|-------------------------------------------------|\n| 401    | `Authentication required` | No token present                                |\n| 401    | `Invalid or expired token`| Token malformed or expired                      |\n| 403    | `Access denied`           | Not admin and not deleting own account          |\n| 403    | `Email not verified`      | Authenticated user has not verified email       |\n| 404    | `User not found`          | No user with the given ID exists                |\n| 500    | `Error deleting user`     | Unexpected server/database error                |\n\n---\n\n### Notes\n\n- Deleting a user does not cascade to related entities (e.g., orders, products).\n",
+            "url": {
+              "raw": "http://localhost:3000/api/users/14",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "users",
+                "14"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "getMe",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/users/me\n\n**Description**  \nReturns the profile information of the currently authenticated user.  \nRequires a valid session and verified email.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/users/me`\n- **Authentication:** Required (`accessToken` cookie)\n- **Authorization:**  \n  - Any verified user can access their own profile  \n  - No role restriction\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | Current user returned  |\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 7,\n    \"email\": \"pixel@art.com\",\n    \"first_name\": \"Luna\",\n    \"last_name\": \"Pixel\",\n    \"role_id\": 2,\n    \"verified\": true,\n    \"created_at\": \"2024-02-01T12:00:00Z\"\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                                  |\n|--------|----------------------------------|--------------------------------------------|\n| 401    | `Authentication required`       | No accessToken present                     |\n| 401    | `Invalid or expired token`      | Token malformed or expired                 |\n| 403    | `Email not verified`            | Authenticated user has not verified email  |\n| 404    | `User not found`                | User ID in token does not exist in DB      |\n| 500    | `Server error while retrieving user` | Unexpected DB/server error              |\n\n---\n\n### Notes\n\n- This endpoint is ideal for profile pages, account settings, and session validation.\n- It uses the `userId` extracted from the validated accessToken.\n- Users cannot specify an ID manually – it always returns **their own data**.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/users/me",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "putUser",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## PUT /api/users/{id}\n\n**Description**  \nUpdates user information for the specified user ID.  \nAllowed for admins or the user themselves, if the email is verified.\n\n---\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/users/{id}`\n- **Authentication:** Required (`accessToken` cookie)\n- **Authorization:**\n  - Admins (`role_id = 1`) may update any user\n  - Users may update their own account only\n  - Email verification is required in both cases\n\n---\n\n### Path parameters\n\n| Parameter | Type   | Required | Description            |\n|-----------|--------|----------|------------------------|\n| `id`      | number | Yes      | ID of the user to update |\n\n---\n\n### Request body\n\nAt least one of the following fields must be provided:\n\n```json\n{\n  \"first_name\": \"Luna\",\n  \"last_name\": \"Pixel\",\n  \"email\": \"luna@example.com\",\n  \"password\": \"newpassword123\"\n}\n```\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | User updated successfully |\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 7,\n    \"email\": \"luna@example.com\",\n    \"first_name\": \"Luna\",\n    \"last_name\": \"Pixel\",\n    \"role_id\": 3,\n    \"verified\": true\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                                |\n|--------|----------------------------------|------------------------------------------|\n| 400    | `At least one field required`   | Empty or invalid request body            |\n| 401    | `Authentication required`       | No token present                         |\n| 401    | `Invalid or expired token`      | Token malformed or expired               |\n| 403    | `Access denied`                 | Not admin and not updating own account   |\n| 403    | `Email not verified`            | Authenticated user has not verified email |\n| 404    | `User not found`                | No user exists with the specified ID     |\n| 500    | `Error updating user`           | Unexpected server/database error         |\n\n---\n\n### Notes\n\n- You can partially update user data; only provided fields will be changed.\n- Role changes must be handled via the dedicated admin route (`PUT /api/users/admin/{id}`).\n",
+            "url": {
+              "raw": "http://localhost:3000/api/users/151",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "users",
+                "151"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Max\",\n  \"last_name\": \"Mustermann\",\n  \"street\": \"Beispielstraße\",\n  \"house_number\": \"5A\",\n  \"postal_code\": \"70173\",\n  \"city\": \"Stuttgart\",\n  \"country\": \"Deutschland\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "getUserById",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## GET /api/users/{id}\n\n**Description**  \nReturns detailed user information for the specified user ID.  \nAccess is allowed only to the user themselves (ownership) or to admins (role_id = 1), and only if the user is email-verified.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/users/{id}`\n- **Authentication:** Required (via accessToken cookie)\n- **Authorization:**  \n  - Admins (`role_id = 1`) may access any user  \n  - Normal users may access **only their own** user record  \n  - All access requires a **verified email**\n\n---\n\n### Path parameters\n\n| Parameter | Type   | Required | Description                     |\n|-----------|--------|----------|---------------------------------|\n| `id`      | number | Yes      | ID of the user to retrieve      |\n\n---\n\n### Successful response\n\n| Status | Description        |\n|--------|--------------------|\n| 200    | User data returned |\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 42,\n    \"email\": \"user@example.com\",\n    \"first_name\": \"Luna\",\n    \"last_name\": \"Pixel\",\n    \"role_id\": 3,\n    \"created_at\": \"2024-02-01T10:00:00Z\",\n    \"verified\": true\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                                      |\n|--------|----------------------------------|------------------------------------------------|\n| 401    | `Authentication required`       | No accessToken provided                        |\n| 401    | `Invalid or expired token`      | JWT is invalid or expired                      |\n| 403    | `Access denied`                 | Not admin AND not the user themselves          |\n| 403    | `Email not verified`            | Authenticated user is not email-verified       |\n| 404    | `User not found`                | No user exists with the given ID               |\n| 500    | `Server error`                  | Unexpected error during database access        |\n\n---\n\n### Notes\n\n- The access control is enforced via custom router logic:\n  - `requireRole(1)` for admin access\n  - `requireOwnership` for accessing own data\n  - Both paths require email verification (`requireValidatedUser`)\n- Returned user data may include additional fields depending on database structure.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/users/151",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "users",
+                "151"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "putUserAdmin",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "## PUT /api/users/admin/{id}\n\n**Description**  \nUpdates the user account with the specified ID.  \nThis endpoint is restricted to administrators and allows role changes and email verification updates.\n\n---\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/users/admin/{id}`\n- **Authentication:** Required (`accessToken` cookie)\n- **Authorization:**  \n  - User must be an admin (`role_id = 1`)  \n  - Admin must have a verified email address\n\n---\n\n### Path parameters\n\n| Parameter | Type   | Required | Description         |\n|-----------|--------|----------|---------------------|\n| `id`      | number | Yes      | ID of the user to update |\n\n---\n\n### Request body\n\nAt least one of the following fields must be present:\n\n```json\n{\n  \"first_name\": \"Luna\",\n  \"last_name\": \"Pixel\",\n  \"email\": \"luna@pixelart.com\",\n  \"password\": \"securepassword123\",\n  \"role_id\": 2,\n  \"verified\": true\n}\n```\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | User updated successfully |\n\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"id\": 42,\n    \"email\": \"luna@pixelart.com\",\n    \"first_name\": \"Luna\",\n    \"last_name\": \"Pixel\",\n    \"role_id\": 2,\n    \"verified\": true\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                         | Condition                                |\n|--------|----------------------------------|------------------------------------------|\n| 400    | `At least one field required`   | Empty or invalid request body            |\n| 401    | `Authentication required`       | No token present                         |\n| 401    | `Invalid or expired token`      | Token is malformed or expired            |\n| 403    | `Access denied`                 | User is not an admin                     |\n| 403    | `Email not verified`            | Admin is not email-verified              |\n| 404    | `User not found`                | No user with the given ID exists         |\n| 500    | `Error updating user`           | Internal server/database error           |\n\n---\n\n### Notes\n\n- This is the only route that supports changing `role_id` and `verified` status.\n- Use this endpoint for user management interfaces or moderation tools.\n- Changes are immediate and do not require confirmation from the target user.\n",
+            "url": {
+              "raw": "http://localhost:3000/api/admin/users/21",
+              "protocol": "http",
+              "host": [
+                "localhost:3000"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "21"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Admin\",\n  \"last_name\": \"Editiert\",\n  \"username\": \"adminuser\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"NeuesAdminPasswort123!\",\n  \"role_id\": 1,\n  \"status_id\": 1,\n  \"street\": \"Adminweg\",\n  \"house_number\": \"99\",\n  \"postal_code\": \"99999\",\n  \"city\": \"Adminstadt\",\n  \"country\": \"Adminland\",\n  \"created_at\": \"IGNORED\",\n  \"reset_token\": \"IGNORED\",\n  \"verification_token\": \"IGNORED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "wishlists",
+      "item": [
+        {
+          "name": "wishlist",
+          "item": [
+            {
+              "name": "deleteWishlist",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## DELETE /api/wishlists/wishlist/:id\n\n**Description**  \nDeletes the specified wishlist, including all its items.  \nOnly the wishlist's owner can delete it.\n\n---\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/wishlists/wishlist/:id`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description           |\n|-----------|------|----------|-----------------------|\n| `id`      | int  | Yes      | ID of the wishlist    |\n\n---\n\n### Request body\n\n_None_\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Wishlist deleted      |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Wishlist deleted\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                                      |\n|--------|-------------------------------------|------------------------------------------------|\n| 401    | `Authentication required`           | No or invalid access token                     |\n| 403    | `Access denied to this wishlist`    | User is not the owner of the wishlist          |\n| 404    | `Wishlist not found`                | Wishlist with given ID does not exist          |\n| 500    | `Error deleting wishlist`           | Internal server or DB error                    |\n\n---\n\n### Notes\n\n- Deletion is permanent and cannot be undone.\n- All wishlist items associated with this list will also be deleted.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/wishlist/122",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "wishlist",
+                    "122"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "getAllWishlistsForUser",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## GET /api/wishlists/wishlist\n\n**Description**  \nRetrieves all wishlists belonging to the authenticated user.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/wishlists/wishlist`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n_None_\n\n---\n\n### Request body\n\n_None_\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | List of wishlists     |\n\n```json\n[\n  {\n    \"id\": 1,\n    \"user_id\": 42,\n    \"name\": \"My Pixelart Wishlist\"\n  },\n  {\n    \"id\": 2,\n    \"user_id\": 42,\n    \"name\": \"Christmas List\"\n  }\n]\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                        |\n|--------|-------------------------------------|----------------------------------|\n| 401    | `Authentication required`           | User not authenticated           |\n| 500    | `Error retrieving wishlists`        | Internal server or DB error      |\n\n---\n\n### Notes\n\n- The response includes only wishlists belonging to the authenticated user.\n- Each wishlist contains its ID, owner ID, and name.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/wishlist",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "wishlist"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "postWishlist",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## POST /api/wishlists/wishlist\n\n**Description**  \nCreates a new wishlist for the authenticated user.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/wishlists/wishlist`\n- **Authentication:** Required\n\n---\n\n### Request body\n\n```json\n{\n  \"name\": \"My Pixelart Wishlist\"\n}\n```\n\n| Field  | Type   | Required | Description                              |\n|--------|--------|----------|------------------------------------------|\n| `name` | string | Yes      | Name of the wishlist (non-empty string)  |\n\n---\n\n### Successful response\n\n| Status | Description              |\n|--------|--------------------------|\n| 201    | Wishlist successfully created |\n\n```json\n{\n  \"id\": 12,\n  \"user_id\": 4,\n  \"name\": \"My Pixelart Wishlist\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                                           | Condition                                 |\n|--------|---------------------------------------------------|-------------------------------------------|\n| 400    | `Wishlist name is required and must be a non-empty string.` | Missing or invalid name                   |\n| 400    | `Invalid JSON in request body.`                   | Malformed JSON                            |\n| 401    | `Authentication required`                         | No or invalid access token                |\n| 500    | `Server error`                                    | Internal server or DB error               |\n\n---\n\n### Notes\n\n- The wishlist is created for the currently authenticated user.\n- The `name` field is trimmed before saving.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/wishlist",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "wishlist"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Geburtstagswünsche\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "putWishlist",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## PUT /api/wishlists/wishlist/:id\n\n**Description**  \nUpdates the name of an existing wishlist.  \nOnly the owner of the wishlist may perform this action.\n\n---\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/wishlists/wishlist/:id`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description           |\n|-----------|------|----------|-----------------------|\n| `id`      | int  | Yes      | ID of the wishlist    |\n\n---\n\n### Request body\n\n```json\n{\n  \"name\": \"Updated Wishlist Name\"\n}\n```\n\n| Field  | Type   | Required | Description                          |\n|--------|--------|----------|--------------------------------------|\n| `name` | string | Yes      | New name for the wishlist            |\n\n---\n\n### Successful response\n\n| Status | Description           |\n|--------|-----------------------|\n| 200    | Wishlist updated      |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Wishlist updated\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                                       | Condition                                    |\n|--------|-----------------------------------------------|----------------------------------------------|\n| 400    | `Wishlist name is required and must be a non-empty string.` | Missing or invalid `name` field    |\n| 401    | `Authentication required`                     | No or invalid access token                   |\n| 403    | `Access denied to this wishlist`              | Wishlist does not belong to the user         |\n| 404    | `Wishlist not found`                          | Wishlist with given ID does not exist        |\n| 500    | `Server error during wishlist update`         | Internal server or DB error                  |\n\n---\n\n### Notes\n\n- This endpoint does not allow changes to the products in the wishlist – only the name.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/wishlist/121",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "wishlist",
+                    "121"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"TEST\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "permissions",
+          "item": [
+            {
+              "name": "deleteWishlistPermission",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## DELETE /api/wishlists/wishlist/:id/permissions\n\n**Description**  \nRemoves an existing permission for a given user on the specified wishlist.  \nOnly the owner of the wishlist can remove permissions.\n\n---\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/wishlists/wishlist/:id/permissions`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description           |\n|-----------|------|----------|-----------------------|\n| `id`      | int  | Yes      | ID of the wishlist    |\n\n---\n\n### Request body\n\n```json\n{\n  \"user_id\": 12\n}\n```\n\n| Field     | Type | Required | Description                         |\n|-----------|------|----------|-------------------------------------|\n| `user_id` | int  | Yes      | ID of the user whose access is removed |\n\n---\n\n### Successful response\n\n| Status | Description             |\n|--------|-------------------------|\n| 200    | Permission removed      |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Permission removed\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                                     |\n|--------|-------------------------------------|-----------------------------------------------|\n| 400    | `Missing user_id`                   | Request body is empty or incomplete            |\n| 401    | `Authentication required`           | No or invalid access token                    |\n| 403    | `Access denied to this wishlist`    | Authenticated user is not the wishlist owner  |\n| 404    | `Permission not found`              | No permission record for the given user       |\n| 500    | `Error removing permission`         | Internal server or DB error                   |\n\n---\n\n### Notes\n\n- Removing a permission means the user will no longer have access to the wishlist.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/89/permissions",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "89",
+                    "permissions"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "getWishlistPermissions",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## GET /api/wishlists/wishlist/:id/permissions\n\n**Description**  \nRetrieves all permissions granted for the specified wishlist.  \nOnly the owner of the wishlist can access this endpoint.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/wishlists/wishlist/:id/permissions`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description           |\n|-----------|------|----------|-----------------------|\n| `id`      | int  | Yes      | ID of the wishlist    |\n\n---\n\n### Request body\n\n_None_\n\n---\n\n### Successful response\n\n| Status | Description                |\n|--------|----------------------------|\n| 200    | List of granted permissions |\n\n```json\n{\n  \"success\": true,\n  \"permissions\": [\n    {\n      \"user_id\": 12,\n      \"username\": \"friend@example.com\",\n      \"permission_id\": 2\n    },\n    {\n      \"user_id\": 13,\n      \"username\": \"guest@example.com\",\n      \"permission_id\": 1\n    }\n  ]\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                                    |\n|--------|-------------------------------------|----------------------------------------------|\n| 401    | `Authentication required`           | No or invalid access token                   |\n| 403    | `Access denied to this wishlist`    | User is not the owner of the wishlist        |\n| 404    | `Wishlist not found`                | Wishlist does not exist                      |\n| 500    | `Error retrieving permissions`      | Internal server or DB error                  |\n\n---\n\n### Notes\n\n- The response includes user IDs, emails/usernames, and their permission levels.\n- Only the owner can list who has which access to a wishlist.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/89/permissions",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "89",
+                    "permissions"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "postWishlistPermission",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## POST /api/wishlists/wishlist/:id/permissions\n\n**Description**  \nGrants a specific permission level to another user for the given wishlist.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/wishlists/wishlist/:id/permissions`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description            |\n|-----------|------|----------|------------------------|\n| `id`      | int  | Yes      | ID of the wishlist     |\n\n---\n\n### Request body\n\n```json\n{\n  \"user_id\": 12,\n  \"permission_id\": 2\n}\n```\n\n| Field          | Type   | Required | Description                                      |\n|----------------|--------|----------|--------------------------------------------------|\n| `user_id`      | int    | Yes      | ID of the user to grant permission to            |\n| `permission_id`| int    | Yes      | ID of the permission (e.g. 1 = view, 2 = edit)   |\n\n---\n\n### Successful response\n\n| Status | Description                    |\n|--------|--------------------------------|\n| 201    | Permission granted             |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"User added to wishlist with permission\",\n  \"data\": {\n    \"wishlist_id\": 5,\n    \"user_id\": 12,\n    \"permission_id\": 2\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                                       | Condition                             |\n|--------|-----------------------------------------------|----------------------------------------|\n| 400    | `Missing user_id or permission_id`            | Required field(s) missing              |\n| 400    | `Invalid JSON body`                           | Malformed request body                 |\n| 401    | `Authentication required`                     | No or invalid access token             |\n| 403    | `Access denied to this wishlist` (assumed)    | Wishlist not owned by the requester   |\n| 409    | `User already has permission` (assumed)       | Duplicate permission                   |\n| 500    | `Server error`                                | Internal failure during permission save|\n\n---\n\n### Notes\n\n- Only the owner of a wishlist may assign permissions to others.\n- Permissions could be \"view\", \"edit\", etc., depending on `permission_id`.\n\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/4/permissions",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "4",
+                    "permissions"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identifier\": \"16\",\n  \"permission_id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "putWishlistPermission",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/89/permissions",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "89",
+                    "permissions"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user_id\": 42,\n  \"permission_id\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "items",
+          "item": [
+            {
+              "name": "deleteWishlistItem",
+              "event": [],
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## DELETE /api/wishlists/:id/items\n\n**Description**  \nRemoves a product from the specified wishlist.  \nThe product ID must be passed in the request body.\n\n---\n\n### Request\n\n- **Method:** `DELETE`\n- **Endpoint:** `/api/wishlists/:id/items`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description             |\n|-----------|------|----------|-------------------------|\n| `id`      | int  | Yes      | ID of the wishlist      |\n\n---\n\n### Request body\n\n```json\n{\n  \"product_id\": 42\n}\n```\n\n| Field        | Type | Required | Description                       |\n|--------------|------|----------|-----------------------------------|\n| `product_id` | int  | Yes      | ID of the product to be removed   |\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | Item removed from wishlist |\n\n```json\n{\n  \"success\": true,\n  \"result\": {\n    /* optional metadata */\n  }\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                                       |\n|--------|-------------------------------------|------------------------------------------------|\n| 400    | `product_id is required`            | Missing or invalid `product_id` in body        |\n| 401    | `Authentication required`           | User not authenticated                         |\n| 403    | `Access denied to this wishlist`    | Wishlist belongs to another user               |\n| 404    | `Wishlist or item not found`        | Wishlist or product not found in DB            |\n| 413    | `Payload too large`                 | Body exceeds allowed size                      |\n| 500    | `Error deleting wishlist item`      | Internal server or DB error                    |\n\n---\n\n### Notes\n\n- The `product_id` must be present in the request body.\n- This will silently ignore already-removed or non-existent products in the wishlist.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/1/items",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "1",
+                    "items"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n        \"product_id\": 2\n      }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "getWishlistItems",
+              "event": [],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## GET /api/wishlists/:id/items\n\n**Description**  \nReturns all items in the specified wishlist.  \nAccess is restricted to the wishlist's owner.\n\n---\n\n### Request\n\n- **Method:** `GET`\n- **Endpoint:** `/api/wishlists/:id/items`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description             |\n|-----------|------|----------|-------------------------|\n| `id`      | int  | Yes      | ID of the wishlist      |\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 200    | Wishlist items returned |\n\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"product_id\": 42,\n      \"quantity\": 2,\n      \"product_name\": \"8-bit Space Invader\",\n      \"price\": 15.99\n    },\n    ...\n  ]\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                          | Condition                                |\n|--------|----------------------------------|-------------------------------------------|\n| 401    | `Authentication required`        | User not authenticated                    |\n| 403    | `Access denied to this wishlist` | Wishlist does not belong to this user     |\n| 404    | `Wishlist not found`             | ID does not match an existing wishlist    |\n| 500    | `Server error during wishlist fetch` | DB or logic error during retrieval   |\n\n---\n\n### Notes\n\n- The response contains all products with their quantity and minimal product info.\n- Users can only access wishlists they own.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/3/items",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "3",
+                    "items"
+                  ],
+                  "query": [],
+                  "variable": []
+                }
+              }
+            },
+            {
+              "name": "postWishlistItem",
+              "event": [],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## POST /api/wishlists/:id/items\n\n**Description**  \nAdds a product to the specified wishlist.  \nIf the product already exists, its quantity will be increased.\n\n---\n\n### Request\n\n- **Method:** `POST`\n- **Endpoint:** `/api/wishlists/:id/items`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter | Type | Required | Description             |\n|-----------|------|----------|-------------------------|\n| `id`      | int  | Yes      | ID of the wishlist      |\n\n---\n\n### Request body\n\n```json\n{\n  \"productId\": 42,\n  \"quantity\": 1\n}\n```\n\n| Field       | Type   | Required | Description                    |\n|-------------|--------|----------|--------------------------------|\n| `productId` | int    | Yes      | ID of the product to add       |\n| `quantity`  | int    | No       | Defaults to 1 if not provided  |\n\n---\n\n### Successful response\n\n| Status | Description            |\n|--------|------------------------|\n| 201    | Product added to wishlist |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Product added to wishlist\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                            | Condition                                     |\n|--------|------------------------------------|-----------------------------------------------|\n| 400    | `Missing productId`                | `productId` not provided                      |\n| 401    | `Authentication required`          | User not authenticated                        |\n| 403    | `Access denied to this wishlist`   | Wishlist does not belong to the user          |\n| 404    | `Wishlist not found`               | Wishlist ID is invalid or doesn't exist       |\n| 500    | `Error adding item to wishlist`    | Internal DB or logic error                    |\n\n---\n\n### Notes\n\n- If the product is already on the wishlist, its quantity is incremented.\n- You cannot add to a wishlist that belongs to another user.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/1/items",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "1",
+                    "items"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n      \"product_id\": 2,\n      \"quantity\": 3\n    }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "putWishlistItems",
+              "event": [],
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "auth": {
+                  "type": "noauth"
+                },
+                "description": "## PUT /api/wishlists/:wishlistId/items\n\n**Description**  \nUpdates the quantity of a product in the specified wishlist.  \nThe product must already exist in the wishlist.\n\n---\n\n### Request\n\n- **Method:** `PUT`\n- **Endpoint:** `/api/wishlists/:wishlistId/items`\n- **Authentication:** Required\n\n---\n\n### URL parameters\n\n| Parameter    | Type | Required | Description                  |\n|--------------|------|----------|------------------------------|\n| `wishlistId` | int  | Yes      | ID of the wishlist           |\n\n---\n\n### Request body\n\n```json\n{\n  \"product_id\": 42,\n  \"quantity\": 3\n}\n```\n\n| Field        | Type | Required | Description                        |\n|--------------|------|----------|------------------------------------|\n| `product_id` | int  | Yes      | ID of the product in the wishlist  |\n| `quantity`   | int  | Yes      | New quantity (must be ≥ 1)         |\n\n---\n\n### Successful response\n\n| Status | Description          |\n|--------|----------------------|\n| 200    | Quantity updated     |\n\n```json\n{\n  \"success\": true,\n  \"message\": \"Wishlist item updated\"\n}\n```\n\n---\n\n### Error responses\n\n| Status | Message                             | Condition                                       |\n|--------|-------------------------------------|------------------------------------------------|\n| 400    | `Missing product_id or quantity`    | Required fields not provided                   |\n| 400    | `Invalid quantity`                  | Quantity is not a number ≥ 1                   |\n| 401    | `Authentication required`           | User not authenticated                         |\n| 403    | `Access denied to this wishlist`    | Wishlist belongs to another user               |\n| 404    | `Wishlist not found`                | Wishlist ID is invalid                         |\n| 404    | `Product not found in wishlist`     | Product is not in wishlist                     |\n| 500    | `Error updating wishlist item`      | Internal server or DB error                    |\n\n---\n\n### Notes\n\n- This endpoint will **not** add a new item if the product is not already in the wishlist.\n- The backend expects both fields in the body, even if `product_id` is technically redundant with existing entries.\n",
+                "url": {
+                  "raw": "http://localhost:3000/api/wishlists/1/items",
+                  "protocol": "http",
+                  "host": [
+                    "localhost:3000"
+                  ],
+                  "path": [
+                    "api",
+                    "wishlists",
+                    "1",
+                    "items"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n        \"product_id\": 2,\n        \"quantity\": 3\n      }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": []
+}

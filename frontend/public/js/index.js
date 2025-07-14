@@ -11,7 +11,7 @@ async function loadCategoryMap() {
     const json = await res.json();
 
     if (!json.success || !Array.isArray(json.data)) {
-      throw new Error('Ungültige Struktur');
+      throw new Error('Invalid category data format');
     }
 
     const flatMap = {};
@@ -60,7 +60,7 @@ function updateActiveFiltersUI() {
   }
 
   if (window.currentSearchOptions.inStock) {
-    tags.push({ label: `Nur verfügbare Produkte`, type: 'inStock' });
+    tags.push({ label: `Only available`, type: 'inStock' });
   }
 
   if (
@@ -68,18 +68,18 @@ function updateActiveFiltersUI() {
     typeof window.currentSearchOptions.maxPrice === 'number'
   ) {
     tags.push({
-      label: `Preis: ${window.currentSearchOptions.minPrice}–${window.currentSearchOptions.maxPrice} €`,
+      label: `Price: ${window.currentSearchOptions.minPrice}–${window.currentSearchOptions.maxPrice} €`,
       type: 'price'
     });
   }
 
   if (window.currentSearchOptions.sort) {
     const label = {
-      price: 'Preis',
+      price: 'Price',
       name: 'Name',
-      rating: 'Bewertung'
+      rating: 'Rating'
     }[window.currentSearchOptions.sort];
-    tags.push({ label: `Sortiert nach: ${label}`, type: 'sort' });
+    tags.push({ label: `Sort: ${label}`, type: 'sort' });
   }
 
   tags.forEach(tag => {
@@ -289,7 +289,7 @@ ratingWrapper.appendChild(reviewCounthtml);
     renderPagination(total, page);
     updateActiveFiltersUI();
   } catch (error) {
-    productList.innerHTML = `<li>Fehler: ${error.message}</li>`;
+    productList.innerHTML = `<li>Error: ${error.message}</li>`;
     updateActiveFiltersUI();
   }
 }
@@ -347,7 +347,7 @@ async function loadAndRenderCategoryFilter() {
 
   const select = document.createElement('select');
   select.className = 'filters-selector';
-  select.innerHTML = `<option value="">Kategorie wählen</option>`;
+  select.innerHTML = `<option value="">Choose category</option>`;
 
   function appendOptions(categories, isChild = false) {
     categories.forEach(category => {
@@ -377,7 +377,7 @@ async function loadAndRenderCategoryFilter() {
 
   const checkboxLabel = document.createElement('label');
   checkboxLabel.htmlFor = 'inStock';
-  checkboxLabel.textContent = 'Nur verfügbare Produkte';
+  checkboxLabel.textContent = 'Only available';
 
   checkbox.addEventListener('change', () => {
     window.currentSearchOptions.inStock = checkbox.checked;
@@ -392,7 +392,7 @@ async function loadAndRenderCategoryFilter() {
 
   const rangeLabel = document.createElement('div');
   rangeLabel.className = 'price-values';
-  rangeLabel.textContent = 'Preis: 0 € – 1000 €';
+  rangeLabel.textContent = 'Price: 0 € – 1000 €';
 
   const rangeMin = document.createElement('input');
   const rangeMax = document.createElement('input');
@@ -418,7 +418,7 @@ async function loadAndRenderCategoryFilter() {
         min = max;
       }
     }
-    rangeLabel.textContent = `Preis: ${min} € – ${max} €`;
+    rangeLabel.textContent = `Price: ${min} € – ${max} €`;
     window.currentSearchOptions.minPrice = min;
     window.currentSearchOptions.maxPrice = max;
     loadProducts(selectedCategoryId, 1, window.currentSearchOptions);
@@ -457,7 +457,7 @@ async function loadAndRenderCategoryFilter() {
   });
 
   const resetBtn = document.createElement('button');
-  resetBtn.textContent = 'Filter zurücksetzen';
+  resetBtn.textContent = 'Reset Filters';
   resetBtn.className = 'reset-filters-btn';
 
   resetBtn.addEventListener('click', () => {
@@ -475,7 +475,7 @@ async function loadAndRenderCategoryFilter() {
     checkbox.checked = false;
     rangeMin.value = 0;
     rangeMax.value = 1000;
-    rangeLabel.textContent = 'Preis: 0 € – 1000 €';
+    rangeLabel.textContent = 'Price: 0 € – 1000 €';
     document.getElementById('search-input').value = '';
     sortSelect.selectedIndex = 0;
     loadProducts();
