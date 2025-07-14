@@ -363,37 +363,54 @@ select.filters-selector option:hover {
   white-space: nowrap;
 }
 
-/* Mobile-first responsive adjustments */
+//* Toggle button for filters */
+.filter-toggle {
+  display: none;
+  background-color: #007b47;
+  color: white;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: none;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+/* Mobile-first adjustments */
 @media (max-width: 768px) {
+  .filter-toggle {
+    display: block;
+  }
+
   .filters-wrapper {
+    display: none;
     flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
+    gap: 1.5rem;
+    background-color: #f7f7f7;
+    padding: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
   }
 
-  .filters-control-bar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1rem;
+  .filters-wrapper.show {
+    display: flex;
   }
 
-  .filters {
+  .filters-control-bar,
+  .filters,
+  .price-range-wrapper {
     flex-direction: column;
-    align-items: stretch;
+    gap: 1.2rem;
+    width: 100%;
   }
 
   .filters-selector,
   #sort-select {
+    font-size: 1.1rem;
+    padding: 0.9rem 1.2rem;
     width: 100%;
-    min-width: unset;
-    padding: 0.75rem 1rem;
     background-position: right 1rem center;
-  }
-
-  .price-range-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
   }
 
   .price-range-wrapper input[type="range"] {
@@ -402,43 +419,49 @@ select.filters-selector option:hover {
 
   .price-values {
     text-align: right;
+    font-size: 1rem;
   }
 
   .checkbox-inline {
     justify-content: space-between;
+    font-size: 1.05rem;
   }
 }
 
 /* Medium screens (tablets) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .filters-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+    font-size: 1.7rem;
+  }
+
+  .filters-control-bar,
+  .filters {
+    font-size: 1.7rem;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1.5rem;
   }
 
-  .filters-control-bar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .filters {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
   .filters-selector,
   #sort-select {
     flex: 1 1 45%;
-    min-width: unset;
+    font-size: 1.7rem;
   }
 
   .price-range-wrapper {
     flex-direction: row;
     flex-wrap: wrap;
   }
+
+    .price-values {
+        font-size: 1.7rem;
+        flex: 1 1 auto;
+        text-align: right;
+    }
 
   .price-range-wrapper input[type="range"] {
     width: 100%;
