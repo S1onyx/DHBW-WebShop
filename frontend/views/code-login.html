@@ -10,6 +10,136 @@
     <link rel="stylesheet" href="/css/auth.css" type="text/css">
     <script src="/js/auth_util.js" defer></script>
     <script src="/js/code-login.js" defer></script>
+    <style>
+/* Grundlayout sichern */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Karte zentrieren und eingrenzen */
+.card-container.auth-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Inhaltselemente in der Karte */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.auth-input,
+.auth-button {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
+  padding: 1rem;
+}
+
+/* Feedback-Meldungen */
+.auth-error, .auth-success {
+  font-size: 1rem;
+  text-align: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/* Responsive Anpassung: Tablets */
+@media (max-width: 1024px) {
+  .card-container.auth-container {
+    padding: 1.5rem;
+  }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+  }
+
+  .card-container.auth-container {
+    padding: 1rem;
+  }
+
+  .auth-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .auth-input,
+  .auth-button {
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .auth-error,
+  .auth-success {
+    font-size: 0.95rem;
+  }
+}
+
+/* Kleine Smartphones */
+@media (max-width: 480px) {
+  .card-container.auth-container {
+    padding: 1rem;
+  }
+
+  .auth-title {
+    font-size: 1.2rem;
+  }
+
+  .auth-input,
+  .auth-button {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .auth-error,
+  .auth-success {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+}
+.card-container.auth-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-form * {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+</style>
+
 </head>
 <body>
     <div id="header"></div>
