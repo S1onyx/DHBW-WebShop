@@ -89,23 +89,17 @@ ul#product-list li {
   /* ... */
 }
 
-@media screen and (max-width: 1024px) {
-  ul#product-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media screen and (max-width: 844px) {
+@media (min-width: 500px) and (max-width: 1224px) {
   ul#product-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media screen and (max-width: 480px) {
-  ul#product-list {
-    grid-template-columns: 1fr;
-  }
-}
 
 @media screen and (max-width: 844px) {
+  ul#product-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .product-thumb-wrapper,
   .product-thumb {
     max-height: 270px;
