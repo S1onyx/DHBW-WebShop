@@ -20,7 +20,7 @@ const wishlistId = pathParts[2];
 
 async function loadWishlists() {
     try {
-        let url = `http://localhost:3000/api/orders`;
+        let url = `http://${window.ROOT_URL}:3000/api/orders`;
 
 
         const res = await fetch(`http://${window.ROOT_URL}:3000/api/wishlists/wishlist`, {
