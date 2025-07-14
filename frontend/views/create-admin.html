@@ -2,104 +2,203 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Create Admin</title>
   <link rel="stylesheet" href="/css/header-footer.css" />
     <link rel="stylesheet" href="/css/style.css" />
   <script src="/env.js"></script>
   <script src="/js/auth_util.js" defer></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
+    /* global box-sizing für alle Elemente */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
-    .container {
-      max-width: 600px;
-      margin: 3rem auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
+.container {
+  max-width: 600px;
+  margin: 3rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
 
-    form label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
 
-    form input, form select {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
 
-    .submit {
-      margin-top: 2rem;
-      width: 100%;
-      padding: 0.7rem;
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
+form input, form select {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+  /* box-sizing: border-box;  global gesetzt */
+}
 
-    .submit:hover {
-      background-color: #125aab;
-    }
+.submit {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
 
-    .password-wrapper {
-      position: relative;
-    }
+.submit:hover {
+  background-color: #125aab;
+}
 
-    .password-input {
-      width: 100%;
-      padding-right: 4rem; /* space for the button inside */
-      box-sizing: border-box;
-    }
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
 
-    .toggle-password-button {
-      position: absolute;
-      right: 0.5rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: none;
-      color: #1976d2;
-      cursor: pointer;
-      font-weight: bold;
-      padding: 0 0.5rem;
-      height: 100%;
-    }
+.password-input {
+  width: 100%;
+  padding-right: 4rem; /* Platz für Button */
+}
 
-    .success-message, .error-message {
-      margin-top: 1rem;
-      padding: 0.7rem;
-      border-radius: 4px;
-      display: none;
-    }
+.toggle-password-button {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #1976d2;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 0.5rem;
+  height: 100%;
+}
 
-    .success-message {
-      background-color: #d4edda;
-      color: #155724;
-    }
+.success-message, .error-message {
+  margin-top: 1rem;
+  padding: 0.7rem;
+  border-radius: 4px;
+  display: none;
+}
 
-    .error-message {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Tablets & kleinere Laptops */
+@media (max-width: 1024px) {
+  .container {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  form label {
+    margin-top: 0.8rem;
+  }
+
+  form input,
+  form select,
+  .submit {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  .submit {
+    margin-top: 1.5rem;
+  }
+
+  .password-input {
+    padding-right: 3.5rem;
+  }
+}
+
+/* Smartphones & kleine Tablets */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    padding: 1rem;
+  }
+
+  .container {
+    margin: 1rem auto;
+    padding: 1rem;
+    max-width: 95%;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  form label {
+    font-size: 1rem;
+  }
+
+  form input,
+  form select,
+  .submit {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .password-input {
+    padding-right: 3.5rem;
+  }
+}
+
+/* Kleine Smartphones */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .container {
+    padding: 0.8rem 1rem;
+    margin: 0.5rem auto;
+  }
+
+  form label {
+    font-size: 0.95rem;
+  }
+
+  form input,
+  form select,
+  .submit {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .password-input {
+    padding-right: 3.5rem;
+  }
+}
+
   </style>
 </head>
 <body>
