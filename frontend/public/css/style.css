@@ -129,6 +129,7 @@ ul#product-list li {
     font-size: 2.5rem;
   }
 }
+
 @media screen and (max-width: 844px) {
   ul#product-list {
     grid-template-columns: repeat(1, 1fr);
@@ -426,6 +427,10 @@ select.filters-selector option:hover {
     justify-content: space-between;
     font-size: 1.05rem;
   }
+
+  .filter-tag {
+    font-size: 1.7rem;
+  }
 }
 
 /* Medium screens (tablets) */
@@ -446,25 +451,23 @@ select.filters-selector option:hover {
     gap: 1.5rem;
   }
 
-  .filters-selector,
-  #sort-select {
-    flex: 1 1 45%;
-    font-size: 1.7rem;
-  }
-
   .price-range-wrapper {
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-    .price-values {
+  .price-values {
         font-size: 1.7rem;
         flex: 1 1 auto;
         text-align: right;
-    }
+  }
 
   .price-range-wrapper input[type="range"] {
     width: 100%;
+  }
+
+  .active-filters .filter-tag {
+    font-size: 1.7rem;
   }
 }
 
