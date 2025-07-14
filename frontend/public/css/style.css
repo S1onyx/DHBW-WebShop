@@ -93,6 +93,41 @@ ul#product-list li {
   ul#product-list {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .product-thumb-wrapper,
+  .product-thumb {
+    max-height: 270px;
+  }
+
+  .product-title {
+    font-size: 1.4rem;
+    margin-top: 0.75rem;
+  }
+
+  .product-price {
+    font-size: 1.4rem;
+    margin: 0.25rem 0 0.75rem 0;
+  }
+
+  .category-tag {
+    font-size: 1.3rem;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .product-rating {
+    font-size: 1.4rem;
+    gap: 0.5rem;
+  }
+
+  .product-rating .stars {
+    font-size: 1.4rem;
+  }
+
+  .product-info-overlay,
+  .buy-overlay {
+    font-size: 2.5rem;
+  }
 }
 @media screen and (max-width: 844px) {
   ul#product-list {
