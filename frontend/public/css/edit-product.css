@@ -1,0 +1,297 @@
+:root {
+    --font-family: Arial, Helvetica, sans-serif;
+    --font-color: #123269;
+    --bg-color: #f3f5f9;
+    --card-bg: #fff;
+    --card-radius: 18px;
+    --card-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    --input-radius: 12px;
+    --input-border: 1.7px solid #000;
+    --input-bg: #f9fafb;
+    --input-focus: #4fc3f7;
+    --button-bg: #0d47a1;
+    --button-hover: #123269;
+    --button-radius: 32px;
+    --back-btn-bg: #e0e0e0;
+    --back-btn-radius: 6px;
+    --add-btn-bg: #43a047;
+    --delete-btn-bg: #e53935;
+    --primary-btn-bg: #ffa000;
+    --primary-btn-color: #222;
+}
+
+body {
+    background: var(--bg-color);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 90vh;
+    margin-top: 40px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 32px;
+    color: var(--font-color);
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.back-button {
+    background-color: var(--back-btn-bg) !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: var(--back-btn-radius);
+    color: #1a1a1a;
+    transition: background-color 0.2s;
+    font-family: var(--font-family);
+}
+.back-button:hover {
+    background-color: #d1d1d1 !important;
+}
+
+section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form#edit-product-form {
+    max-width: 480px;
+    width: 100%;
+    margin: 32px auto;
+    background: var(--card-bg);
+    padding: 2.7rem 2.3rem 2.1rem 2.3rem;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+}
+
+label {
+    font-weight: 500;
+    color: var(--font-color);
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.15rem;
+    gap: 4px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    padding: 1.1rem 1rem;
+    border: var(--input-border);
+    border-radius: var(--input-radius);
+    font-size: 1.15rem;
+    background: var(--input-bg);
+    transition: border 0.2s;
+    font-family: var(--font-family);
+    margin-top: 4px;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--input-focus);
+    outline: none;
+    background: #f4fcff;
+}
+
+textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* Bilderliste */
+#images-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 18px 0 10px 0;
+    align-items: flex-start;
+}
+
+#images-list > div {
+    background: #f7fafd;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+    padding: 10px 10px 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 110px;
+    max-width: 120px;
+    position: relative;
+}
+
+#images-list img {
+    border-radius: 7px;
+    box-shadow: 0 1px 6px rgba(44,62,80,0.13);
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+#images-list img[style*="green"] {
+    border: 2px solid #43a047 !important;
+}
+#images-list input[type="text"] {
+    width: 90px;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #bfc9d1;
+    background: #f9fafb;
+}
+#images-list button {
+    width: 90px;
+    margin: 2px 0;
+    font-size: 0.95rem;
+    padding: 4px 0;
+    border-radius: 4px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#images-list button:disabled {
+    background: #bdbdbd;
+    cursor: default;
+}
+#images-list .add-img {
+    background: var(--add-btn-bg);
+}
+#images-list .delete-img {
+    background: var(--delete-btn-bg);
+}
+#images-list .set-primary {
+    background: var(--primary-btn-bg);
+    color: var(--primary-btn-color);
+}
+#images-list input[type="file"] {
+    width: 90px;
+    margin-top: 8px;
+}
+
+button[type="submit"] {
+    color: #fff;
+    font-weight: bold;
+    padding: 1rem 0;
+    font-size: 1.18rem;
+    background: var(--button-bg);
+    border-radius: var(--button-radius);
+    border: none;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    margin-top: 2.3rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    width: 100%;
+}
+button[type="submit"]:hover {
+    background: var(--button-hover);
+}
+
+#message {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 1.1rem;
+    min-height: 24px;
+    color: #1976d2;
+}
+
+/* Responsiv */
+@media (max-width: 600px) {
+    html, body {
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    main, section {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    form#edit-product-form {
+        width: 100%;
+        max-width: 100%;
+        margin: 1.2rem 0 0 0;
+        box-sizing: border-box;
+        padding: 1.2rem 1rem 1.3rem 1rem;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        background: #fff;
+    }
+    label {
+        font-size: 1.07rem !important;
+    }
+    input, select, textarea {
+        font-size: 1.13rem !important;
+        padding: 0.8rem 0.5rem !important;
+        border-radius: 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0.3rem 0 0.8rem 0 !important;
+    }
+    button, button[type="submit"] {
+        font-size: 1.11rem !important;
+        height: 46px !important;
+        border-radius: 10px !important;
+        margin-top: 1.1rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    #images-list, #images-list > div {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 0 !important;
+    }
+    .back-button {
+        width: auto !important;
+        min-width: 60px !important;
+        max-width: 90vw !important;
+        display: block !important;
+        margin: 0.8rem auto 0.7rem auto !important;
+        padding: 0.6rem 1.2rem !important;
+        font-size: 1.08rem !important;
+        border-radius: 10px !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+    h1, .auth-title {
+        font-size: 1.35rem !important;
+        margin: 1.1rem 0 1rem 0 !important;
+        word-break: break-word !important;
+        text-align: center !important;
+    }
+}

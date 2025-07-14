@@ -1,5 +1,18 @@
+html, body {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
 .cart-container {
     max-width: 800px;
+    width: 100%;
     margin: 2rem auto;
     padding: 2rem;
     background: #ffffff;
@@ -110,6 +123,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .cart-delete-btn,
@@ -194,8 +208,116 @@
     background-color: #c0392b;
 }
 
-/* Optional: disabled button style */
 button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* ========== Responsive ========== */
+
+/* Tablet */
+@media (max-width: 900px) {
+    .cart-container {
+        max-width: 98vw;
+        padding: 1rem;
+    }
+    .cart-title {
+        font-size: 1.4rem;
+    }
+    .cart-total {
+        font-size: 1rem;
+    }
+}
+
+/* Smartphone */
+@media (max-width: 600px) {
+    .cart-container {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0.7rem 0.3rem 1.2rem 0.3rem;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .cart-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .cart-list {
+        padding: 0;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+        padding: 1.1rem 0;
+        border-bottom: 1px solid #eee;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        margin-bottom: 1rem;
+    }
+
+    .cart-item-image img {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 0.5rem;
+        border-radius: 12px;
+    }
+
+    .cart-item-name,
+    .cart-item-quantity,
+    .cart-item-price,
+    .cart-item-stock {
+        min-width: 0 !important;
+        font-size: 1rem;
+        text-align: left;
+        padding-bottom: 0.2rem;
+        word-break: break-word;
+    }
+
+    .cart-item-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .cart-item-actions input {
+        width: 38px;
+        font-size: 0.98rem;
+    }
+
+    .cart-total {
+        font-size: 1rem;
+        margin-top: 1.2rem;
+        text-align: left;
+        padding-left: 0.2rem;
+    }
+
+    .cart-actions {
+        flex-direction: column;
+        gap: 0.7rem;
+        margin-top: 1.2rem;
+    }
+
+    .cart-delete-btn,
+    .cart-buy-btn {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .cart-item-overstock {
+        border: 2px solid #ff0000;
+        background: #ffe0e0 !important;
+        padding: 1.1rem 0;  /* Oder wie .cart-item auf Mobile */
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(255,0,0,0.05); /* Optional: leichter roter Schatten für mobile Optik */
+        margin-bottom: 1rem;
+    }
+
 }

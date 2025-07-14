@@ -75,7 +75,6 @@ main {
     justify-content: space-between;
 }
 
-/* Arrow*/
 .amount-buy-wrapper {
     display: flex;
     flex-direction: row;
@@ -108,7 +107,6 @@ main {
     font-size: xx-large;
 }
 
-/* Amount */
 #amount {
     border: black 3px solid;
     padding: 5px 15px;
@@ -150,7 +148,6 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-/* Button */
 .button {
     width: 440px;
     height: 45px;
@@ -208,12 +205,10 @@ input[type="number"] {
     margin: 5px;
 }
 
-
 .product-description {
     font-size: 1.2rem;
     margin-bottom: 3vh;
     line-height: 1.6;
-
     text-align: center;
 }
 
@@ -232,7 +227,6 @@ input[type="number"] {
     background-color: #d0d0d0;
 }
 
-
 .product-image {
     width: 100%;
     max-height: 700px;
@@ -249,14 +243,13 @@ input[type="number"] {
     opacity: 0;
 }
 
-/* Review */
 .new-review-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.review-top{
+.review-top {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -274,7 +267,7 @@ input[type="number"] {
 }
 
 .review-star {
-    color: var(--review-stars)
+    color: var(--review-stars);
 }
 
 .rating-submit-wrapper {
@@ -369,7 +362,17 @@ input[type="number"] {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button-container {
+    order: 2;
+    flex-basis: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
 }
 
 #review-title {
@@ -437,26 +440,158 @@ input[type="number"] {
     background-color: var(--cancel-button-hover-color);
 }
 
-
-/* other Products */
 .product-card {
-    width: 270px;
+    width: 100%;
+    max-width: 270px;
+    box-sizing: border-box;
 }
 
-/*image dots*/
-.picture-index-dots {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
-    gap: 5px;
+@media (max-width: 900px) {
+    .container {
+        max-width: 90vw;
+        padding: 3vh 3vw;
+    }
+
+    .product-card {
+        width: 100%;
+        max-width: 270px;
+    }
+
+    #amount {
+        width: 35px;
+        padding: 4px 10px;
+        font-size: medium;
+    }
+
+    .button {
+        width: 100%;
+        height: 40px;
+        font-size: 1rem;
+        border-radius: 16px;
+    }
+
+    #buy-button, #cart-button {
+        width: 100%;
+        height: 42px;
+        font-size: 1rem;
+    }
+
+    .price,
+    .title {
+        font-size: 1.4rem;
+    }
+
+    .product-description {
+        font-size: 1rem;
+        margin-bottom: 2vh;
+    }
+
+    .back-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .product-image {
+        max-height: 400px;
+    }
+
+    .arrow {
+        font-size: large;
+        padding: 0 6px;
+    }
+
+    .below-images-wrapper,
+    .amount-buy-wrapper {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .review-input,
+    .review-rating {
+        font-size: 0.9rem;
+        padding: 0.4rem;
+    }
+
+    .submit-review-button {
+        font-size: 1rem;
+    }
+
+    .stars {
+        gap: 3px;
+    }
 }
 
-.picture-index-dot {
-    font-size: 25px;
-    color: var(--image-dot);
+@media (max-width: 600px) {
+    .container {
+        max-width: 100vw;
+        padding: 2vh 3vw;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .product-card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #amount {
+        width: 30px;
+        padding: 3px 8px;
+    }
+
+    .button {
+        font-size: 0.9rem;
+        height: 36px;
+        border-radius: 12px;
+    }
+
+    #buy-button, #cart-button {
+        height: 38px;
+        font-size: 0.9rem;
+    }
+
+    .price,
+    .title {
+        font-size: 1.2rem;
+    }
+
+    .product-description {
+        font-size: 0.9rem;
+        margin-bottom: 1.5vh;
+    }
+
+    .back-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-image {
+        max-height: 300px;
+    }
+
+    .arrow {
+        font-size: medium;
+        padding: 0 4px;
+    }
+
+    .below-images-wrapper,
+    .amount-buy-wrapper {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .review-input,
+    .review-rating {
+        font-size: 0.85rem;
+        padding: 0.3rem;
+    }
+
+    .submit-review-button {
+        font-size: 0.9rem;
+    }
+
+    .stars {
+        gap: 2px;
+    }
 }
-
-
-
-

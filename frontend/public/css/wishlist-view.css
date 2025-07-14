@@ -1,33 +1,22 @@
 :root {
     --font-family: Arial, Helvetica, sans-serif;
     --font-color: #000000;
-
     --dark-blue: #002c6d;
-
     --cart-button-color: #0077B6;
     --cart-button-hover-color: #005F94;
     --button-font-color: #FFFFFF;
-
-      --return-button-color: #d3cdcd;
-  --return-button-font-color: #000000;
-  --return-button-hover-color: #a3a0a0;
-
+    --return-button-color: #d3cdcd;
+    --return-button-font-color: #000000;
+    --return-button-hover-color: #a3a0a0;
     --button-border-color: rgba(255, 255, 255, 0.1);
-
     --wishlist-button-font-color: #FFFFFF;
     --cart-button-font-color: #FFFFFF;
-
     --wishlist-button-color: #860a0a;
     --wishlist-button-hover-color: #940f0f;
-
     --error-color: #b61313;
     --success-color: #001d4a;
-
-  --error-hover: #800d0d;
-  --success-color: #001d4a;
-
+    --error-hover: #800d0d;
     --order-id-color: #001d4a;
-
     --status-option-background: #ffffff;
     --status-dropdown-background: #001d4a;
 }
@@ -69,6 +58,7 @@ main {
     margin: 0 auto 20px;
 }
 
+/* Wishlist Info */
 .wishlist-info h1 {
     font-size: xxx-large;
     margin-bottom: 10px;
@@ -79,6 +69,7 @@ main {
     font-size: 1.1rem;
 }
 
+/* Product List */
 .products-list {
     list-style: none;
     margin: 0;
@@ -102,6 +93,19 @@ main {
 
 .wishlist-product:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.picture {
+    width: 150px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.product-thumb {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
 .data-container {
@@ -128,19 +132,7 @@ main {
     font-weight: bold;
 }
 
-.picture {
-    width: 150px;
-    height: auto;
-    flex-shrink: 0;
-}
-
-.product-thumb {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
+/* Buttons */
 .button {
     min-width: 150px;
     max-width: 230px;
@@ -194,6 +186,7 @@ main {
     flex-wrap: nowrap;
 }
 
+/* Errors & Info */
 .server-error {
     color: var(--error-color);
     font-weight: bold;
@@ -202,8 +195,8 @@ main {
 }
 
 .delete-hover {
-  background-color: #ffe5e5;
-  transition: background-color 0.2s ease;
+    background-color: #ffe5e5;
+    transition: background-color 0.2s ease;
 }
 
 #error-info,
@@ -218,30 +211,15 @@ main {
     margin-top: 1rem;
 }
 
-.arrow-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    margin: 10px;
-}
-
-.arrow {
-    font-size: xx-large;
-    padding: 0 10px;
-}
-
-/* Amount */
+/* Quantity Input */
 #amount-input {
     border: black 3px solid;
     padding: 5px 15px;
     margin: 0;
     border-radius: 20px;
     height: max-content;
-
     font-family: var(--font-family);
     font-size: large;
-
     width: 40px;
     text-align: center;
 }
@@ -256,47 +234,45 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-
+/* Modal */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
 }
 
-/* Modal verstecken */
 .modal.hidden {
-  display: none;
+    display: none;
 }
 
-/* Modal Inhalt */
 .modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  max-width: 400px;
-  width: 90%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.25);
-  text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    text-align: center;
 }
 
 .modal-content h2 {
-  margin-top: 0;
-  font-size: 1.5rem;
-  color: var(--dark-blue);
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--dark-blue);
 }
 
 .modal-buttons {
-  display: flex;
-  justify-content: space-around;
-  gap: 1rem;
-  margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+    margin-top: 30px;
 }
 
 .do-button {
@@ -318,24 +294,99 @@ input[type="number"] {
 }
 
 #delete-btn {
-  background-color: var(--error-color);
+    background-color: var(--error-color);
 }
 
 #delete-btn:hover {
-  background-color: var(--error-hover);
+    background-color: var(--error-hover);
 }
 
+/* Medium Screens */
 @media (max-width: 1200px) {
     .data-container {
         flex-direction: column;
     }
 }
 
+/* Small Tablets */
 @media (max-width: 850px) {
     .wishlist-product {
         flex-direction: column;
         align-items: center;
     }
-
 }
 
+/* Mobile Devices */
+@media (max-width: 600px) {
+    html,
+    body {
+        font-size: 16px;
+    }
+    main {
+        padding: 1rem;
+    }
+    .container {
+        padding: 2vh 2vw;
+        max-width: 100%;
+        min-width: auto;
+    }
+    #wishlist-container {
+        width: 100%;
+        padding: 0;
+    }
+    .wishlist-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .wishlist-name {
+        font-size: 1.5rem;
+    }
+    .wishlist-meta p {
+        font-size: 1rem;
+    }
+    .products-list {
+        gap: 1rem;
+    }
+    .wishlist-product {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+    .picture {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 1rem;
+    }
+    .data-container {
+        flex-direction: column;
+        margin-left: 0;
+        width: 100%;
+    }
+    .price-amount-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 1rem;
+    }
+    .product-title-history {
+        font-size: 1.25rem;
+    }
+    .button,
+    .cart-button,
+    .delete-btn {
+        width: 100%;
+        max-width: none;
+        min-width: auto;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .action-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    #amount-input {
+        width: 50px;
+    }
+}
