@@ -68,7 +68,7 @@ header a {
     border-radius: 4rem;
 }
 
-footer {
+.footer-links {
     padding: 1.7rem 10rem 1.7rem 10rem;
     display: flex;
     justify-content: space-between;
