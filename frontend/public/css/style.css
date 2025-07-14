@@ -89,19 +89,14 @@ ul#product-list li {
   /* ... */
 }
 
-@media screen and (max-width: 1024px) {
-  ul#product-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media screen and (max-width: 768px) {
+@media (min-width: 844px) and (max-width: 1024px) {
   ul#product-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 844px) {
   ul#product-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
@@ -331,6 +326,88 @@ select.filters-selector option:hover {
   font-size: 0.9rem;
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* Mobile-first responsive adjustments */
+@media (max-width: 768px) {
+  .filters-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .filters-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters-selector,
+  #sort-select {
+    width: 100%;
+    min-width: unset;
+    padding: 0.75rem 1rem;
+    background-position: right 1rem center;
+  }
+
+  .price-range-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .price-range-wrapper input[type="range"] {
+    width: 100%;
+  }
+
+  .price-values {
+    text-align: right;
+  }
+
+  .checkbox-inline {
+    justify-content: space-between;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .filters-wrapper {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .filters-control-bar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .filters-selector,
+  #sort-select {
+    flex: 1 1 45%;
+    min-width: unset;
+  }
+
+  .price-range-wrapper {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .price-range-wrapper input[type="range"] {
+    width: 100%;
+  }
 }
 
 /* === Reset-Button === */

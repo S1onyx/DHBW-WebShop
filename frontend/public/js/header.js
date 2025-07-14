@@ -1,60 +1,62 @@
 (async () => {
-    const loginDiv = document.querySelector('.login');
-    const navbar = document.querySelector('.navbar');
+    const loginDiv = document.querySelector('.nav .login');
+    const navbar = document.querySelector('.nav');
     const wishlistLink = navbar.querySelector('.wishlist-link');
     const cartLink = navbar.querySelector('.cart-link');
     const adminLink = navbar.querySelector('.admin-link');
     const sellerLink = navbar.querySelector('.seller-link');
-    const navbarLinks = navbar.querySelectorAll('[class$="-link"]:not(.admin-link)');
+    const navbarLinks = navbar.querySelectorAll('[class$="navlink"]:not(.admin-link)');
 
+    console.log(navbarLinks, navbar);
+    console.log(document.querySelectorAll('[class$="navlink"]'));
     try {
         const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
         const json = await res.json();
-        if (json.success) {
-            if (loginDiv) loginDiv.style.display = 'none';
-            // Admin-Check
-            if (json.data && json.data.role_id === 1) {
-                navbarLinks.forEach(link => {
-                    if (link !== wishlistLink && link !== cartLink) {
-                        link.style.display = 'inline-block';
-                        sellerLink.style.display = 'none';
-                    } else {
-                        link.style.display = 'none';
-                    }
-                });
-                if (adminLink) adminLink.style.display = 'inline-block';
-                const historyLink = navbar.querySelector('.history-link');
-                if (historyLink) historyLink.setAttribute('href', '/seller-orders');
+        if (json.success && json.data) {
+            loginDiv.style.display = 'none';
+            const role = json.data.role_id;
 
-            } else if (json.data && json.data.role_id === 2) { // Seller-Check
-                navbarLinks.forEach(link => {
-                    if (link !== wishlistLink && link !== cartLink) {
-                        link.style.display = 'inline-block';
-                    } else {
-                        link.style.display = 'none';
-                    }
-                });
-                if (sellerLink) sellerLink.style.display = 'inline-block';
-                // Hier Link anpassen:
-                const historyLink = navbar.querySelector('.history-link');
-                if (historyLink) historyLink.setAttribute('href', '/seller-orders');
-            } else {
-                navbarLinks.forEach(link => link.style.display = 'inline-block');
-                if (adminLink) adminLink.style.display = 'none';
-                if (sellerLink) sellerLink.style.display = 'none';
-            }
-        } else {
-            if (loginDiv) loginDiv.style.display = 'block';
+            // Default: hide everything
             navbarLinks.forEach(link => link.style.display = 'none');
             if (adminLink) adminLink.style.display = 'none';
+            if (sellerLink) sellerLink.style.display = 'none';
+
+            if (role === 1) { // Admin
+                navbarLinks.forEach(link => {
+                    if (link !== wishlistLink && link !== cartLink) {
+                        link.style.display = 'inline-block';
+                    }
+                });
+                adminLink.style.display = 'inline-block';
+
+            } else if (role === 2) { // Seller
+                navbarLinks.forEach(link => {
+                    if (link !== wishlistLink && link !== cartLink) {
+                        link.style.display = 'inline-block';
+                    }
+                });
+                sellerLink.style.display = 'inline-block';
+
+            } else { // Regular user
+                navbarLinks.forEach(link => link.style.display = 'inline-block');
+            }
+        } else {
+            loginDiv.style.display = 'block';
+            navbarLinks.forEach(link => link.style.display = 'none');
+            if (adminLink) adminLink.style.display = 'none';
+            if (sellerLink) sellerLink.style.display = 'none';
         }
     } catch (e) {
         if (loginDiv) loginDiv.style.display = 'block';
         navbarLinks.forEach(link => link.style.display = 'none');
         if (adminLink) adminLink.style.display = 'none';
     }
-})();
 
-document.getElementById('burger-menu').onclick = function() {
-    document.querySelector('.nav').classList.toggle('nav-active');
-}
+    const burgerMenu = document.getElementById('burger-menu');
+    const nav = document.querySelector('.nav');
+
+    burgerMenu.addEventListener("click", function () {
+        burgerMenu.classList.toggle('active');
+        nav.classList.toggle('nav-active'); // Optional: show/hide menu
+    });
+})();

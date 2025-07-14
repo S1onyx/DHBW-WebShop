@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/css/header-footer.css" />
 
 <header>
-    <nav class="navbar">
+    <div class="navbar">
         <a href="/"> <img class="logo" src="/images/logo-transparent-svg.svg" height="90" width="80" alt=""> </a>
 
         <div class="search-input-wrapper">
@@ -11,36 +11,39 @@
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
         </div>
 
-        <a href="/profile" class="user-link">
-            <i class="fas fa-user"></i>
-        </a>
-
-        <a href="/cart" class="cart-link">
-            <i class="fa-solid fa-cart-shopping"></i>
-        </a>
-
-        <a class="admin-link" href="/admin" style="display:none;">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-        </a>
-
-        <a href="/seller" class="seller-link" style="display:none;">
-            <i class="fas fa-store"></i>
-        </a>
-
-        <a href="/wishlist" class="wishlist-link">
-            <i class="fas fa-heart"></i>
-        </a>
-
-        <a href="/history" class="history-link">
-            <i class="fas fa-clock-rotate-left"></i>
-        </a>
-
-        <div class="login">
-            <a href="/login" class="loginLink">
-                Login
+        <nav class="nav">
+            <a href="/profile" class="user-link navlink">
+                <i class="fas fa-user"></i>
             </a>
-        </div>
-    </nav>
+
+            <a href="/cart" class="cart-link navlink">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+
+            <a class="admin-link navlink" href="/admin" style="display:none;">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+            </a>
+
+            <a href="/seller" class="seller-link navlink" style="display:none;">
+                <i class="fas fa-store"></i>
+            </a>
+
+            <a href="/wishlist" class="wishlist-link navlink">
+                <i class="fas fa-heart"></i>
+            </a>
+
+            <a href="/history" class="history-link navlink">
+                <i class="fas fa-clock-rotate-left"></i>
+            </a>
+
+            <div class="login">
+                <a href="/login" class="loginLink">
+                    Login
+                </a>
+            </div>
+        </nav>
+    </div>
+
     <div class="burger" id="burger-menu">
         <span></span>
         <span></span>
