@@ -4,6 +4,7 @@
     <script src="/env.js"></script>
     <meta charset="UTF-8" />
     <title>Profil</title>
+    <link rel="icon" href="/images/logo-svg.svg" type="image/x-icon" />
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -168,18 +169,18 @@
             <h2>Profile</h2>
             <p id="profile-username"></p>
         </div>
-        <ul class="profile-list" id="profile-list">
-            <!-- Profile data will be inserted here -->
-        </ul>
+        <ul class="profile-list" id="profile-list"></ul>
         <div class="error-message" id="error-message" style="display:none;"></div>
 
-        <div style="display: flex; justify-content: space-between; gap: 4%;">
-            <button id="edit-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:48%;">Edit</button>
-            <a href="/change-password" ><button id="change-password-btn" class="edit-profile-btn" style="margin-top:1rem;">Change Password</button></a>
+        <div class="button-row">
+            <button id="edit-profile-btn" class="edit-profile-btn">Edit</button>
+            <a href="/change-password">
+                <button id="change-password-btn" class="edit-profile-btn">Change Password</button>
+            </a>
         </div>
 
-        <button id="save-profile-btn" class="edit-profile-btn" style="margin-top:1rem;width:100%;display:none;">Save</button>
-        <button id="logout-btn" class="loginLink" style="margin-top:2rem;width:100%;color: white">Logout</button>
+        <button id="save-profile-btn" class="edit-profile-btn" style="margin-top:1rem; width:100%; display:none;">Save</button>
+        <button id="logout-btn" class="loginLink" style="margin-top:2rem; width:100%;">Logout</button>
     </div>
 </div>
 <div id="footer"></div>
@@ -203,13 +204,13 @@
     });
 
     const editableFields = [
-        { key: "first_name", label: "Vorname" },
-        { key: "last_name", label: "Nachname" },
-        { key: "street", label: "Straße" },
-        { key: "house_number", label: "Hausnummer" },
-        { key: "postal_code", label: "PLZ" },
-        { key: "city", label: "Stadt" },
-        { key: "country", label: "Land" }
+        { key: "first_name", label: "First Name" },
+        { key: "last_name", label: "Last Name" },
+        { key: "street", label: "Street" },
+        { key: "house_number", label: "House Number" },
+        { key: "postal_code", label: "Postal Code" },
+        { key: "city", label: "City" },
+        { key: "country", label: "Country" }
     ];
 
     let userData = null;
@@ -217,7 +218,7 @@
     async function loadProfile() {
         try {
             const res = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
-            if (!res.ok) throw new Error('Nicht eingeloggt oder Fehler beim Laden');
+            if (!res.ok) throw new Error('Not logged in or error fetching profile');
             const user = await res.json();
             userData = user.data;
 
@@ -231,15 +232,16 @@
                 li.innerHTML = `<span class="profile-label">${f.label}:</span> <span class="profile-value" data-key="${f.key}">${user.data[f.key] ?? '-'}</span>`;
                 list.appendChild(li);
             });
-            // Nicht editierbare Felder
+
             const liUser = document.createElement('li');
-            liUser.innerHTML = `<span class="profile-label">Benutzername:</span> <span class="profile-value">${user.data.username}</span>`;
+            liUser.innerHTML = `<span class="profile-label">Username:</span> <span class="profile-value">${user.data.username}</span>`;
             list.appendChild(liUser);
+
             const liMail = document.createElement('li');
-            liMail.innerHTML = `<span class="profile-label">E-Mail:</span> <span class="profile-value">${user.data.email}</span>`;
+            liMail.innerHTML = `<span class="profile-label">Email:</span> <span class="profile-value">${user.data.email}</span>`;
             list.appendChild(liMail);
         } catch (e) {
-            document.getElementById('error-message').textContent = 'Fehler beim Laden des Profils. Bitte einloggen.';
+            document.getElementById('error-message').textContent = 'Failed to load profile. Please log in.';
             document.getElementById('error-message').style.display = 'block';
             document.getElementById('profile-list').style.display = 'none';
             document.getElementById('profile-username').style.display = 'none';
@@ -254,6 +256,7 @@
         });
         document.getElementById('edit-profile-btn').style.display = 'none';
         document.getElementById('save-profile-btn').style.display = 'inline-block';
+        document.getElementById('change-password-btn').style.display = 'none';
     });
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {

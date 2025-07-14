@@ -22,6 +22,10 @@ router.get('/', async (req, res) => {
   renderPage('index.html', res);
 });
 
+router.get('/impressum', async (req, res) => {
+  renderPage('impressum.html', res);
+});
+
 router.get('/product/:id', async (req, res) => {
   renderPage('product.html', res);
 });

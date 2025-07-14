@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impressum – Simon Riedinger</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #415c6f;
+      margin-top: 2rem;
+    }
+    hr {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+    address {
+      font-style: normal;
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main>
+    <h1>Impressum</h1>
+
+    <h2>Angaben gemäß § 5 TMG</h2>
+    <address>
+      Simon Riedinger<br />
+      Am Tiefenbach 20<br />
+      74360 Ilsfeld-Auenstein<br />
+      Deutschland<br /><br />
+      <strong>Kontakt:</strong><br />
+      E-Mail: <a href="mailto:riedinger.simon@t-online.de">riedinger.simon@t-online.de</a><br />
+      Telefon: <a href="tel:+491601753393">0160&nbsp;1753393</a>
+    </address>
+
+    <hr />
+
+    <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+    <address>
+      Simon Riedinger<br />
+      Am Tiefenbach 20<br />
+      74360 Ilsfeld-Auenstein
+    </address>
+
+    <hr />
+
+    <h2>Haftungsausschluss (Disclaimer)</h2>
+
+    <h3>Haftung für Inhalte</h3>
+    <p>
+      Als Diensteanbieter bin ich gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.
+      Nach §§ 8 bis 10 TMG bin ich jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder
+      nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+    </p>
+    <p>
+      Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+      Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden
+      entsprechender Rechtsverletzungen werde ich diese Inhalte umgehend entfernen.
+    </p>
+
+    <h3>Haftung für Links</h3>
+    <p>
+      Mein Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss habe. Deshalb kann ich für diese
+      fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
+      der Seiten verantwortlich.
+    </p>
+
+    <h3>Urheberrecht</h3>
+    <p>
+      Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.
+      Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts
+      bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+    </p>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      async function loadFragment(id, url, scriptUrl) {
+        const res = await fetch(url);
+        if (res.ok) {
+          document.getElementById(id).innerHTML = await res.text();
+          if (scriptUrl) {
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            script.defer = true;
+            document.body.appendChild(script);
+          }
+        }
+      }
+
+      loadFragment('header', '/header-footer/header.html', '/js/header.js');
+      loadFragment('footer', '/header-footer/footer.html');
+    });
+  </script>
+</body>
+</html>

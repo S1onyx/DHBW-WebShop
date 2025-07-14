@@ -19,7 +19,7 @@ async function getReviews(req, res, productId) {
     res.end(JSON.stringify({
       success: true,
       data: reviews,
-      message: reviews.length === 0 ? 'Noch keine Bewertungen vorhanden' : undefined
+      message: reviews.length === 0 ? 'No reviews available yet' : undefined
     }));
   } catch (err) {
     console.error('[GET REVIEWS ERROR]', { productId, error: err });
