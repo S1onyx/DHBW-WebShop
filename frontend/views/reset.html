@@ -10,6 +10,162 @@
     <link rel="stylesheet" href="/css/auth.css" type="text/css">
     <script src="/js/auth_util.js" defer></script>
     <script src="/js/reset.js" defer></script>
+    <style>
+        @media (max-width: 1024px) {
+  .auth-container {
+    width: 90%;
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .auth-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .auth-input,
+  .password-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Abstand zwischen Input und Button */
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  width: 100%;
+}
+
+  .password-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: transparent;
+  }
+
+  .toggle-password-button {
+    border: none;
+    background: none;
+    font-size: 0.9rem;
+    color: #1976d2;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    white-space: nowrap;
+  }
+
+  .auth-button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+  }
+
+  .auth-error,
+  .auth-success,
+  .error-message {
+    font-size: 0.95rem;
+    color: #d32f2f;
+    margin-top: -0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+  }
+
+  .auth-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .auth-title {
+    font-size: 1.6rem;
+  }
+
+  .auth-form {
+    gap: 1rem;
+  }
+
+  .password-wrapper {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .password-input {
+    font-size: 1rem;
+  }
+
+  .toggle-password-button { 
+    font-size: 0.85rem;
+  }
+
+  .auth-button {
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+  }
+}
+/* Alles soll padding sauber mit einrechnen */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Weiße Box */
+.auth-container {
+  padding: 2rem 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+/* Formularstruktur */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Alle Inputs, Passwortfelder, Buttons */
+.auth-input,
+.password-wrapper {
+  width: 100%; /* volle Breite im Container, damit Button reinpasst */
+}
+
+.auth-button {
+  width: 100%;
+}
+
+.auth-form {
+  width: 80%; /* Nur das Formular ist etwas schmaler als Box */
+  margin: 0 auto; /* Zentriert es innerhalb der weißen Box */
+}
+.password-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+}
+
+.toggle-password-button {
+  border: none;
+  background: none;
+  font-size: 0.9rem;
+  color: #1976d2;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+    </style>
 </head>
 
 <body>
