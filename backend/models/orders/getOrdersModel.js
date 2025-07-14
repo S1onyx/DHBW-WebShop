@@ -40,45 +40,45 @@ async function getOrdersModel({ userId, roleId, productId, status }) {
     return result;
   }
 
-  if (roleId === 2) {
-    const params = [userId];
-    let statusFilter = '';
+if (roleId === 2) {
+  const params = [userId];
+  let statusFilter = '';
 
-    if (status) {
-      const check = await db.query('SELECT 1 FROM order_status WHERE id = $1', [status]);
-      if (check.rowCount === 0) throw new Error('INVALID_STATUS');
-      statusFilter = 'AND o.status_id = $2';
-      params.push(status);
-    }
-
-    const baseQuery = `
-      SELECT p.id AS product_id, p.name,
-             json_agg(json_build_object(
-               'order_date', o.order_date,
-               'order_id', o.id,
-               'quantity', oi.quantity,
-               'unit_price', oi.unit_price,
-               'status', s.name
-             ) ORDER BY o.order_date DESC) AS sales
-      FROM products p
-      JOIN order_items oi ON p.id = oi.product_id
-      JOIN orders o ON o.id = oi.order_id
-      JOIN order_status s ON o.status_id = s.id
-      WHERE p.seller_id = $1 ${statusFilter}
-      GROUP BY p.id, p.name
-      ORDER BY p.name
-    `;
-
-    const res = await db.query(baseQuery, params);
-    result.rows = res.rows;
-
-    if (status && res.rowCount === 0) {
-      const resAll = await db.query(baseQuery.replace('AND o.status_id = $2', ''), [userId]);
-      if (resAll.rowCount > 0) result.filteredOut = true;
-    }
-
-    return result;
+  if (status) {
+    const check = await db.query('SELECT 1 FROM order_status WHERE id = $1', [status]);
+    if (check.rowCount === 0) throw new Error('INVALID_STATUS');
+    statusFilter = 'AND o.status_id = $2';
+    params.push(status);
   }
+
+  const baseQuery = `
+    SELECT p.id AS product_id, p.name,
+           json_agg(json_build_object(
+             'order_id', o.id,
+             'order_date', o.order_date,
+             'quantity', oi.quantity,
+             'unit_price', oi.unit_price,
+             'status', s.name
+           ) ORDER BY o.order_date DESC) AS sales
+    FROM products p
+    JOIN order_items oi ON p.id = oi.product_id
+    JOIN orders o ON o.id = oi.order_id
+    JOIN order_status s ON o.status_id = s.id
+    WHERE p.seller_id = $1 ${statusFilter}
+    GROUP BY p.id, p.name
+    ORDER BY p.name
+  `;
+
+  const res = await db.query(baseQuery, params);
+  result.rows = res.rows;
+
+  if (status && res.rowCount === 0) {
+    const resAll = await db.query(baseQuery.replace('AND o.status_id = $2', ''), [userId]);
+    if (resAll.rowCount > 0) result.filteredOut = true;
+  }
+
+  return result;
+}
 
   if (roleId === 1 && productId) {
     const params = [productId];

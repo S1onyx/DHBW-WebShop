@@ -1,9 +1,19 @@
 import { showPopupMessage } from "/js/utils.js";
 import { showWishlistSelectModal } from '/js/wishlist-selection.js';
 
-const info = document.getElementById('info')
+const info = document.getElementById('info');
+const statusDropdown = document.getElementById("status");
+const fetchOptionsWithCredentials = {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' }
+};
 
 window.onload = () => loadHistory("0");
+
+statusDropdown.addEventListener("change", (event) => {
+    const statusID = event.target.value;
+    loadHistory(statusID);
+});
 
 async function loadHistory(statusId) {
     try {
@@ -25,8 +35,8 @@ async function loadHistory(statusId) {
             errorInfo.textContent = 'No orders with this status';
 
             list.appendChild(errorInfo);
-            return
-        } else if(!res.ok) {
+            return;
+        } else if (!res.ok) {
             throw new Error("History couldn't be loaded.");
         }
 
@@ -39,14 +49,21 @@ async function loadHistory(statusId) {
             return;
         }
 
-
         try {
             const resMe = await fetch(`http://${window.ROOT_URL}:3000/api/users/me`, { credentials: 'include' });
             const json = await resMe.json();
-            if (json.success) {
-                await loadHistoryCustomer(history);
-            } else {
 
+            if (json.success) {
+                const roleId = json.data.role_id;
+                if (roleId === 2) {
+                    await loadHistorySeller(history);
+                } else {
+                    await loadHistoryCustomer(history);
+                }
+            } else {
+                info.textContent = 'User information could not be retrieved.';
+                info.hidden = false;
+                return;
             }
 
         } catch (e) {
@@ -55,10 +72,11 @@ async function loadHistory(statusId) {
             return;
         }
 
-    } catch {
-
+    } catch (e) {
+        info.textContent = 'Unexpected error occurred.';
+        info.hidden = false;
     }
-};
+}
 
 async function loadHistoryCustomer(history) {
     const historyElement = document.getElementById('history-list');
@@ -87,7 +105,46 @@ async function loadHistoryCustomer(history) {
     });
 }
 
+async function loadHistorySeller(history) {
+    const historyElement = document.getElementById('history-list');
+    historyElement.innerHTML = '';
 
+    for (const product of history) {
+        const details = document.createElement('details');
+        details.classList.add('order');
+
+        const summary = document.createElement('summary');
+        summary.classList.add('order-summary');
+
+        summary.innerHTML = `
+            <h2 class="order-id">Produkt: ${product.name}</h2>
+            <p><strong>Produkt-ID:</strong> ${product.product_id}</p>
+            <p><strong>Anzahl Verkäufe:</strong> ${product.sales.length}</p>
+        `;
+
+        const saleList = document.createElement('ul');
+        saleList.classList.add('order-list');
+
+        for (const sale of product.sales) {
+            const li = document.createElement('li');
+            li.classList.add('order-product');
+
+            li.innerHTML = `
+                <p><strong>Order ID:</strong> ${sale.order_id}</p>
+                <p><strong>Datum:</strong> ${new Date(sale.order_date).toLocaleString()}</p>
+                <p><strong>Menge:</strong> ${sale.quantity}</p>
+                <p><strong>Einzelpreis:</strong> ${sale.unit_price} €</p>
+                <p><strong>Status:</strong> ${sale.status}</p>
+            `;
+
+            saleList.appendChild(li);
+        }
+
+        details.appendChild(summary);
+        details.appendChild(saleList);
+        historyElement.appendChild(details);
+    }
+}
 
 async function productsFromOrder(order, list) {
     order.items.forEach(async element => {
@@ -102,7 +159,7 @@ async function productsFromOrder(order, list) {
 
             const result = await res.json();
             const product = result.data;
-            const imageUrl = product.images[0].url;
+            const imageUrl = product.images[0]?.url;
 
             const thumbWrapper = document.createElement('div');
             thumbWrapper.className = 'picture';
@@ -118,8 +175,8 @@ async function productsFromOrder(order, list) {
             img.dataset.id = product.id;
             thumbWrapper.appendChild(img);
             li.appendChild(thumbWrapper);
-        } catch {
-
+        } catch (err) {
+            console.error('Fehler beim Laden des Produkts:', err);
         }
 
         const actionContainer = document.createElement('div');
@@ -130,7 +187,7 @@ async function productsFromOrder(order, list) {
         wishlistButton.textContent = "Add to Wishlist";
         wishlistButton.addEventListener('click', () => {
             showWishlistSelectModal(element.product_id, 1);
-        })
+        });
 
         const cartButton = document.createElement('button');
         cartButton.classList.add('button', 'cart-button');
@@ -138,7 +195,6 @@ async function productsFromOrder(order, list) {
         cartButton.addEventListener('click', async (event) => {
             event.preventDefault();
             const id = element.product_id;
-
             const amount = 1;
 
             try {
@@ -148,7 +204,7 @@ async function productsFromOrder(order, list) {
                     method: 'POST',
                     body: JSON.stringify(body)
                 });
-                console.log(res);
+
                 if (res.status === 401) {
                     window.location.href = '/login';
                     return;
@@ -158,20 +214,21 @@ async function productsFromOrder(order, list) {
                 serverError.textContent = "Server Error";
                 serverError.hidden = false;
             }
+
             showPopupMessage('Product was added to your cart', 1500);
-        })
+        });
 
         actionContainer.appendChild(wishlistButton);
         actionContainer.appendChild(cartButton);
 
         const productTitle = document.createElement('h3');
-        productTitle.classList.add('product-title-history')
+        productTitle.classList.add('product-title-history');
         productTitle.textContent = element.name;
 
         dataContainer.appendChild(productTitle);
 
         const priceAndAmount = document.createElement('div');
-        priceAndAmount.classList.add('price-amount-container')
+        priceAndAmount.classList.add('price-amount-container');
         const price = document.createElement('p');
         price.classList.add('price');
         price.textContent = `${element.unit_price} €`;
@@ -183,29 +240,14 @@ async function productsFromOrder(order, list) {
         priceAndAmount.appendChild(amount);
 
         dataContainer.appendChild(priceAndAmount);
-
         dataContainer.appendChild(actionContainer);
         li.appendChild(dataContainer);
+
         li.addEventListener('click', (event) => {
             if (event.target.closest('button')) return;
-
             window.location.href = `/product/${element.product_id}`;
         });
 
         list.appendChild(li);
     });
-
 }
-
-const statusDropdown = document.getElementById("status");
-
-statusDropdown.addEventListener("change", (event) => {
-  const statusID = event.target.value;
-
-  loadHistory(statusID)
-});
-
-const fetchOptionsWithCredentials = {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' }
-};
