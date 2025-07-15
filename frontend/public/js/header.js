@@ -5,6 +5,7 @@
     const cartLink = navbar.querySelector('.cart-link');
     const adminLink = navbar.querySelector('.admin-link');
     const sellerLink = navbar.querySelector('.seller-link');
+    const historyLink = navbar.querySelector('.history-link');
     const navbarLinks = navbar.querySelectorAll('[class$="navlink"]:not(.admin-link)');
 
     console.log(navbarLinks, navbar);
@@ -28,7 +29,7 @@
                     }
                 });
                 adminLink.style.display = 'inline-block';
-
+                if (historyLink) historyLink.href = "/seller-orders";
             } else if (role === 2) { // Seller
                 navbarLinks.forEach(link => {
                     if (link !== wishlistLink && link !== cartLink) {
@@ -36,7 +37,7 @@
                     }
                 });
                 sellerLink.style.display = 'inline-block';
-
+                if (historyLink) historyLink.href = "/seller-orders";
             } else { // Regular user
                 navbarLinks.forEach(link => link.style.display = 'inline-block');
             }
